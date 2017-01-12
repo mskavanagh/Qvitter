@@ -2,10 +2,10 @@ Qvitter
 ==========================================
 
 * Author:    Hannes Mannerheim (<h@nnesmannerhe.im>)
-* Last mod.: Jan, 2016
-* Version:   5-alpha
-* Homepage:  <https://git.gnu.io/h2p/Qvitter>
-
+* Modified by: Mitchell Urgero (Email: <info@urgero.org>, [GNU/Social: mitchell@gnusocial.me](https://gnusocial.me/mitchell))
+* Homepage:  <https://github.com/mitchellurgero/Qvitter>
+* Original Project: <https://git.gnu.io/h2p/Qvitter>
+* 
 Qvitter is free  software:  you can  redistribute it  and / or  modify it  
 under the  terms of the GNU Affero General Public License as published by  
 the Free Software Foundation,  either version three of the License or (at  
@@ -91,4 +91,4 @@ for ideas about paths for the API extensions.
 Notes
 -----
 
-Qvitter is tested with the latest GNU social nightly
+QvitterMod has only been tested on postActiv!!
