@@ -1847,13 +1847,20 @@ function isValidHexColor(maybeValidHexColor) {
 function changeDesign(obj) {
 
 	// if we're logged out and this is the front page, we use the default design
-	if(!window.loggedIn &&
+	if(true &&
 	(window.currentStreamObject.name == 'public timeline' || window.currentStreamObject.name == 'public and external timeline')) {
-		obj.backgroundimage = window.fullUrlToThisQvitterApp + window.siteBackground;
+		obj.backgroundimage = window.siteBackground;
 		obj.backgroundcolor = window.defaultBackgroundColor;
 		obj.linkcolor = window.defaultLinkColor;
-		}
-
+	} else if(window.currentStreamObject.name == 'profile timeline'){
+		obj.backgroundimage = window.siteBackground;
+		obj.backgroundcolor = window.defaultBackgroundColor;
+		obj.linkcolor = window.defaultLinkColor;
+	}
+	//For now because I want a background image for logged in user - This will be changed to allow custom images for each user background while in their profile.
+	obj.backgroundimage = window.siteBackground;
+	obj.backgroundcolor = window.defaultBackgroundColor;
+	obj.linkcolor = window.defaultLinkColor;
 
 	// if no object is defined, abort
 	if(typeof obj == 'undefined') {
