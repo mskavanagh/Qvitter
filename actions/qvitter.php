@@ -647,7 +647,7 @@ class QvitterAction extends ApiAction
     						<ul id="user-body">
     							<li><a href="<?php print $instanceurl.$logged_in_user->nickname ?>" id="user-queets"><span class="label"></span><strong><?php print $logged_in_user_obj['statuses_count'] ?></strong></a></li>
     							<li><a href="<?php print $instanceurl.$logged_in_user->nickname ?>/subscriptions" id="user-following"><span class="label"></span><strong><?php print $logged_in_user_obj['friends_count'] ?></strong></a></li>
-    							<li><a href="<?php print $instanceurl.$logged_in_user->nickname ?>/groups" id="user-groups"><span class="label"></span><strong><?php print $logged_in_user_obj['groups_count'] ?></strong></a></li>
+    							<li><a href="<?php print $instanceurl.$logged_in_user->nickname ?>/subscribers" id="user-followers"><span class="label"></span><strong><?php print $logged_in_user_obj['followers_count'] ?></strong></a></li>
     						</ul>
     						<div id="user-footer">
     							<div id="user-footer-inner">
@@ -676,6 +676,7 @@ class QvitterAction extends ApiAction
             							<a href="<?php print $instanceurl.$logged_in_user->nickname ?>/favorites" class="stream-selection favorites"><i class="chev-right"></i></a>
             							<a href="<?php print $instanceurl ?>main/public" class="stream-selection public-timeline"><i class="chev-right"></i></a>
             							<a href="<?php print $instanceurl ?>main/all" class="stream-selection public-and-external-timeline"><i class="chev-right"></i></a>
+                                        <a href="<?php print $instanceurl.$logged_in_user->nickname ?>/groups" id="user-groups">My Groups <i class="chev-right"></i></a>
                                         <?php
                                         }
                                 ?>

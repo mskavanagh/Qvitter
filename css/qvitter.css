@@ -1266,10 +1266,10 @@ button#submit-login:hover {
 }
 
 #page-container {
-	width:890px;
+	width:995px;
 	padding:17px 14px 0 14px;
 	background-color:rgba(0,0,0,0.2);
-	margin-left:-459px;
+	margin-left:-519px;
 	opacity:0;
 	}
 body.rtl #page-container {
@@ -1529,7 +1529,7 @@ body.rtl #unseen-notifications {
 
 .hover-card {
 	width: auto;
-	max-width: 290px;
+	max-width: 490px;
 	line-height: 20px;
 	padding:3px 3px;
 	font-size:12px;
@@ -1617,7 +1617,7 @@ body.rtl #unseen-notifications {
 	font-size: 14px;
 	color: #333333;
 	line-height: 18px;
-	width: 590px;
+	width: 690px;
 	border-top-left-radius: 6px;
 	border-top-right-radius: 6px;
 	border-bottom-left-radius: 6px;
@@ -3519,7 +3519,7 @@ span.inline-reply-caret .caret-inner {
 .inline-reply-queetbox .queet-box-syntax[contenteditable="true"],
 .inline-reply-queetbox .syntax-middle,
 .inline-reply-queetbox .syntax-two {
-	width:488px;
+	width:588px;
 	}
 .inline-reply-queetbox .syntax-middle,
 .inline-reply-queetbox .syntax-two {
@@ -3718,12 +3718,14 @@ body.rtl #user-body {
 
 #user-body #user-queets,
 #user-body #user-groups,
+#user-body #user-followers,
 #user-body #user-following {
     display:block;
 	}
 
 #user-body #user-queets .label,
 #user-body #user-groups .label,
+#user-body #user-followers .label,
 #user-body #user-following .label {
     color: #999999;
     font-size: 10px;
@@ -3736,10 +3738,10 @@ body.rtl #user-body {
     display:block;
     overflow: hidden;
 	}
-#user-body #user-followers {
+/*#user-body #user-followers {
 	display:none;
 	}
-
+*/
 #user-body strong {
 	font-size: 18px;
 	font-weight:500;
@@ -4093,11 +4095,11 @@ div.nav-session {
     text-shadow: 0 1px 0 #FFFFFF;
     float: right;
     position: relative;
-    width: 588px;
+    width: 690px;
 	}
 
 .hover-card .profile-card {
-	width:290px;
+	width:490px;
 	margin-bottom:0;
 	border:0 none;
 	}
