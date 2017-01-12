@@ -385,6 +385,12 @@ function blockUser(arg, callback) {
 			}
 		});
 	}
+function reportNotice(arg, callback){
+	//Nothing to do yet, just return true.
+	
+	showErrorMessage("The report button is a wip and is not enabled in master branch yet. Please wait to use this function.");
+	return true;
+}
 function unblockUser(arg, callback) {
 
 	$('body').click(); // a click somewhere hides any open menus

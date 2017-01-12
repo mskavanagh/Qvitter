@@ -486,7 +486,7 @@ class QvitterAction extends ApiAction
                             print $instanceurl.$logged_in_user_nickname.'/all';
                             }
                         else {
-                            print $instanceurl.'main/public';
+                            print $instanceurl.'main/all';
                         }
 
                     ?>"><div id="logo"></div></a><?php

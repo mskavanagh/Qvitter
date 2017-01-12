@@ -166,6 +166,7 @@
 	"hideQuotesInTimeline":"Hide quotes in this timeline",
 	"userBlocks":"Accounts you're blocking",
 	"buttonBlocked":"Blocked",
+	"buttonReport":"Report Notice",
 	"buttonUnblock":"Unblock",
 	"failedBlockingUser":"Failed to block the user.",
 	"failedUnblockingUser":"Failed to unblock the user.",

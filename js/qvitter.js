@@ -1239,6 +1239,7 @@ $('body').on('click','.user-menu-cog',function(e){
 					label: window.sL.blockUser.replace('{username}','@' + userScreenName)
 					});
 				}
+				
 
 			// mute profile pref
 			menuArray.push({
@@ -1381,7 +1382,6 @@ $('body').on('click','.sm-ellipsis',function(e){
 				callback: 'hideOrShowNoticesAfterMuteOrUnmute'
 				});
 			}
-
 		// moderator actions
 		menuArray = appendModeratorUserActionsToMenuArray(menuArray,streamItemUserID,streamItemUsername,streamItemUserSandboxed,streamItemUserSilenced);
 
