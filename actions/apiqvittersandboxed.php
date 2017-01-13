@@ -1,6 +1,6 @@
 <?php
 /**
- * StatusNet, the distributed open-source microblogging tool
+ * StatusNet, the distributed open-source microblogging tool.
  *
  * List all sandboxed users on the instance
  *
@@ -20,46 +20,46 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category  API
- * @package   GNUsocial
+ *
  * @author    Craig Andrews <candrews@integralblue.com>
  * @author    Evan Prodromou <evan@status.net>
  * @author    Jeffery To <jeffery.to@gmail.com>
  * @author    Zach Copley <zach@status.net>
  * @author    Hannes Mannerheim <h@nnesmannerhe.im>
- * @copyright 2009 StatusNet, Inc.
+ * @copyright 2009 StatusNet, Inc
  * @copyright 2009 Free Software Foundation, Inc http://www.fsf.org
  * @license   http://www.fsf.org/licensing/licenses/agpl-3.0.html GNU Affero General Public License version 3.0
+ *
  * @link      http://www.gnu.org/software/social/
  */
-
 if (!defined('GNUSOCIAL')) {
     exit(1);
 }
 
 /**
- *
  * @category API
- * @package  GNUsocial
+ *
  * @author   Craig Andrews <candrews@integralblue.com>
  * @author   Evan Prodromou <evan@status.net>
  * @author   Jeffery To <jeffery.to@gmail.com>
  * @author   Zach Copley <zach@status.net>
  * @author   Hannes Mannerheim <h@nnesmannerhe.im>
  * @license  http://www.fsf.org/licensing/licenses/agpl-3.0.html GNU Affero General Public License version 3.0
+ *
  * @link     http://www.gnu.org/software/social/
  */
 class ApiQvitterSandboxedAction extends ApiPrivateAuthAction
 {
-    var $profiles = null;
+    public $profiles = null;
 
     /**
-     * Take arguments for running
+     * Take arguments for running.
      *
      * @param array $args $_REQUEST args
      *
-     * @return boolean success flag
+     * @return bool success flag
      */
-    protected function prepare(array $args=array())
+    protected function prepare(array $args = array())
     {
         parent::prepare($args);
 
@@ -69,11 +69,9 @@ class ApiQvitterSandboxedAction extends ApiPrivateAuthAction
     }
 
     /**
-     * Handle the request
+     * Handle the request.
      *
      * @param array $args $_REQUEST data (unused)
-     *
-     * @return void
      */
     protected function handle()
     {
@@ -81,7 +79,7 @@ class ApiQvitterSandboxedAction extends ApiPrivateAuthAction
 
         // XXX: RSS and Atom
 
-        switch($this->format) {
+        switch ($this->format) {
         case 'xml':
             $this->showTwitterXmlUsers($this->profiles);
             break;
@@ -100,11 +98,11 @@ class ApiQvitterSandboxedAction extends ApiPrivateAuthAction
     }
 
     /**
-     * Fetch the sandboxed profiles
+     * Fetch the sandboxed profiles.
      *
      * @return array $profiles list of profiles
      */
-    function getProfiles()
+    public function getProfiles()
     {
         $profiles = array();
 
@@ -113,21 +111,19 @@ class ApiQvitterSandboxedAction extends ApiPrivateAuthAction
             $this->count);
 
         while ($profile->fetch()) {
-            $profiles[] = clone($profile);
+            $profiles[] = clone $profile;
         }
 
         return $profiles;
     }
 
     /**
-     * Fetch the sandboxed profiles from DB
+     * Fetch the sandboxed profiles from DB.
      *
      * @return array $profiles list of profiles
      */
-
-    function getSandboxed($offset=null, $limit=null)   // offset is null because DataObject wants it, 0 would mean no results
+    public function getSandboxed($offset = null, $limit = null)   // offset is null because DataObject wants it, 0 would mean no results
     {
-
         $profiles = new Profile();
         $profiles->joinAdd(array('id', 'profile_role:profile_id'));
         $profiles->whereAdd(sprintf('profile_role.role = \'%s\'', Profile_role::SANDBOXED));
@@ -143,9 +139,9 @@ class ApiQvitterSandboxedAction extends ApiPrivateAuthAction
      *
      * @param array $args other arguments
      *
-     * @return boolean true
+     * @return bool true
      */
-    function isReadOnly($args)
+    public function isReadOnly($args)
     {
         return true;
     }
@@ -155,7 +151,7 @@ class ApiQvitterSandboxedAction extends ApiPrivateAuthAction
      *
      * @return string datestamp of the lastest profile
      */
-    function lastModified()
+    public function lastModified()
     {
         if (!empty($this->profiles) && (count($this->profiles) > 0)) {
             return strtotime($this->profiles[0]->created);
@@ -165,28 +161,27 @@ class ApiQvitterSandboxedAction extends ApiPrivateAuthAction
     }
 
     /**
-     * An entity tag for this list
+     * An entity tag for this list.
      *
      * Returns an Etag based on the action name, language
      * and timestamps of the first and last profile
      *
      * @return string etag
      */
-    function etag()
+    public function etag()
     {
         if (!empty($this->profiles) && (count($this->profiles) > 0)) {
-
             $last = count($this->profiles) - 1;
 
-            return '"' . implode(
+            return '"'.implode(
                 ':',
                 array($this->arg('action'),
                       common_user_cache_hash($this->auth_user),
                       common_language(),
                       strtotime($this->profiles[0]->created),
-                      strtotime($this->profiles[$last]->created))
+                      strtotime($this->profiles[$last]->created), )
             )
-            . '"';
+            .'"';
         }
 
         return null;

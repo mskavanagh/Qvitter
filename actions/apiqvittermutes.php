@@ -38,37 +38,36 @@
   ·                                                                             ·
   · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · */
 
-if (!defined('GNUSOCIAL')) { exit(1); }
-
+if (!defined('GNUSOCIAL')) {
+    exit(1);
+}
 
 class ApiQvitterMutesAction extends ApiPrivateAuthAction
 {
-    var $profiles = null;
+    public $profiles = null;
 
     /**
-     * Take arguments for running
+     * Take arguments for running.
      *
      * @param array $args $_REQUEST args
      *
-     * @return boolean success flag
+     * @return bool success flag
      */
-    protected function prepare(array $args=array())
+    protected function prepare(array $args = array())
     {
         parent::prepare($args);
 
         $this->format = 'json';
 
-        $this->count    =  (int)$this->arg('count', 100);
+        $this->count = (int) $this->arg('count', 100);
 
         return true;
     }
 
     /**
-     * Handle the request
+     * Handle the request.
      *
      * Show the profiles
-     *
-     * @return void
      */
     protected function handle()
     {
@@ -76,30 +75,30 @@ class ApiQvitterMutesAction extends ApiPrivateAuthAction
 
         $this->target = Profile::current();
 
-		if(!$this->target instanceof Profile) {
-			$this->clientError(_('You have to be logged in to view your mutes.'), 403);
-			}
+        if (!$this->target instanceof Profile) {
+            $this->clientError(_('You have to be logged in to view your mutes.'), 403);
+        }
 
         $this->profiles = $this->getProfiles();
 
         $this->initDocument('json');
-        print json_encode($this->showProfiles());
+        echo json_encode($this->showProfiles());
         $this->endDocument('json');
     }
 
     /**
-     * Get the user's muted profiles
+     * Get the user's muted profiles.
      *
      * @return array Profiles
      */
     protected function getProfiles()
     {
         $offset = ($this->page - 1) * $this->count;
-        $limit =  $this->count;
+        $limit = $this->count;
 
-		$mutes = QvitterMuted::getMutedProfiles($this->target->id, $offset, $limit);
+        $mutes = QvitterMuted::getMutedProfiles($this->target->id, $offset, $limit);
 
-        if($mutes) {
+        if ($mutes) {
             return $mutes;
         } else {
             return false;
@@ -111,9 +110,9 @@ class ApiQvitterMutesAction extends ApiPrivateAuthAction
      *
      * @param array $args other arguments
      *
-     * @return boolean true
+     * @return bool true
      */
-    function isReadOnly($args)
+    public function isReadOnly($args)
     {
         return true;
     }
@@ -123,7 +122,7 @@ class ApiQvitterMutesAction extends ApiPrivateAuthAction
      *
      * @return string datestamp of the latest profile in the stream
      */
-    function lastModified()
+    public function lastModified()
     {
         if (!empty($this->profiles) && (count($this->profiles) > 0)) {
             return strtotime($this->profiles[0]->modified);
@@ -133,7 +132,7 @@ class ApiQvitterMutesAction extends ApiPrivateAuthAction
     }
 
     /**
-     * An entity tag for this action
+     * An entity tag for this action.
      *
      * Returns an Etag based on the action name, language, user ID, and
      * timestamps of the first and last profiles in the subscriptions list
@@ -142,13 +141,12 @@ class ApiQvitterMutesAction extends ApiPrivateAuthAction
      *
      * @return string etag
      */
-    function etag()
+    public function etag()
     {
         if (!empty($this->profiles) && (count($this->profiles) > 0)) {
-
             $last = count($this->profiles) - 1;
 
-            return '"' . implode(
+            return '"'.implode(
                 ':',
                 array($this->arg('action'),
                       common_user_cache_hash($this->auth_user),
@@ -156,27 +154,26 @@ class ApiQvitterMutesAction extends ApiPrivateAuthAction
                       $this->target->id,
                       'Profiles',
                       strtotime($this->profiles[0]->modified),
-                      strtotime($this->profiles[$last]->modified))
+                      strtotime($this->profiles[$last]->modified), )
             )
-            . '"';
+            .'"';
         }
 
         return null;
     }
 
     /**
-     * Show the profiles as Twitter-style useres and statuses
-     *
-     * @return void
+     * Show the profiles as Twitter-style useres and statuses.
      */
-    function showProfiles()
+    public function showProfiles()
     {
-		$user_arrays = array();
-        if($this->profiles !== false) {
-    		foreach ($this->profiles as $profile) {
-    			$user_arrays[] = $this->twitterUserArray($profile, false );
-    		}
+        $user_arrays = array();
+        if ($this->profiles !== false) {
+            foreach ($this->profiles as $profile) {
+                $user_arrays[] = $this->twitterUserArray($profile, false);
+            }
         }
-		return $user_arrays;
+
+        return $user_arrays;
     }
 }

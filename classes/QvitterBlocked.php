@@ -38,25 +38,25 @@
   ·                                                                             ·
   · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · */
 
-
-if (!defined('GNUSOCIAL')) { exit(1); }
+if (!defined('GNUSOCIAL')) {
+    exit(1);
+}
 
 class QvitterBlocked extends Profile_block
 {
-
     const CACHE_WINDOW = 201;
 
     public static function getBlocked($profile_id, $offset = 0, $limit = PROFILES_PER_PAGE)
     {
         $ids = self::getBlockedIDs($profile_id, $offset, $limit);
         try {
-        $blocked = Profile_block::listFind('blocked', $ids);
+            $blocked = Profile_block::listFind('blocked', $ids);
+
             return $blocked;
-        } catch(NoResultException $e) {
+        } catch (NoResultException $e) {
             return false;
         }
     }
-
 
     public static function getBlockedIDs($profile_id, $offset, $limit)
     {
@@ -74,7 +74,7 @@ class QvitterBlocked extends Profile_block
             // Being here indicates we didn't find anything cached
             // so we'll have to fill it up simultaneously
             $queryoffset = 0;
-            $querylimit  = self::CACHE_WINDOW;
+            $querylimit = self::CACHE_WINDOW;
         }
 
         $blocks = new Profile_block();
@@ -93,6 +93,7 @@ class QvitterBlocked extends Profile_block
         // If we're simultaneously filling up cache, remember to slice
         if ($queryoffset === 0 && $querylimit === self::CACHE_WINDOW) {
             self::cacheSet($cacheKey, $ids);
+
             return array_slice($ids, $offset, $limit);
         }
 
@@ -100,18 +101,17 @@ class QvitterBlocked extends Profile_block
     }
 
     /**
-     * Flush cached blocks when blocks are updated
+     * Flush cached blocks when blocks are updated.
      *
      * @param mixed $dataObject Original version of object
      *
-     * @return boolean success flag.
+     * @return bool success flag
      */
-    function update($dataObject=false)
+    public function update($dataObject = false)
     {
         self::blow('qvitterblocked:'.$this->blocker);
         self::blow('qvitterblocked:'.$this->blocked);
 
         return parent::update($dataObject);
     }
-
 }

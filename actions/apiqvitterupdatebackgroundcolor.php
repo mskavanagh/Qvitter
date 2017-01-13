@@ -34,54 +34,55 @@
   ·                                                                             ·
   · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · */
 
-if (!defined('GNUSOCIAL')) { exit(1); }
+if (!defined('GNUSOCIAL')) {
+    exit(1);
+}
 
 class ApiQvitterUpdateBackgroundColorAction extends ApiAuthAction
 {
-    var $backgroundcolor = null;
+    public $backgroundcolor = null;
 
     protected $needPost = true;
 
     /**
-     * Take arguments for running
+     * Take arguments for running.
      *
      * @param array $args $_REQUEST args
      *
-     * @return boolean success flag
+     * @return bool success flag
      */
-    protected function prepare(array $args=array())
+    protected function prepare(array $args = array())
     {
         parent::prepare($args);
 
-        $this->format = 'json';        
+        $this->format = 'json';
 
         $this->backgroundcolor = $this->trimmed('backgroundcolor');
+
         return true;
     }
 
     /**
-     * Handle the request
+     * Handle the request.
      *
      * Try to save the user's colors in her design. Create a new design
      * if the user doesn't already have one.
      *
      * @param array $args $_REQUEST data (unused)
-     *
-     * @return void
      */
     protected function handle()
     {
         parent::handle();
 
-        $validhex = preg_match('/^[a-f0-9]{6}$/i',$this->backgroundcolor);
+        $validhex = preg_match('/^[a-f0-9]{6}$/i', $this->backgroundcolor);
         if ($validhex === false || $validhex == 0) {
             $this->clientError(_('Not a valid hex color.'), 400);
         }
 
-		Profile_prefs::setData($this->scoped, 'theme', 'backgroundcolor', $this->backgroundcolor);
+        Profile_prefs::setData($this->scoped, 'theme', 'backgroundcolor', $this->backgroundcolor);
 
-		// unset background-image
-		Profile_prefs::setData($this->scoped, 'qvitter', 'background_image', '');
+        // unset background-image
+        Profile_prefs::setData($this->scoped, 'qvitter', 'background_image', '');
 
         $twitter_user = $this->twitterUserArray($this->scoped, true);
 
@@ -89,6 +90,4 @@ class ApiQvitterUpdateBackgroundColorAction extends ApiAuthAction
         $this->showJsonObjects($twitter_user);
         $this->endDocument('json');
     }
-
-
 }

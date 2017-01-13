@@ -37,7 +37,6 @@
   ·                                                                             ·
   · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · */
 
-
 if (!defined('GNUSOCIAL')) {
     exit(1);
 }
@@ -47,17 +46,17 @@ class ApiUpdateBackgroundImageAction extends ApiAuthAction
     protected $needPost = true;
 
     /**
-     * Take arguments for running
+     * Take arguments for running.
      *
      * @param array $args $_REQUEST args
      *
-     * @return boolean success flag
+     * @return bool success flag
      */
-    protected function prepare(array $args=array())
+    protected function prepare(array $args = array())
     {
         parent::prepare($args);
 
-        $this->format = 'json';        
+        $this->format = 'json';
 
         $this->user = $this->auth_user;
 
@@ -65,7 +64,7 @@ class ApiUpdateBackgroundImageAction extends ApiAuthAction
         $this->cropH = $this->trimmed('cropW'); // note W, we want a square
         $this->cropX = $this->trimmed('cropX');
         $this->cropY = $this->trimmed('cropY');
-        $this->img   = $this->trimmed('img');
+        $this->img = $this->trimmed('img');
 
         $this->img = str_replace('data:image/jpeg;base64,', '', $this->img);
         $this->img = str_replace('data:image/png;base64,', '', $this->img);
@@ -80,9 +79,7 @@ class ApiUpdateBackgroundImageAction extends ApiAuthAction
     }
 
     /**
-     * Handle the request
-     *
-     * @return void
+     * Handle the request.
      */
     protected function handle()
     {
@@ -113,10 +110,10 @@ class ApiUpdateBackgroundImageAction extends ApiAuthAction
             'bg-'.common_timestamp()
         );
 
-        $imagefile->resizeTo(Avatar::path($filename), array('width'=>1280, 'height'=>1280, 'x'=>$this->cropX, 'y'=>$this->cropY, 'w'=>$this->cropW, 'h'=>$this->cropH));
-		$result['url'] = Avatar::url($filename);
+        $imagefile->resizeTo(Avatar::path($filename), array('width' => 1280, 'height' => 1280, 'x' => $this->cropX, 'y' => $this->cropY, 'w' => $this->cropW, 'h' => $this->cropH));
+        $result['url'] = Avatar::url($filename);
 
-		Profile_prefs::setData($this->scoped, 'qvitter', 'background_image', $result['url']);
+        Profile_prefs::setData($this->scoped, 'qvitter', 'background_image', $result['url']);
 
         $this->initDocument('json');
         $this->showJsonObjects($result);

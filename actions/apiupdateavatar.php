@@ -37,7 +37,6 @@
   ·                                                                             ·
   · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · */
 
-
 if (!defined('GNUSOCIAL')) {
     exit(1);
 }
@@ -47,17 +46,17 @@ class ApiUpdateAvatarAction extends ApiAuthAction
     protected $needPost = true;
 
     /**
-     * Take arguments for running
+     * Take arguments for running.
      *
      * @param array $args $_REQUEST args
      *
-     * @return boolean success flag
+     * @return bool success flag
      */
-    protected function prepare(array $args=array())
+    protected function prepare(array $args = array())
     {
         parent::prepare($args);
 
-        $this->format = 'json';        
+        $this->format = 'json';
 
         $this->user = $this->auth_user;
 
@@ -65,7 +64,7 @@ class ApiUpdateAvatarAction extends ApiAuthAction
         $this->cropH = $this->trimmed('cropH');
         $this->cropX = $this->trimmed('cropX');
         $this->cropY = $this->trimmed('cropY');
-        $this->img   = $this->trimmed('img');
+        $this->img = $this->trimmed('img');
 
         $this->img = str_replace('data:image/jpeg;base64,', '', $this->img);
         $this->img = str_replace('data:image/png;base64,', '', $this->img);
@@ -80,9 +79,7 @@ class ApiUpdateAvatarAction extends ApiAuthAction
     }
 
     /**
-     * Handle the request
-     *
-     * @return void
+     * Handle the request.
      */
     protected function handle()
     {
@@ -111,7 +108,7 @@ class ApiUpdateAvatarAction extends ApiAuthAction
             null,
             common_timestamp()
         );
-        $imagefile->resizeTo(Avatar::path($filename), array('width'=>$this->cropW, 'height'=>$this->cropH, 'x'=>$this->cropX, 'y'=>$this->cropY, 'w'=>$this->cropW, 'h'=>$this->cropH));
+        $imagefile->resizeTo(Avatar::path($filename), array('width' => $this->cropW, 'height' => $this->cropH, 'x' => $this->cropX, 'y' => $this->cropY, 'w' => $this->cropW, 'h' => $this->cropH));
 
         $this->scoped->setOriginal($filename);
 
@@ -119,5 +116,5 @@ class ApiUpdateAvatarAction extends ApiAuthAction
         $this->initDocument('json');
         $this->showJsonObjects($twitter_user);
         $this->endDocument('json');
-	}
+    }
 }

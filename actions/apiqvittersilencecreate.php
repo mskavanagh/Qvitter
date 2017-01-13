@@ -38,38 +38,36 @@
   ·                                                                             ·
   · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · */
 
-
-if (!defined('GNUSOCIAL')) { exit(1); }
+if (!defined('GNUSOCIAL')) {
+    exit(1);
+}
 
 class ApiQvitterSilenceCreateAction extends ApiAuthAction
 {
-
     protected $needPost = true;
 
     /**
-     * Take arguments for running
+     * Take arguments for running.
      *
      * @param array $args $_REQUEST args
      *
-     * @return boolean success flag
+     * @return bool success flag
      */
-    protected function prepare(array $args=array())
+    protected function prepare(array $args = array())
     {
         parent::prepare($args);
 
         $this->format = 'json';
 
-        $this->other  = $this->getTargetProfile($this->arg('id'));
+        $this->other = $this->getTargetProfile($this->arg('id'));
 
         return true;
     }
 
     /**
-     * Handle the request
+     * Handle the request.
      *
      * @param array $args $_REQUEST data (unused)
-     *
-     * @return void
      */
     protected function handle()
     {
@@ -80,7 +78,7 @@ class ApiQvitterSilenceCreateAction extends ApiAuthAction
         }
 
         if ($this->scoped->id == $this->other->id) {
-            $this->clientError(_("You cannot silence yourself!"), 403);
+            $this->clientError(_('You cannot silence yourself!'), 403);
         }
 
         try {

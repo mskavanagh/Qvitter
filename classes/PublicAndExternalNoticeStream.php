@@ -34,16 +34,14 @@
   ·                                                                             ·
   · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · */
 
-
 if (!defined('STATUSNET')) {
     exit(1);
 }
 
 class PublicAndExternalNoticeStream extends ScopingNoticeStream
 {
-    function __construct($profile=null)
+    public function __construct($profile = null)
     {
-
         parent::__construct(new CachingNoticeStream(new RawPublicAndExternalNoticeStream(),
                                                     'publicAndExternal'),
                             $profile);
@@ -52,9 +50,8 @@ class PublicAndExternalNoticeStream extends ScopingNoticeStream
 
 class RawPublicAndExternalNoticeStream extends NoticeStream
 {
-    function getNoticeIds($offset, $limit, $since_id, $max_id)
+    public function getNoticeIds($offset, $limit, $since_id, $max_id)
     {
-
         $notice = new Notice();
 
         $notice->selectAdd();
@@ -66,28 +63,27 @@ class RawPublicAndExternalNoticeStream extends NoticeStream
             $notice->limit($offset, $limit);
         }
 
-
-		$notice->whereAdd('is_local !='. Notice::LOCAL_NONPUBLIC);
-		$notice->whereAdd('is_local !='. Notice::GATEWAY);
-		$notice->whereAdd('repeat_of IS NULL');
+        $notice->whereAdd('is_local !='.Notice::LOCAL_NONPUBLIC);
+        $notice->whereAdd('is_local !='.Notice::GATEWAY);
+        $notice->whereAdd('repeat_of IS NULL');
 
         // don't show sandboxed users in public timelines, unless you are a mod
         $hide_sandboxed = true;
         $cur_profile = Profile::current();
-        if($cur_profile instanceof Profile) {
-        	if($cur_profile->hasRight(Right::REVIEWSPAM)) {
-        		$hide_sandboxed = false;
-        	}
+        if ($cur_profile instanceof Profile) {
+            if ($cur_profile->hasRight(Right::REVIEWSPAM)) {
+                $hide_sandboxed = false;
+            }
         }
-        if($hide_sandboxed) {
-        	$notice->whereAdd('profile_id NOT IN (SELECT profile_id FROM profile_role WHERE role =\''.Profile_role::SANDBOXED.'\')');
+        if ($hide_sandboxed) {
+            $notice->whereAdd('profile_id NOT IN (SELECT profile_id FROM profile_role WHERE role =\''.Profile_role::SANDBOXED.'\')');
         }
 
-        if(!empty($max_id) && is_numeric($max_id)) {
+        if (!empty($max_id) && is_numeric($max_id)) {
             $notice->whereAdd('id < '.$max_id);
         }
 
-        if(!empty($since_id) && is_numeric($since_id)) {
+        if (!empty($since_id) && is_numeric($since_id)) {
             $notice->whereAdd('id > '.$since_id);
         }
 
@@ -100,7 +96,7 @@ class RawPublicAndExternalNoticeStream extends NoticeStream
         }
 
         $notice->free();
-        $notice = NULL;
+        $notice = null;
 
         return $ids;
     }

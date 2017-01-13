@@ -42,25 +42,24 @@ if (!defined('STATUSNET')) {
     exit(1);
 }
 
-
 class ApiQvitterBlocksAction extends ApiPrivateAuthAction
 {
-    var $profiles = null;
+    public $profiles = null;
 
     /**
-     * Take arguments for running
+     * Take arguments for running.
      *
      * @param array $args $_REQUEST args
      *
-     * @return boolean success flag
+     * @return bool success flag
      */
-    protected function prepare(array $args=array())
+    protected function prepare(array $args = array())
     {
         parent::prepare($args);
 
         $this->format = 'json';
 
-        $this->count    =  (int)$this->arg('count', 100);
+        $this->count = (int) $this->arg('count', 100);
 
         $arg_user = $this->getTargetUser($this->arg('id'));
 
@@ -69,9 +68,8 @@ class ApiQvitterBlocksAction extends ApiPrivateAuthAction
         if (!($this->target instanceof Profile)) {
             // TRANS: Client error displayed when requesting a list of followers for a non-existing user.
             $this->clientError(_('No such user.'), 404);
-        } else if($this->auth_user->id != $arg_user->id) {
+        } elseif ($this->auth_user->id != $arg_user->id) {
             $this->clientError(_('You are only allowed to view your own blocks.'), 403);
-
         }
 
         $this->profiles = $this->getProfiles();
@@ -80,47 +78,45 @@ class ApiQvitterBlocksAction extends ApiPrivateAuthAction
     }
 
     /**
-     * Handle the request
+     * Handle the request.
      *
      * Show the profiles
-     *
-     * @return void
      */
     protected function handle()
     {
         parent::handle();
 
         $this->initDocument('json');
-        print json_encode($this->showProfiles());
+        echo json_encode($this->showProfiles());
         $this->endDocument('json');
     }
 
     /**
-     * Get the user's blocked profiles
+     * Get the user's blocked profiles.
      *
      * @return array Profiles
      */
     protected function getProfiles()
     {
         $offset = ($this->page - 1) * $this->count;
-        $limit =  $this->count + 1;
+        $limit = $this->count + 1;
 
         $blocks = null;
 
-		$blocks = QvitterBlocked::getBlocked($this->target->id, $offset, $limit);
+        $blocks = QvitterBlocked::getBlocked($this->target->id, $offset, $limit);
 
-        if($blocks) {
+        if ($blocks) {
             $profiles = array();
 
             while ($blocks->fetch()) {
-                $this_profile_block = clone($blocks);
+                $this_profile_block = clone $blocks;
                 $profiles[] = $this->getTargetProfile($this_profile_block->blocked);
             }
-        return $profiles;
+
+            return $profiles;
         } else {
             return false;
         }
-
     }
 
     /**
@@ -128,9 +124,9 @@ class ApiQvitterBlocksAction extends ApiPrivateAuthAction
      *
      * @param array $args other arguments
      *
-     * @return boolean true
+     * @return bool true
      */
-    function isReadOnly($args)
+    public function isReadOnly($args)
     {
         return true;
     }
@@ -140,7 +136,7 @@ class ApiQvitterBlocksAction extends ApiPrivateAuthAction
      *
      * @return string datestamp of the latest profile in the stream
      */
-    function lastModified()
+    public function lastModified()
     {
         if (!empty($this->profiles) && (count($this->profiles) > 0)) {
             return strtotime($this->profiles[0]->modified);
@@ -150,7 +146,7 @@ class ApiQvitterBlocksAction extends ApiPrivateAuthAction
     }
 
     /**
-     * An entity tag for this action
+     * An entity tag for this action.
      *
      * Returns an Etag based on the action name, language, user ID, and
      * timestamps of the first and last profiles in the subscriptions list
@@ -159,13 +155,12 @@ class ApiQvitterBlocksAction extends ApiPrivateAuthAction
      *
      * @return string etag
      */
-    function etag()
+    public function etag()
     {
         if (!empty($this->profiles) && (count($this->profiles) > 0)) {
-
             $last = count($this->profiles) - 1;
 
-            return '"' . implode(
+            return '"'.implode(
                 ':',
                 array($this->arg('action'),
                       common_user_cache_hash($this->auth_user),
@@ -173,25 +168,24 @@ class ApiQvitterBlocksAction extends ApiPrivateAuthAction
                       $this->target->id,
                       'Profiles',
                       strtotime($this->profiles[0]->modified),
-                      strtotime($this->profiles[$last]->modified))
+                      strtotime($this->profiles[$last]->modified), )
             )
-            . '"';
+            .'"';
         }
 
         return null;
     }
 
     /**
-     * Show the profiles as Twitter-style useres and statuses
-     *
-     * @return void
+     * Show the profiles as Twitter-style useres and statuses.
      */
-    function showProfiles()
+    public function showProfiles()
     {
-		$user_arrays = array();
-		foreach ($this->profiles as $profile) {
-			$user_arrays[] = $this->twitterUserArray($profile, false );
-		}
-		return $user_arrays;
+        $user_arrays = array();
+        foreach ($this->profiles as $profile) {
+            $user_arrays[] = $this->twitterUserArray($profile, false);
+        }
+
+        return $user_arrays;
     }
 }

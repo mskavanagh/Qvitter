@@ -39,19 +39,18 @@ if (!defined('STATUSNET')) {
 
 class ApiQvitterNotificationsAction extends ApiPrivateAuthAction
 {
-    var $notifications = array();
-    var $notices = null;
-    var $profiles = null;
+    public $notifications = array();
+    public $notices = null;
+    public $profiles = null;
 
     /**
-     * Take arguments for running
+     * Take arguments for running.
      *
      * @param array $args $_REQUEST args
      *
-     * @return boolean success flag
-     *
+     * @return bool success flag
      */
-    protected function prepare(array $args=array())
+    protected function prepare(array $args = array())
     {
         parent::prepare($args);
 
@@ -63,13 +62,11 @@ class ApiQvitterNotificationsAction extends ApiPrivateAuthAction
     }
 
     /**
-     * Handle the request
+     * Handle the request.
      *
      * Just show the notices
      *
      * @param array $args $_REQUEST data (unused)
-     *
-     * @return void
      */
     protected function handle()
     {
@@ -78,11 +75,9 @@ class ApiQvitterNotificationsAction extends ApiPrivateAuthAction
     }
 
     /**
-     * Show the timeline of notices
-     *
-     * @return void
+     * Show the timeline of notices.
      */
-    function showTimeline()
+    public function showTimeline()
     {
         $notice = null;
 
@@ -92,18 +87,17 @@ class ApiQvitterNotificationsAction extends ApiPrivateAuthAction
             // all but follow has an notice
             if ($notification->ntype != 'follow') {
                 // we need a notice id here, skip this notification if notice id is null
-                if($notification->notice_id === null) {
+                if ($notification->notice_id === null) {
                     continue;
                 } else {
                     $notice_object = Notice::getKV($notification->notice_id);
-                    if($notice_object instanceof Notice) {
+                    if ($notice_object instanceof Notice) {
                         $notice = self::twitterSimpleStatusArray($notice_object);
                     } else {
                         // if the referenced notice is missing, delete this corrupt notification!
                         $notification->delete();
                         continue;
                     }
-
                 }
             }
 
@@ -112,12 +106,12 @@ class ApiQvitterNotificationsAction extends ApiPrivateAuthAction
             // a user might have deleted their profile, don't show these notifications
             if ($from_profile instanceof Profile) {
                 $notifications_populated[] = array(
-                                            'id'=> $notification->id,
-                                            'from_profile'=> self::twitterUserArray($from_profile),
-                                            'ntype'=> $notification->ntype,
-                                            'notice'=> $notice,
-                                            'created_at'=>self::dateTwitter($notification->created),
-                                            'is_seen'=>$notification->is_seen
+                                            'id' => $notification->id,
+                                            'from_profile' => self::twitterUserArray($from_profile),
+                                            'ntype' => $notification->ntype,
+                                            'notice' => $notice,
+                                            'created_at' => self::dateTwitter($notification->created),
+                                            'is_seen' => $notification->is_seen,
                                             );
             } else {
                 // if the referenced from_profile is missing, delete this corrupt notification!
@@ -125,8 +119,8 @@ class ApiQvitterNotificationsAction extends ApiPrivateAuthAction
             }
 
             // mark as seen
-            if($notification->is_seen == 0) {
-                $orig = clone($notification);
+            if ($notification->is_seen == 0) {
+                $orig = clone $notification;
                 $notification->is_seen = 1;
                 $notification->update($orig);
             }
@@ -138,19 +132,19 @@ class ApiQvitterNotificationsAction extends ApiPrivateAuthAction
     }
 
     /**
-     * Get notices
+     * Get notices.
      *
      * @return array notices
      */
-    function getNotifications()
+    public function getNotifications()
     {
         $notices = array();
 
         $profile = ($this->auth_user) ? $this->auth_user->getProfile() : null;
 
-		if(!$profile instanceof Profile) {
-			return false;
-			}
+        if (!$profile instanceof Profile) {
+            return false;
+        }
 
         $stream = new NotificationStream($profile);
 
@@ -164,15 +158,14 @@ class ApiQvitterNotificationsAction extends ApiPrivateAuthAction
         return $notifications;
     }
 
-
     /**
      * Is this action read only?
      *
      * @param array $args other arguments
      *
-     * @return boolean true
+     * @return bool true
      */
-    function isReadOnly($args)
+    public function isReadOnly($args)
     {
         return true;
     }
@@ -182,7 +175,7 @@ class ApiQvitterNotificationsAction extends ApiPrivateAuthAction
      *
      * @return string datestamp of the latest notice in the stream
      */
-    function lastModified()
+    public function lastModified()
     {
         if (!empty($this->notifications) && (count($this->notifications) > 0)) {
             return strtotime($this->notifications[0]->created);
@@ -192,31 +185,29 @@ class ApiQvitterNotificationsAction extends ApiPrivateAuthAction
     }
 
     /**
-     * An entity tag for this stream
+     * An entity tag for this stream.
      *
      * Returns an Etag based on the action name, language, and
      * timestamps of the first and last notice in the timeline
      *
      * @return string etag
      */
-    function etag()
+    public function etag()
     {
         if (!empty($this->notifications) && (count($this->notifications) > 0)) {
-
             $last = count($this->notifications) - 1;
 
-            return '"' . implode(
+            return '"'.implode(
                 ':',
                 array($this->arg('action'),
                       common_user_cache_hash($this->auth_user),
                       common_language(),
                       strtotime($this->notifications[0]->created),
-                      strtotime($this->notifications[$last]->created))
+                      strtotime($this->notifications[$last]->created), )
             )
-            . '"';
+            .'"';
         }
 
         return null;
     }
-
 }

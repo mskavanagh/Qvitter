@@ -38,29 +38,27 @@
   ·                                                                             ·
   · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · */
 
-
-if (!defined('GNUSOCIAL')) { exit(1); }
+if (!defined('GNUSOCIAL')) {
+    exit(1);
+}
 
 class QvitterMuted
 {
-
     public static function getMutedProfiles($profile_id, $offset = 0, $limit = PROFILES_PER_PAGE)
     {
-
         $ids = self::getMutedIDs($profile_id, $offset, $limit);
 
-        if(count($ids) === 0) {
+        if (count($ids) === 0) {
             return false;
         } else {
             $profiles = array();
-            foreach($ids as $id) {
+            foreach ($ids as $id) {
                 try {
                     $profiles[] = Profile::getByID($id);
                 } catch (Exception $e) {
-                    //
                 }
             }
-            if(count($profiles) === 0) {
+            if (count($profiles) === 0) {
                 return false;
             } else {
                 return $profiles;
@@ -68,17 +66,15 @@ class QvitterMuted
         }
     }
 
-
     public static function getMutedIDs($profile_id, $offset, $limit)
     {
-
-        if(!is_numeric($profile_id)) {
+        if (!is_numeric($profile_id)) {
             return false;
         }
 
         $mutes = new Profile_prefs();
         $mutes->selectAdd('topic');
-        $mutes->whereAdd("profile_id = ".$profile_id);
+        $mutes->whereAdd('profile_id = '.$profile_id);
         $mutes->whereAdd("namespace = 'qvitter'");
         $mutes->whereAdd("data = '1'");
         $mutes->whereAdd("topic LIKE 'mute:%'");
@@ -90,16 +86,14 @@ class QvitterMuted
         }
 
         $topics = $mutes->fetchAll('topic');
-        $ids = array();
-        foreach($topics as $topic) {
-            $topic_exploded = explode(':',$topic);
-            if(is_numeric($topic_exploded[1])) {
+        $ids  = array();
+        foreach ($topics as $topic) {
+            $topic_exploded = explode(':', $topic);
+            if (is_numeric($topic_exploded[1])) {
                 $ids[] = $topic_exploded[1];
             }
         }
 
         return $ids;
     }
-
-
 }

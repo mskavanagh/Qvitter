@@ -1,6 +1,6 @@
 <?php
 /**
- * StatusNet, the distributed open-source microblogging tool
+ * StatusNet, the distributed open-source microblogging tool.
  *
  * Show the friends timeline, witch replies to non-friends hidden
  *
@@ -20,7 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category  API
- * @package   StatusNet
+ *
  * @author    Craig Andrews <candrews@integralblue.com>
  * @author    Evan Prodromou <evan@status.net>
  * @author    Jeffery To <jeffery.to@gmail.com>
@@ -29,9 +29,10 @@
  * @author    Robin Millette <robin@millette.info>
  * @author    Zach Copley <zach@status.net>
  * @author    Hannes Mannerheim <h@nnesmannerhe.im>
- * @copyright 2009-2010 StatusNet, Inc.
+ * @copyright 2009-2010 StatusNet, Inc
  * @copyright 2009 Free Software Foundation, Inc http://www.fsf.org
  * @license   http://www.fsf.org/licensing/licenses/agpl-3.0.html GNU Affero General Public License version 3.0
+ *
  * @link      http://status.net/
  */
 
@@ -139,7 +140,7 @@ if (!defined('STATUSNET')) {
  * This is the equivalent of 'You and friends' page accessed via Web.
  *
  * @category API
- * @package  StatusNet
+ *
  * @author   Craig Andrews <candrews@integralblue.com>
  * @author   Evan Prodromou <evan@status.net>
  * @author   Jeffery To <jeffery.to@gmail.com>
@@ -148,21 +149,21 @@ if (!defined('STATUSNET')) {
  * @author   Robin Millette <robin@millette.info>
  * @author   Zach Copley <zach@status.net>
  * @license  http://www.fsf.org/licensing/licenses/agpl-3.0.html GNU Affero General Public License version 3.0
+ *
  * @link     http://status.net/
  */
 class ApiTimelineFriendsHiddenRepliesAction extends ApiBareAuthAction
 {
-    var $notices  = null;
+    public $notices = null;
 
     /**
-     * Take arguments for running
+     * Take arguments for running.
      *
      * @param array $args $_REQUEST args
      *
-     * @return boolean success flag
-     *
+     * @return bool success flag
      */
-    protected function prepare(array $args=array())
+    protected function prepare(array $args = array())
     {
         parent::prepare($args);
         $this->target = $this->getTargetProfile($this->arg('id'));
@@ -178,11 +179,9 @@ class ApiTimelineFriendsHiddenRepliesAction extends ApiBareAuthAction
     }
 
     /**
-     * Handle the request
+     * Handle the request.
      *
      * Just show the notices
-     *
-     * @return void
      */
     protected function handle()
     {
@@ -191,18 +190,16 @@ class ApiTimelineFriendsHiddenRepliesAction extends ApiBareAuthAction
     }
 
     /**
-     * Show the timeline of notices
-     *
-     * @return void
+     * Show the timeline of notices.
      */
-    function showTimeline()
+    public function showTimeline()
     {
-        $sitename   = common_config('site', 'name');
+        $sitename = common_config('site', 'name');
         // TRANS: Title of API timeline for a user and friends.
         // TRANS: %s is a username.
-        $title      = sprintf(_("%s and friends"), $this->target->nickname);
+        $title = sprintf(_('%s and friends'), $this->target->nickname);
         $taguribase = TagURI::base();
-        $id         = "tag:$taguribase:FriendsTimelineHiddenReplies:" . $this->target->id;
+        $id = "tag:$taguribase:FriendsTimelineHiddenReplies:".$this->target->id;
 
         $subtitle = sprintf(
             // TRANS: Message is used as a subtitle. %1$s is a user nickname, %2$s is a site name.
@@ -216,7 +213,7 @@ class ApiTimelineFriendsHiddenRepliesAction extends ApiBareAuthAction
                     array('nickname' => $this->target->nickname));
         $self = $this->getSelfUri();
 
-        switch($this->format) {
+        switch ($this->format) {
         case 'xml':
             $this->showXmlTimeline($this->notices);
             break;
@@ -254,7 +251,7 @@ class ApiTimelineFriendsHiddenRepliesAction extends ApiBareAuthAction
             $this->showJsonTimeline($this->notices);
             break;
         case 'as':
-            header('Content-Type: ' . ActivityStreamJSONDocument::CONTENT_TYPE);
+            header('Content-Type: '.ActivityStreamJSONDocument::CONTENT_TYPE);
             $doc = new ActivityStreamJSONDocument($this->auth_user, $title);
             $doc->addLink($link, 'alternate', 'text/html');
             $doc->addItemsFromNotices($this->notices);
@@ -267,23 +264,23 @@ class ApiTimelineFriendsHiddenRepliesAction extends ApiBareAuthAction
     }
 
     /**
-     * Get notices
+     * Get notices.
      *
      * @return array notices
      */
-    function getNotices()
+    public function getNotices()
     {
         $notices = array();
 
         $stream = new InboxNoticeStreamHiddenReplies($this->target, $this->scoped);
 
-        $notice = $stream->getNotices(($this->page-1) * $this->count,
+        $notice = $stream->getNotices(($this->page - 1) * $this->count,
                                       $this->count,
                                       $this->since_id,
                                       $this->max_id);
 
         while ($notice->fetch()) {
-            $notices[] = clone($notice);
+            $notices[] = clone $notice;
         }
 
         return $notices;
@@ -294,9 +291,9 @@ class ApiTimelineFriendsHiddenRepliesAction extends ApiBareAuthAction
      *
      * @param array $args other arguments
      *
-     * @return boolean true
+     * @return bool true
      */
-    function isReadOnly($args)
+    public function isReadOnly($args)
     {
         return true;
     }
@@ -306,7 +303,7 @@ class ApiTimelineFriendsHiddenRepliesAction extends ApiBareAuthAction
      *
      * @return string datestamp of the latest notice in the stream
      */
-    function lastModified()
+    public function lastModified()
     {
         if (!empty($this->notices) && (count($this->notices) > 0)) {
             return strtotime($this->notices[0]->created);
@@ -316,56 +313,56 @@ class ApiTimelineFriendsHiddenRepliesAction extends ApiBareAuthAction
     }
 
     /**
-     * An entity tag for this stream
+     * An entity tag for this stream.
      *
      * Returns an Etag based on the action name, language, user ID, and
      * timestamps of the first and last notice in the timeline
      *
      * @return string etag
      */
-    function etag()
+    public function etag()
     {
         if (!empty($this->notices) && (count($this->notices) > 0)) {
             $last = count($this->notices) - 1;
 
-            return '"' . implode(
+            return '"'.implode(
                                  ':',
                                  array($this->arg('action'),
                                        common_user_cache_hash($this->auth_user),
                                        common_language(),
                                        $this->target->id,
                                        strtotime($this->notices[0]->created),
-                                       strtotime($this->notices[$last]->created))
+                                       strtotime($this->notices[$last]->created), )
                                  )
-              . '"';
+              .'"';
         }
 
         return null;
     }
 }
 
-
 /**
- * Stream of notices for a profile's "all" feed, with hidden replies to non-friends
+ * Stream of notices for a profile's "all" feed, with hidden replies to non-friends.
  *
  * @category  General
- * @package   StatusNet
+ *
  * @author    Evan Prodromou <evan@status.net>
  * @author    Mikael Nordfeldth <mmn@hethane.se>
- * @copyright 2011 StatusNet, Inc.
- * @copyright 2014 Free Software Foundation, Inc.
+ * @copyright 2011 StatusNet, Inc
+ * @copyright 2014 Free Software Foundation, Inc
  * @license   http://www.fsf.org/licensing/licenses/agpl-3.0.html AGPL 3.0
+ *
  * @link      http://status.net/
  */
 class InboxNoticeStreamHiddenReplies extends ScopingNoticeStream
 {
     /**
-     * Constructor
+     * Constructor.
      *
      * @param Profile $target Profile to get a stream for
      * @param Profile $scoped Currently scoped profile (if null, it is fetched)
      */
-    function __construct(Profile $target, Profile $scoped=null)
+    public function __construct(Profile $target, Profile $scoped = null)
     {
         if ($scoped === null) {
             $scoped = Profile::current();
@@ -376,44 +373,45 @@ class InboxNoticeStreamHiddenReplies extends ScopingNoticeStream
 }
 
 /**
- * Raw stream of notices for the target's inbox, with hidden replies to non-friends
+ * Raw stream of notices for the target's inbox, with hidden replies to non-friends.
  *
  * @category  General
- * @package   StatusNet
+ *
  * @author    Evan Prodromou <evan@status.net>
- * @copyright 2011 StatusNet, Inc.
+ * @copyright 2011 StatusNet, Inc
  * @license   http://www.fsf.org/licensing/licenses/agpl-3.0.html AGPL 3.0
+ *
  * @link      http://status.net/
  */
 class RawInboxNoticeStreamHiddenReplies extends NoticeStream
 {
-    protected $target  = null;
+    protected $target = null;
     protected $inbox = null;
 
     protected $selectVerbs = array();
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param Profile $target Profile to get a stream for
      */
-    function __construct(Profile $target)
+    public function __construct(Profile $target)
     {
         parent::__construct();
-        $this->target  = $target;
+        $this->target = $target;
     }
 
     /**
-     * Get IDs in a range
+     * Get IDs in a range.
      *
      * @param int $offset   Offset from start
      * @param int $limit    Limit of number to get
      * @param int $since_id Since this notice
      * @param int $max_id   Before this notice
      *
-     * @return Array IDs found
+     * @return array IDs found
      */
-    function getNoticeIds($offset, $limit, $since_id, $max_id)
+    public function getNoticeIds($offset, $limit, $since_id, $max_id)
     {
         $notice = new Notice();
         $notice->selectAdd();
@@ -424,26 +422,26 @@ class RawInboxNoticeStreamHiddenReplies extends NoticeStream
         $notice->whereAdd(
 
                         // notices from profiles we subscribe to
-                sprintf('(  notice.profile_id IN (SELECT subscribed FROM subscription WHERE subscriber=%1$d) ' .
+                sprintf('(  notice.profile_id IN (SELECT subscribed FROM subscription WHERE subscriber=%1$d) '.
 
                         // and in groups we're members of
-                        'OR notice.id IN (SELECT notice_id FROM group_inbox WHERE group_id IN (SELECT group_id FROM group_member WHERE profile_id=%1$d))' .
+                        'OR notice.id IN (SELECT notice_id FROM group_inbox WHERE group_id IN (SELECT group_id FROM group_member WHERE profile_id=%1$d))'.
 
                         // and from attention table (i, hannes, don't know whats in that though...)
-                        'OR notice.id IN (SELECT notice_id FROM attention WHERE profile_id=%1$d) ) ' .
+                        'OR notice.id IN (SELECT notice_id FROM attention WHERE profile_id=%1$d) ) '.
 
                         // all of the notices matching the above must also be either
                         // 1) a non-reply
-                        'AND (notice.reply_to IS NULL ' .
+                        'AND (notice.reply_to IS NULL '.
 
                             // 2) OR a reply to myself
-                            'OR notice.profile_id=%1$d ' .
+                            'OR notice.profile_id=%1$d '.
 
                             // 3) OR a reply to someone i'm subscibing to
                             'OR notice.reply_to IN (SELECT id FROM notice as noticereplies WHERE noticereplies.profile_id IN (SELECT subscribed FROM subscription WHERE subscriber=%1$d))) '.
 
                         // lastly: include all notices mentioning me
-                        'OR (notice.id IN (SELECT notice_id FROM reply WHERE profile_id=%1$d) ' .
+                        'OR (notice.id IN (SELECT notice_id FROM reply WHERE profile_id=%1$d) '.
 
                             // but not if they are from someone i don't subscribe to
                             'AND notice.profile_id IN (SELECT subscribed FROM subscription WHERE subscriber=%1$d))',

@@ -1,6 +1,6 @@
 <?php
 /**
- * StatusNet, the distributed open-source microblogging tool
+ * StatusNet, the distributed open-source microblogging tool.
  *
  * Test if supplied user credentials are valid.
  *
@@ -20,15 +20,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category  API
- * @package   StatusNet
+ *
  * @author    Evan Prodromou <evan@status.net>
  * @author    Robin Millette <robin@millette.info>
  * @author    Zach Copley <zach@status.net>
- * @copyright 2009 StatusNet, Inc.
+ * @copyright 2009 StatusNet, Inc
  * @license   http://www.fsf.org/licensing/licenses/agpl-3.0.html GNU Affero General Public License version 3.0
+ *
  * @link      http://status.net/
  */
-
 if (!defined('STATUSNET')) {
     exit(1);
 }
@@ -39,23 +39,22 @@ if (!defined('STATUSNET')) {
  * returns a 401 status code and an error message if not.
  *
  * @category API
- * @package  StatusNet
+ *
  * @author   Evan Prodromou <evan@status.net>
  * @author   Robin Millette <robin@millette.info>
  * @author   Zach Copley <zach@status.net>
  * @license  http://www.fsf.org/licensing/licenses/agpl-3.0.html GNU Affero General Public License version 3.0
+ *
  * @link     http://status.net/
  */
 class ApiQvitterCheckLoginAction extends ApiAction
 {
     /**
-     * Handle the request
+     * Handle the request.
      *
      * Check whether the credentials are valid and output the result
      *
      * @param array $args $_REQUEST data (unused)
-     *
-     * @return void
      */
     protected function handle()
     {
@@ -65,18 +64,19 @@ class ApiQvitterCheckLoginAction extends ApiAction
 
         if ($_SERVER['REQUEST_METHOD'] != 'POST') {
             $this->clientError(_('This method requires a POST.'), 400);
+
             return;
         }
 
-		$user = common_check_user($this->arg('username'),
-								  $this->arg('password'));
+        $user = common_check_user($this->arg('username'),
+                                  $this->arg('password'));
 
-		if(!$user instanceof User) {
-			$this->clientError(_('Incorrect credentials.'), 401);
-			}
+        if (!$user instanceof User) {
+            $this->clientError(_('Incorrect credentials.'), 401);
+        }
 
         // silenced?
-        if($user->isSilenced()) {
+        if ($user->isSilenced()) {
             $this->clientError(_('User '.json_encode($user->isSilenced()).' is silenced.'), 403);
         }
 
@@ -86,9 +86,9 @@ class ApiQvitterCheckLoginAction extends ApiAction
             $this->clientError(_('User got no profile.'), 400);
         }
 
-		$this->initDocument('json');
-		$this->showJsonObjects($this->twitterUserArray($profile));
-		$this->endDocument('json');
+        $this->initDocument('json');
+        $this->showJsonObjects($this->twitterUserArray($profile));
+        $this->endDocument('json');
     }
 
     /**
@@ -96,9 +96,9 @@ class ApiQvitterCheckLoginAction extends ApiAction
      *
      * @param array $args other arguments
      *
-     * @return boolean true
+     * @return bool true
      */
-    function isReadOnly($args)
+    public function isReadOnly($args)
     {
         return true;
     }

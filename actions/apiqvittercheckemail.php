@@ -1,7 +1,7 @@
 <?php
 
 /**
- * StatusNet, the distributed open-source microblogging tool
+ * StatusNet, the distributed open-source microblogging tool.
  *
  * Check email
  *
@@ -23,19 +23,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category  API
- * @package   GNUsocial
+ *
  * @author    Hannes Mannerheim <h@nnesmannerhe.im>
  * @license   http://www.fsf.org/licensing/licenses/agpl-3.0.html GNU Affero General Public License version 3.0
+ *
  * @link      http://www.gnu.org/software/social/
  */
-
-if (!defined('GNUSOCIAL')) { exit(1); }
+if (!defined('GNUSOCIAL')) {
+    exit(1);
+}
 
 class ApiQvitterCheckEmailAction extends ApiAction
 {
-    var $email = null;
+    public $email = null;
 
-    protected function prepare(array $args=array())
+    protected function prepare(array $args = array())
     {
         parent::prepare($args);
 
@@ -43,7 +45,7 @@ class ApiQvitterCheckEmailAction extends ApiAction
 
         $this->email = $this->trimmed('email');
 
-        if(!Validate::email($this->email, common_config('email', 'check_domain'))) {
+        if (!Validate::email($this->email, common_config('email', 'check_domain'))) {
             $this->clientError('Not a valid email address.', 400);
         }
 
@@ -58,7 +60,7 @@ class ApiQvitterCheckEmailAction extends ApiAction
     {
         parent::handle();
 
-        if($this->emailExists($this->email)) {
+        if ($this->emailExists($this->email)) {
             $email_exists = 1;
         } else {
             $email_exists = 0;
@@ -76,11 +78,12 @@ class ApiQvitterCheckEmailAction extends ApiAction
      *
      * @param string $email email address to check
      *
-     * @return boolean true if the address already exists
+     * @return bool true if the address already exists
      */
-    function emailExists($email)
+    public function emailExists($email)
     {
         $user = User::getKV('email', $email);
+
         return is_object($user);
     }
 }
