@@ -32,7 +32,7 @@
   ·                                                                             ·
   ·  Contact h@nnesmannerhe.im if you have any questions.                       ·
   ·                                                                             ·
-  · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · */
+ · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · */
 
 const QVITTERDIR = __DIR__;
 
@@ -41,87 +41,87 @@ class QvitterPlugin extends Plugin {
     protected $hijack_ui = false;
     protected $qvitter_hide_replies = false;
 
-	static function settings($setting)
-	{
+    static function settings($setting)
+    {
 
- 	/* · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · ·
-         ·        							     ·
+    /* · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · ·
+         ·                                       ·
          ·                          S E T T I N G S                          ·
-         ·         							     ·
-         · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · */
+         ·                                       ·
+    · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · */
 
-		// THESE SETTINGS CAN BE OVERRIDDEN IN CONFIG.PHP
-		// e.g. $config['site']['qvitter']['enabledbydefault'] = false;
+        // THESE SETTINGS CAN BE OVERRIDDEN IN CONFIG.PHP
+        // e.g. $config['site']['qvitter']['enabledbydefault'] = false;
 
-		// ENABLED BY DEFAULT (true/false)
-		$settings['enabledbydefault'] = true;
+        // ENABLED BY DEFAULT (true/false)
+        $settings['enabledbydefault'] = true;
 
-		// DEFAULT BACKGROUND COLOR
-		$settings['defaultbackgroundcolor'] = '#f4f4f4';
+        // DEFAULT BACKGROUND COLOR
+        $settings['defaultbackgroundcolor'] = '#f4f4f4';
 
-		// DEFAULT BACKGROUND IMAGE
-		$settings['sitebackground'] = 'img/vagnsmossen.jpg';
+        // DEFAULT BACKGROUND IMAGE
+        $settings['sitebackground'] = 'img/vagnsmossen.jpg';
 
-		// FAVICON PATH (we've used realfavicongenerator.net to generate the icons)
-		$settings['favicon_path'] = Plugin::staticPath('Qvitter', '').'img/gnusocial-favicons/';
+        // FAVICON PATH (we've used realfavicongenerator.net to generate the icons)
+        $settings['favicon_path'] = Plugin::staticPath('Qvitter', '').'img/gnusocial-favicons/';
 
-		// DEFAULT SPRITE
-		$settings['sprite'] = Plugin::staticPath('Qvitter', '').'img/sprite.png?v=41';
+        // DEFAULT SPRITE
+        $settings['sprite'] = Plugin::staticPath('Qvitter', '').'img/sprite.png?v=41';
 
-		// DEFAULT LINK COLOR
-		$settings['defaultlinkcolor'] = '#0084B4';
+        // DEFAULT LINK COLOR
+        $settings['defaultlinkcolor'] = '#0084B4';
 
-		// ENABLE DEFAULT WELCOME TEXT
-		$settings['enablewelcometext'] = true;
+        // ENABLE DEFAULT WELCOME TEXT
+        $settings['enablewelcometext'] = true;
 
-		// CUSTOM WELCOME TEXT (overrides the previous setting)
-		$settings['customwelcometext'] = false;
+        // CUSTOM WELCOME TEXT (overrides the previous setting)
+        $settings['customwelcometext'] = false;
 
-// 		Example:
-// 		$settings['customwelcometext']['sv'] = '<h1>Välkommen till Quitter.se – en federerad<sup>1</sup> mikrobloggsallmänning!</h1><p>Etc etc...</p>';
-// 		$settings['customwelcometext']['en'] = '<h1>Welcome to Quitter.se – a federated microblog common!</h1><p>Etc etc...</p>';
+        //      Example:
+        //      $settings['customwelcometext']['sv'] = '<h1>Välkommen till Quitter.se – en federerad<sup>1</sup> mikrobloggsallmänning!</h1><p>Etc etc...</p>';
+        //      $settings['customwelcometext']['en'] = '<h1>Welcome to Quitter.se – a federated microblog common!</h1><p>Etc etc...</p>';
 
-		// TIME BETWEEN POLLING
-		$settings['timebetweenpolling'] = 5000; // ms
+        // TIME BETWEEN POLLING
+        $settings['timebetweenpolling'] = 5000; // ms
 
-		// URL SHORTENER
-		$settings['urlshortenerapiurl'] = 'http://qttr.at/yourls-api.php';
-		$settings['urlshortenersignature'] = 'b6afeec983';
+        // URL SHORTENER
+        $settings['urlshortenerapiurl'] = 'http://qttr.at/yourls-api.php';
+        $settings['urlshortenersignature'] = 'b6afeec983';
 
-		// CUSTOM TERMS OF USE
-		$settings['customtermsofuse'] = false;
+        // CUSTOM TERMS OF USE
+        $settings['customtermsofuse'] = false;
 
-		// IP ADDRESSES BLOCKED FROM REGISTRATION
-		$settings['blocked_ips'] = array();
+        // IP ADDRESSES BLOCKED FROM REGISTRATION
+        $settings['blocked_ips'] = array();
 
         // LINKIFY DOMAINS WITHOUT PROTOCOL AS DEFAULT
         $settings['linkify_bare_domains'] = true;
 
 
-		 /* · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · ·
-		  ·                                                                   ·
-		  ·                (o>                                  >o)           ·
-		  ·            \\\\_\                                    /_////       .
-		  ·             \____)                                  (____/        ·
-		  ·                                                                   ·
-		  · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · */
+         /* · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · ·
+          ·                                                                   ·
+          ·                (o>                                  >o)           ·
+          ·            \\\\_\                                    /_////       .
+          ·             \____)                                  (____/        ·
+          ·                                                                   ·
+         · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · */
 
-		// config.php settings override the settings in this file
-		$configphpsettings = common_config('site','qvitter') ?: array();
-		foreach($configphpsettings as $configphpsetting=>$value) {
-			$settings[$configphpsetting] = $value;
-		}
+        // config.php settings override the settings in this file
+        $configphpsettings = common_config('site','qvitter') ?: array();
+        foreach($configphpsettings as $configphpsetting=>$value) {
+            $settings[$configphpsetting] = $value;
+        }
 
         // set linkify setting
         common_config_set('linkify', 'bare_domains', $settings['linkify_bare_domains']);
 
-		if(isset($settings[$setting])) {
-			return $settings[$setting];
-		}
-		else {
-			return false;
-		}
-	}
+        if(isset($settings[$setting])) {
+            return $settings[$setting];
+        }
+        else {
+            return false;
+        }
+    }
 
     public function initialize()
     {
@@ -156,115 +156,115 @@ class QvitterPlugin extends Plugin {
         return true;
     }
 
-	// route/reroute urls
+    // route/reroute urls
     public function onRouterInitialized($m)
     {
-		$m->connect(':nickname/mutes',
-					array('action' => 'qvitter',
-						  'nickname' => Nickname::INPUT_FMT));
+        $m->connect(':nickname/mutes',
+            array('action' => 'qvitter',
+            'nickname' => Nickname::INPUT_FMT));
         $m->connect('api/qvitter/mutes.json',
-					array('action' => 'ApiQvitterMutes'));
+            array('action' => 'ApiQvitterMutes'));
         $m->connect('api/qvitter/sandboxed.:format',
-                    array('action' => 'ApiQvitterSandboxed',
-                          'format' => '(xml|json)'));
+            array('action' => 'ApiQvitterSandboxed',
+            'format' => '(xml|json)'));
         $m->connect('api/qvitter/silenced.:format',
-                    array('action' => 'ApiQvitterSilenced',
-                          'format' => '(xml|json)'));
+            array('action' => 'ApiQvitterSilenced',
+            'format' => '(xml|json)'));
         $m->connect('api/qvitter/sandbox/create.json',
-					array('action' => 'ApiQvitterSandboxCreate'));
+            array('action' => 'ApiQvitterSandboxCreate'));
         $m->connect('api/qvitter/sandbox/destroy.json',
-					array('action' => 'ApiQvitterSandboxDestroy'));
+            array('action' => 'ApiQvitterSandboxDestroy'));
         $m->connect('api/qvitter/silence/create.json',
-					array('action' => 'ApiQvitterSilenceCreate'));
+            array('action' => 'ApiQvitterSilenceCreate'));
         $m->connect('api/qvitter/silence/destroy.json',
-					array('action' => 'ApiQvitterSilenceDestroy'));
+            array('action' => 'ApiQvitterSilenceDestroy'));
         $m->connect('services/oembed.:format',
-                    array('action' => 'apiqvitteroembednotice',
-                          'format' => '(xml|json)'));
+            array('action' => 'apiqvitteroembednotice',
+            'format' => '(xml|json)'));
         $m->connect('api/qvitter/check_email.json',
-					array('action' => 'ApiQvitterCheckEmail'));
+            array('action' => 'ApiQvitterCheckEmail'));
         $m->connect('api/qvitter/:nickname/lists/:id/subscribers.json',
-                    array('action' => 'ApiQvitterListSubscribers',
-                          'nickname' => '[a-zA-Z0-9]+',
-                          'id' => '[a-zA-Z0-9]+'));
+            array('action' => 'ApiQvitterListSubscribers',
+            'nickname' => '[a-zA-Z0-9]+',
+            'id' => '[a-zA-Z0-9]+'));
         $m->connect('api/qvitter/:nickname/lists/:id/members.json',
-                    array('action' => 'ApiQvitterListMembers',
-                          'nickname' => '[a-zA-Z0-9]+',
-                          'id' => '[a-zA-Z0-9]+'));
+            array('action' => 'ApiQvitterListMembers',
+            'nickname' => '[a-zA-Z0-9]+',
+            'id' => '[a-zA-Z0-9]+'));
         $m->connect('api/qvitter/:nickname/lists/:id/statuses.json',
-                    array('action' => 'ApiQvitterTimelineList',
-                          'nickname' => '[a-zA-Z0-9]+',
-                          'id' => '[a-zA-Z0-9]+'));
+            array('action' => 'ApiQvitterTimelineList',
+            'nickname' => '[a-zA-Z0-9]+',
+            'id' => '[a-zA-Z0-9]+'));
         $m->connect('api/qvitter/blocks.json',
-					array('action' => 'ApiQvitterBlocks'));
+            array('action' => 'ApiQvitterBlocks'));
         $m->connect('api/qvitter/hello.json',
-					array('action' => 'ApiQvitterHello'));
+            array('action' => 'ApiQvitterHello'));
         $m->connect('api/qvitter/mark_all_notifications_as_seen.json',
-					array('action' => 'ApiQvitterMarkAllNotificationsAsSeen'));
-		$m->connect('api/qvitter/favs_and_repeats/:notice_id.json',
-					array('action' => 'ApiFavsAndRepeats'),
-					array('notice_id' => '[0-9]+'));
-		$m->connect('api/statuses/public_and_external_timeline.:format',
-					array('action' => 'ApiTimelinePublicAndExternal',
-						  'format' => '(xml|json|rss|atom|as)'));
+            array('action' => 'ApiQvitterMarkAllNotificationsAsSeen'));
+        $m->connect('api/qvitter/favs_and_repeats/:notice_id.json',
+            array('action' => 'ApiFavsAndRepeats'),
+            array('notice_id' => '[0-9]+'));
+        $m->connect('api/statuses/public_and_external_timeline.:format',
+            array('action' => 'ApiTimelinePublicAndExternal',
+            'format' => '(xml|json|rss|atom|as)'));
         $m->connect('api/qvitter/update_bookmarks.json',
-					array('action' => 'ApiQvitterUpdateBookmarks'));
+            array('action' => 'ApiQvitterUpdateBookmarks'));
         $m->connect('api/qvitter/set_profile_pref.json',
-					array('action' => 'ApiQvitterSetProfilePref'));
+            array('action' => 'ApiQvitterSetProfilePref'));
         $m->connect('api/qvitter/update_link_color.json',
-					array('action' => 'apiqvitterupdatelinkcolor'));
-		$m->connect('api/qvitter/update_background_color.json',
-					array('action' => 'apiqvitterupdatebackgroundcolor'));
-		$m->connect('api/qvitter/checklogin.json',
-					array('action' => 'apiqvitterchecklogin'));
-		$m->connect('api/qvitter/allfollowing/:id.json',
-					array('action' => 'apiqvitterallfollowing',
-						  'id' => Nickname::INPUT_FMT));
-		$m->connect('api/account/update_profile_banner.json',
-					array('action' => 'ApiAccountUpdateProfileBanner'));
-		$m->connect('api/saved_searches/list.json',
-					array('action' => 'ApiSavedSearchesList'));
-		$m->connect('api/trends/place.json',
-					array('action' => 'ApiTrendsPlace'));
-		$m->connect('api/activity/about_me/unread.json',
-					array('action' => 'ApiActivityAboutMeUnread'));
-		$m->connect('api/qvitter/update_background_image.json',
-					array('action' => 'ApiUpdateBackgroundImage'));
-		$m->connect('api/qvitter/update_avatar.json',
-					array('action' => 'ApiUpdateAvatar'));
-		$m->connect('api/qvitter/upload_image.json',
-					array('action' => 'ApiUploadImage'));
-		$m->connect('api/qvitter/external_user_show.json',
-					array('action' => 'ApiExternalUserShow'));
-		$m->connect('api/qvitter/toggle_qvitter.json',
-					array('action' => 'ApiToggleQvitter'));
-		$m->connect('api/qvitter/statuses/notifications.json',
-					array('action' => 'apiqvitternotifications'));
-		$m->connect(':nickname/notifications',
-					array('action' => 'qvitter',
-						  'nickname' => Nickname::INPUT_FMT));
-		$m->connect(':nickname/blocks',
-					array('action' => 'qvitter',
-						  'nickname' => Nickname::INPUT_FMT));
+            array('action' => 'apiqvitterupdatelinkcolor'));
+        $m->connect('api/qvitter/update_background_color.json',
+            array('action' => 'apiqvitterupdatebackgroundcolor'));
+        $m->connect('api/qvitter/checklogin.json',
+            array('action' => 'apiqvitterchecklogin'));
+        $m->connect('api/qvitter/allfollowing/:id.json',
+            array('action' => 'apiqvitterallfollowing',
+            'id' => Nickname::INPUT_FMT));
+        $m->connect('api/account/update_profile_banner.json',
+            array('action' => 'ApiAccountUpdateProfileBanner'));
+        $m->connect('api/saved_searches/list.json',
+            array('action' => 'ApiSavedSearchesList'));
+        $m->connect('api/trends/place.json',
+            array('action' => 'ApiTrendsPlace'));
+        $m->connect('api/activity/about_me/unread.json',
+            array('action' => 'ApiActivityAboutMeUnread'));
+        $m->connect('api/qvitter/update_background_image.json',
+            array('action' => 'ApiUpdateBackgroundImage'));
+        $m->connect('api/qvitter/update_avatar.json',
+            array('action' => 'ApiUpdateAvatar'));
+        $m->connect('api/qvitter/upload_image.json',
+            array('action' => 'ApiUploadImage'));
+        $m->connect('api/qvitter/external_user_show.json',
+            array('action' => 'ApiExternalUserShow'));
+        $m->connect('api/qvitter/toggle_qvitter.json',
+            array('action' => 'ApiToggleQvitter'));
+        $m->connect('api/qvitter/statuses/notifications.json',
+            array('action' => 'apiqvitternotifications'));
+        $m->connect(':nickname/notifications',
+            array('action' => 'qvitter',
+            'nickname' => Nickname::INPUT_FMT));
+        $m->connect(':nickname/blocks',
+            array('action' => 'qvitter',
+            'nickname' => Nickname::INPUT_FMT));
         $m->connect('settings/qvitter',
-                    array('action' => 'qvittersettings'));
+            array('action' => 'qvittersettings'));
         $m->connect('panel/qvitter',
-                    array('action' => 'qvitteradminsettings'));
+            array('action' => 'qvitteradminsettings'));
         $m->connect('main/qlogin',
-                    array('action' => 'qvitterlogin'));
+            array('action' => 'qvitterlogin'));
         $m->connect('api/qvitter/statuses/update.:format',
-					array('action' => 'ApiQvitterStatusesUpdate'),
-					array('format' => '(xml|json)'));
+            array('action' => 'ApiQvitterStatusesUpdate'),
+            array('format' => '(xml|json)'));
 
-		// check if we should reroute UI to qvitter, and which home-stream the user wants (hide-replies or normal)
-		$scoped = Profile::current();
-		$qvitter_enabled_by_user = 0;
-		$qvitter_disabled_by_user = 0;
-		if ($scoped instanceof Profile) {
-			$qvitter_enabled_by_user = (int)$scoped->getPref('qvitter', 'enable_qvitter', false);
-			$qvitter_disabled_by_user = (int)$scoped->getPref('qvitter', 'disable_qvitter', false);
+        // check if we should reroute UI to qvitter, and which home-stream the user wants (hide-replies or normal)
+        $scoped = Profile::current();
+        $qvitter_enabled_by_user = 0;
+        $qvitter_disabled_by_user = 0;
+        if ($scoped instanceof Profile) {
+            $qvitter_enabled_by_user = (int)$scoped->getPref('qvitter', 'enable_qvitter', false);
+            $qvitter_disabled_by_user = (int)$scoped->getPref('qvitter', 'disable_qvitter', false);
             $this->qvitter_hide_replies = $scoped->getPref('qvitter', 'hide_replies', false);
-		}
+        }
 
         // reroute to qvitter if we're logged out and qvitter is enabled by default
         if(static::settings('enabledbydefault') === true && is_null($scoped)) {
@@ -286,139 +286,139 @@ class QvitterPlugin extends Plugin {
             Event::handle('QvitterHijackUI', array($m));
 
             $m->connect('', array('action' => 'qvitter'));
-			$m->connect('main/all', array('action' => 'qvitter'));
+            $m->connect('main/all', array('action' => 'qvitter'));
             $m->connect('main/public', array('action' => 'qvitter'));
-			$m->connect('main/silenced', array('action' => 'qvitter'));
+            $m->connect('main/silenced', array('action' => 'qvitter'));
             $m->connect('main/sandboxed', array('action' => 'qvitter'));
-			$m->connect('search/notice', array('action' => 'qvitter'));
+            $m->connect('search/notice', array('action' => 'qvitter'));
 
             // if the user wants the twitter style home stream with hidden replies to non-friends
             if ($this->qvitter_hide_replies == 1) {
-			URLMapperOverwrite::overwrite_variable($m, 'api/statuses/friends_timeline.:format',
-									array('action' => 'ApiTimelineFriends'),
-									array('format' => '(xml|json|rss|atom|as)'),
-									'ApiTimelineFriendsHiddenReplies');
-                }
+                URLMapperOverwrite::overwrite_variable($m, 'api/statuses/friends_timeline.:format',
+                    array('action' => 'ApiTimelineFriends'),
+                    array('format' => '(xml|json|rss|atom|as)'),
+                    'ApiTimelineFriendsHiddenReplies');
+            }
 
-			URLMapperOverwrite::overwrite_variable($m, ':nickname',
-									array('action' => 'showstream'),
-									array('nickname' => Nickname::DISPLAY_FMT),
-									'qvitter');
-			URLMapperOverwrite::overwrite_variable($m, ':nickname/',
-									array('action' => 'showstream'),
-									array('nickname' => Nickname::DISPLAY_FMT),
-									'qvitter');
-			URLMapperOverwrite::overwrite_variable($m, ':nickname/all',
-									array('action' => 'all'),
-									array('nickname' => Nickname::DISPLAY_FMT),
-									'qvitter');
-			URLMapperOverwrite::overwrite_variable($m, ':nickname/subscriptions',
-									array('action' => 'subscriptions'),
-									array('nickname' => Nickname::DISPLAY_FMT),
-									'qvitter');
-			URLMapperOverwrite::overwrite_variable($m, ':nickname/subscribers',
-									array('action' => 'subscribers'),
-									array('nickname' => Nickname::DISPLAY_FMT),
-									'qvitter');
-			URLMapperOverwrite::overwrite_variable($m, ':nickname/groups',
-									array('action' => 'usergroups'),
-									array('nickname' => Nickname::DISPLAY_FMT),
-									'qvitter');
-			URLMapperOverwrite::overwrite_variable($m, ':nickname/replies',
-									array('action' => 'replies'),
-									array('nickname' => Nickname::DISPLAY_FMT),
-									'qvitter');
-			URLMapperOverwrite::overwrite_variable($m, ':nickname/favorites',
-									array('action' => 'showfavorites'),
-									array('nickname' => Nickname::DISPLAY_FMT),
-									'qvitter');
-			URLMapperOverwrite::overwrite_variable($m, 'group/:nickname',
-									array('action' => 'showgroup'),
-									array('nickname' => Nickname::DISPLAY_FMT),
-									'qvitter');
-			URLMapperOverwrite::overwrite_variable($m, 'group/:nickname/members',
-									array('action' => 'groupmembers'),
-									array('nickname' => Nickname::DISPLAY_FMT),
-									'qvitter');
-			URLMapperOverwrite::overwrite_variable($m, ':nickname/all/:tag',
-									array('action' => 'showprofiletag'),
-									array('nickname' => Nickname::DISPLAY_FMT,
-                                          'tag' => Router::REGEX_TAG),
-									'qvitter');
-			URLMapperOverwrite::overwrite_variable($m, ':tagger/all/:tag/tagged',
-									array('action' => 'peopletagged'),
-									array('tagger' => Nickname::DISPLAY_FMT,
-                                          'tag' => Router::REGEX_TAG),
-									'qvitter');
-			URLMapperOverwrite::overwrite_variable($m, ':tagger/all/:tag/subscribers',
-									array('action' => 'peopletagsubscribers'),
-									array('tagger' => Nickname::DISPLAY_FMT,
-                                          'tag' => Router::REGEX_TAG),
-									'qvitter');
+            URLMapperOverwrite::overwrite_variable($m, ':nickname',
+                array('action' => 'showstream'),
+                array('nickname' => Nickname::DISPLAY_FMT),
+                'qvitter');
+            URLMapperOverwrite::overwrite_variable($m, ':nickname/',
+                array('action' => 'showstream'),
+                array('nickname' => Nickname::DISPLAY_FMT),
+                'qvitter');
+            URLMapperOverwrite::overwrite_variable($m, ':nickname/all',
+                array('action' => 'all'),
+                array('nickname' => Nickname::DISPLAY_FMT),
+                'qvitter');
+            URLMapperOverwrite::overwrite_variable($m, ':nickname/subscriptions',
+                array('action' => 'subscriptions'),
+                array('nickname' => Nickname::DISPLAY_FMT),
+                'qvitter');
+            URLMapperOverwrite::overwrite_variable($m, ':nickname/subscribers',
+                array('action' => 'subscribers'),
+                array('nickname' => Nickname::DISPLAY_FMT),
+                'qvitter');
+            URLMapperOverwrite::overwrite_variable($m, ':nickname/groups',
+                array('action' => 'usergroups'),
+                array('nickname' => Nickname::DISPLAY_FMT),
+                'qvitter');
+            URLMapperOverwrite::overwrite_variable($m, ':nickname/replies',
+                array('action' => 'replies'),
+                array('nickname' => Nickname::DISPLAY_FMT),
+                'qvitter');
+            URLMapperOverwrite::overwrite_variable($m, ':nickname/favorites',
+                array('action' => 'showfavorites'),
+                array('nickname' => Nickname::DISPLAY_FMT),
+                'qvitter');
+            URLMapperOverwrite::overwrite_variable($m, 'group/:nickname',
+                array('action' => 'showgroup'),
+                array('nickname' => Nickname::DISPLAY_FMT),
+                'qvitter');
+            URLMapperOverwrite::overwrite_variable($m, 'group/:nickname/members',
+                array('action' => 'groupmembers'),
+                array('nickname' => Nickname::DISPLAY_FMT),
+                'qvitter');
+            URLMapperOverwrite::overwrite_variable($m, ':nickname/all/:tag',
+                array('action' => 'showprofiletag'),
+                array('nickname' => Nickname::DISPLAY_FMT,
+                'tag' => Router::REGEX_TAG),
+                'qvitter');
+            URLMapperOverwrite::overwrite_variable($m, ':tagger/all/:tag/tagged',
+                array('action' => 'peopletagged'),
+                array('tagger' => Nickname::DISPLAY_FMT,
+                'tag' => Router::REGEX_TAG),
+                'qvitter');
+            URLMapperOverwrite::overwrite_variable($m, ':tagger/all/:tag/subscribers',
+                array('action' => 'peopletagsubscribers'),
+                array('tagger' => Nickname::DISPLAY_FMT,
+                'tag' => Router::REGEX_TAG),
+                'qvitter');
 
 
 
-			$m->connect('group/:nickname/admins',
-						array('action' => 'qvitter'),
-						array('nickname' => Nickname::DISPLAY_FMT));
+            $m->connect('group/:nickname/admins',
+                array('action' => 'qvitter'),
+                array('nickname' => Nickname::DISPLAY_FMT));
 
-			URLMapperOverwrite::overwrite_variable($m, 'tag/:tag',
-									array('action' => 'showstream'),
-									array('tag' => Router::REGEX_TAG),
-									'qvitter');
-			URLMapperOverwrite::overwrite_variable($m, 'notice/:notice',
-									array('action' => 'shownotice'),
-									array('notice' => '[0-9]+'),
-									'qvitter');
-			URLMapperOverwrite::overwrite_variable($m, 'conversation/:id',
-									array('action' => 'conversation'),
-									array('id' => '[0-9]+'),
-									'qvitter');
-		}
+            URLMapperOverwrite::overwrite_variable($m, 'tag/:tag',
+                array('action' => 'showstream'),
+                array('tag' => Router::REGEX_TAG),
+                'qvitter');
+            URLMapperOverwrite::overwrite_variable($m, 'notice/:notice',
+                array('action' => 'shownotice'),
+                array('notice' => '[0-9]+'),
+                'qvitter');
+            URLMapperOverwrite::overwrite_variable($m, 'conversation/:id',
+                array('action' => 'conversation'),
+                array('id' => '[0-9]+'),
+                'qvitter');
+        }
 
-		// if qvitter is opt-out, disable the default register page (if we don't have a valid invitation code)
+        // if qvitter is opt-out, disable the default register page (if we don't have a valid invitation code)
         $valid_code = isset($_POST['code'])
-                        ? Invitation::getKV('code', $_POST['code'])
-                        : null;
-		if(self::settings('enabledbydefault') && empty($valid_code)) {
-			$m->connect('main/register',
-						array('action' => 'qvitter'));
-			}
+            ? Invitation::getKV('code', $_POST['code'])
+            : null;
+        if(self::settings('enabledbydefault') && empty($valid_code)) {
+            $m->connect('main/register',
+                array('action' => 'qvitter'));
+        }
 
 
-		// add user arrays for some urls, to use to build profile cards
-		// this way we don't have to request this in a separate http request
-		if(isset($_GET['withuserarray'])) switch (getPath($_REQUEST)) {
-		case 'api/statuses/followers.json':
-		case 'api/statuses/friends.json':
-		case 'api/statusnet/groups/list.json':
-		case 'api/statuses/mentions.json':
-		case 'api/favorites.json':
-		case 'api/statuses/friends_timeline.json':
-		case 'api/statuses/user_timeline.json':
+        // add user arrays for some urls, to use to build profile cards
+        // this way we don't have to request this in a separate http request
+        if(isset($_GET['withuserarray'])) switch (getPath($_REQUEST)) {
+case 'api/statuses/followers.json':
+case 'api/statuses/friends.json':
+case 'api/statusnet/groups/list.json':
+case 'api/statuses/mentions.json':
+case 'api/favorites.json':
+case 'api/statuses/friends_timeline.json':
+case 'api/statuses/user_timeline.json':
 
-			// add logged in user's user array
-			if (common_logged_in() && !isset($_GET['screen_name']) && !isset($_GET['id'])) {
-				$profilecurrent = Profile::current();
-				header('Qvitter-User-Array: '.json_encode($this->qvitterTwitterUserArray($profilecurrent)));
-				}
+    // add logged in user's user array
+    if (common_logged_in() && !isset($_GET['screen_name']) && !isset($_GET['id'])) {
+        $profilecurrent = Profile::current();
+        header('Qvitter-User-Array: '.json_encode($this->qvitterTwitterUserArray($profilecurrent)));
+    }
 
-			// add screen_name's user array
-			elseif(isset($_GET['screen_name']) || isset($_GET['id'])){
+    // add screen_name's user array
+    elseif(isset($_GET['screen_name']) || isset($_GET['id'])){
 
-                if(isset($_GET['screen_name'])) {
-                    $user = User::getKV('nickname', $_GET['screen_name']);
-                    }
-                elseif(isset($_GET['id'])) {
-                    $user = User::getKV('id', $_GET['id']);
-                    }
+        if(isset($_GET['screen_name'])) {
+            $user = User::getKV('nickname', $_GET['screen_name']);
+        }
+        elseif(isset($_GET['id'])) {
+            $user = User::getKV('id', $_GET['id']);
+        }
 
-                if($user instanceof User) {
-					header('Qvitter-User-Array: '.json_encode($this->qvitterTwitterUserArray($user->getProfile())));
-					}
-				}
-			break;
-		 	}
+        if($user instanceof User) {
+            header('Qvitter-User-Array: '.json_encode($this->qvitterTwitterUserArray($user->getProfile())));
+        }
+    }
+    break;
+        }
 
     }
 
@@ -433,30 +433,30 @@ class QvitterPlugin extends Plugin {
 
         if (common_logged_in()) {
 
-			$user = common_current_user();
-			$profile = $user->getProfile();
-			$qvitter_enabled='false';
+            $user = common_current_user();
+            $profile = $user->getProfile();
+            $qvitter_enabled='false';
 
-			// if qvitter is enabled by default but _not_ disabled by the user,
-			if(QvitterPlugin::settings('enabledbydefault')) {
-				$disabled = Profile_prefs::getConfigData($profile, 'qvitter', 'disable_qvitter');
-				if($disabled == 0) {
-					$qvitter_enabled='true';
-					}
-				}
-			// if qvitter is disabled by default and _enabled_ by the user,
-			else {
-				$enabled = Profile_prefs::getConfigData($profile, 'qvitter', 'enable_qvitter');
-				if($enabled == 1) {
-					$qvitter_enabled='true';
-					}
-				}
+            // if qvitter is enabled by default but _not_ disabled by the user,
+            if(QvitterPlugin::settings('enabledbydefault')) {
+                $disabled = Profile_prefs::getConfigData($profile, 'qvitter', 'disable_qvitter');
+                if($disabled == 0) {
+                    $qvitter_enabled='true';
+                }
+            }
+            // if qvitter is disabled by default and _enabled_ by the user,
+            else {
+                $enabled = Profile_prefs::getConfigData($profile, 'qvitter', 'enable_qvitter');
+                if($enabled == 1) {
+                    $qvitter_enabled='true';
+                }
+            }
 
             $action->inlineScript(' var toggleQvitterAPIURL = \''.common_path('', true).'api/qvitter/toggle_qvitter.json\';
-            						var toggleText = \''._('New').' '.str_replace("'","\'",common_config('site','name')).'\';
-            						var qvitterEnabled = '.$qvitter_enabled.';
-            						var qvitterAllLink = \''.common_local_url('all', array('nickname' => $user->nickname)).'\';
-            						');
+            var toggleText = \''._('New').' '.str_replace("'","\'",common_config('site','name')).'\';
+            var qvitterEnabled = '.$qvitter_enabled.';
+            var qvitterAllLink = \''.common_local_url('all', array('nickname' => $user->nickname)).'\';
+            ');
             $action->script($this->path('js/toggleqvitter.js').'?changed='.date('YmdHis',filemtime(QVITTERDIR.'/js/toggleqvitter.js')));
         }
     }
@@ -476,11 +476,11 @@ class QvitterPlugin extends Plugin {
         $action_name = $action->trimmed('action');
 
         $action->menuItem(common_local_url('qvittersettings'),
-                          // TRANS: Poll plugin menu item on user settings page.
-                          _m('MENU', 'Qvitter'),
-                          // TRANS: Poll plugin tooltip for user settings menu item.
-                          _m('Qvitter Settings'),
-                          $action_name === 'qvittersettings');
+            // TRANS: Poll plugin menu item on user settings page.
+            _m('MENU', 'Qvitter'),
+            // TRANS: Poll plugin tooltip for user settings menu item.
+            _m('Qvitter Settings'),
+            $action_name === 'qvittersettings');
 
         return true;
     }
@@ -499,11 +499,11 @@ class QvitterPlugin extends Plugin {
         $action_name = $action->trimmed('action');
 
         $action->out->menuItem(common_local_url('qvitteradminsettings'),
-                          // TRANS: Poll plugin menu item on user settings page.
-                          _m('MENU', 'Qvitter'),
-                          // TRANS: Poll plugin tooltip for user settings menu item.
-                          _m('Qvitter Sidebar Notice'),
-                          $action_name === 'qvitteradminsettings');
+            // TRANS: Poll plugin menu item on user settings page.
+            _m('MENU', 'Qvitter'),
+            // TRANS: Poll plugin tooltip for user settings menu item.
+            _m('Qvitter Sidebar Notice'),
+            $action_name === 'qvitteradminsettings');
 
         return true;
     }
@@ -525,33 +525,33 @@ class QvitterPlugin extends Plugin {
         // strip tags from source, we can't trust html here, because of gs bug
         $twitter_status['source'] = htmlspecialchars(strip_tags($twitter_status['source']));
 
-    	// groups
-		$notice_groups = $notice->getGroups();
-		$group_addressees = false;
-		foreach($notice_groups as $g) {
-			$group_addressees[] = array('nickname'=>$g->nickname,'url'=>$g->mainpage);
-			}
-		$twitter_status['statusnet_in_groups'] = $group_addressees;
+        // groups
+        $notice_groups = $notice->getGroups();
+        $group_addressees = false;
+        foreach($notice_groups as $g) {
+            $group_addressees[] = array('nickname'=>$g->nickname,'url'=>$g->mainpage);
+        }
+        $twitter_status['statusnet_in_groups'] = $group_addressees;
 
-		// for older verions of gnu social: include the repeat-id, which we need when unrepeating later
-		if(array_key_exists('repeated', $twitter_status) && $twitter_status['repeated'] === true) {
+        // for older verions of gnu social: include the repeat-id, which we need when unrepeating later
+        if(array_key_exists('repeated', $twitter_status) && $twitter_status['repeated'] === true) {
             $repeated = Notice::pkeyGet(array('profile_id' => $scoped->id,
-                                        	'repeat_of' => $notice->id,
-                                            'verb' => 'http://activitystrea.ms/schema/1.0/share'));
-			$twitter_status['repeated_id'] = $repeated->id;
+                'repeat_of' => $notice->id,
+                'verb' => 'http://activitystrea.ms/schema/1.0/share'));
+            $twitter_status['repeated_id'] = $repeated->id;
 
-			}
+        }
 
-		// more metadata about attachments
+        // more metadata about attachments
 
         // get all attachments first, and put all the extra meta data in an array
         $attachments = $notice->attachments();
         $attachment_url_to_id = array();
         if (!empty($attachments)) {
             foreach ($attachments as $attachment) {
-				if(is_object($attachment)) {
+                if(is_object($attachment)) {
                     try {
-						$enclosure_o = $attachment->getEnclosure();
+                        $enclosure_o = $attachment->getEnclosure();
 
                         // Oembed
                         if(array_key_exists('Oembed', StatusNet::getActivePlugins())) {
@@ -564,7 +564,7 @@ class QvitterPlugin extends Plugin {
                                     $twitter_username = substr($twitter_username, strpos($twitter_username,'(@')+1);
                                     $twitter_username = substr($twitter_username, 0,strpos($twitter_username,')'));
                                     $oembed->title = $twitter_username;
-                                    }
+                                }
                                 $oembed_html = str_replace('&#8230;','...',$oembed_html); // ellipsis is sometimes stored as html in db, for some reason
                                 $oembed_html = mb_substr(trim(strip_tags($oembed_html)),0,250);
                                 $oembed_title = trim(strip_tags(html_entity_decode($oembed->title,ENT_QUOTES))); // sometimes we have html charachters that we want to decode and then strip
@@ -593,7 +593,7 @@ class QvitterPlugin extends Plugin {
 
                         // add data about thumbnails
                         $thumb = $attachment->getThumbnail();
-						$large_thumb = $attachment->getThumbnail(1000,3000,false);
+                        $large_thumb = $attachment->getThumbnail(1000,3000,false);
                         if(method_exists('File_thumbnail','url')) {
                             $thumb_url = File_thumbnail::url($thumb->filename);
                             $large_thumb_url = File_thumbnail::url($large_thumb->filename);
@@ -601,49 +601,49 @@ class QvitterPlugin extends Plugin {
                             $thumb_url = $thumb->getUrl();
                             $large_thumb_url = $large_thumb->getUrl();
                         }
-						$attachment_url_to_id[$enclosure_o->url]['thumb_url'] = $thumb_url;
+                        $attachment_url_to_id[$enclosure_o->url]['thumb_url'] = $thumb_url;
                         $attachment_url_to_id[$enclosure_o->url]['large_thumb_url'] = $large_thumb_url;
-						$attachment_url_to_id[$enclosure_o->url]['width'] = $attachment->width;
-						$attachment_url_to_id[$enclosure_o->url]['height'] = $attachment->height;
+                        $attachment_url_to_id[$enclosure_o->url]['width'] = $attachment->width;
+                        $attachment_url_to_id[$enclosure_o->url]['height'] = $attachment->height;
 
-						// animated gif?
-						if($attachment->mimetype == 'image/gif') {
-							$image = ImageFile::fromFileObject($attachment);
-							if($image->animated == 1) {
-								$attachment_url_to_id[$enclosure_o->url]['animated'] = true;
-							} else {
-								$attachment_url_to_id[$enclosure_o->url]['animated'] = false;
-							}
+                        // animated gif?
+                        if($attachment->mimetype == 'image/gif') {
+                            $image = ImageFile::fromFileObject($attachment);
+                            if($image->animated == 1) {
+                                $attachment_url_to_id[$enclosure_o->url]['animated'] = true;
+                            } else {
+                                $attachment_url_to_id[$enclosure_o->url]['animated'] = false;
+                            }
                         }
 
-                    // this applies to older versions of gnu social, i think
-					} catch (Exception $e) {
-						$thumb = File_thumbnail::getKV('file_id', $attachment->id);
-						if ($thumb instanceof File_thumbnail) {
+                        // this applies to older versions of gnu social, i think
+                    } catch (Exception $e) {
+                        $thumb = File_thumbnail::getKV('file_id', $attachment->id);
+                        if ($thumb instanceof File_thumbnail) {
                             $thumb_url = $thumb->getUrl();
-							$attachment_url_to_id[$enclosure_o->url]['id'] = $attachment->id;
-							$attachment_url_to_id[$enclosure_o->url]['thumb_url'] = $thumb_url;
+                            $attachment_url_to_id[$enclosure_o->url]['id'] = $attachment->id;
+                            $attachment_url_to_id[$enclosure_o->url]['thumb_url'] = $thumb_url;
                             $attachment_url_to_id[$enclosure_o->url]['large_thumb_url'] = $thumb_url;
-							$attachment_url_to_id[$enclosure_o->url]['width'] = $attachment->width;
-							$attachment_url_to_id[$enclosure_o->url]['height'] = $attachment->height;
+                            $attachment_url_to_id[$enclosure_o->url]['width'] = $attachment->width;
+                            $attachment_url_to_id[$enclosure_o->url]['height'] = $attachment->height;
 
-							// animated gif?
-							if($attachment->mimetype == 'image/gif') {
-								$image = ImageFile::fromFileObject($attachment);
-								if($image->animated == 1) {
-									$attachment_url_to_id[$enclosure_o->url]['animated'] = true;
-								}
-								else {
-									$attachment_url_to_id[$enclosure_o->url]['animated'] = false;
-								}
-							}
-						}
-					}
-            	}
+                            // animated gif?
+                            if($attachment->mimetype == 'image/gif') {
+                                $image = ImageFile::fromFileObject($attachment);
+                                if($image->animated == 1) {
+                                    $attachment_url_to_id[$enclosure_o->url]['animated'] = true;
+                                }
+                                else {
+                                    $attachment_url_to_id[$enclosure_o->url]['animated'] = false;
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
 
-		// add the extra meta data to $twitter_status
+        // add the extra meta data to $twitter_status
         if (!empty($twitter_status['attachments'])) {
             foreach ($twitter_status['attachments'] as &$attachment) {
                 if (!empty($attachment_url_to_id[$attachment['url']])) {
@@ -710,7 +710,7 @@ class QvitterPlugin extends Plugin {
                                             $thumb_url = $qthumb->getUrl();
                                         }
                                         $attachment['quoted_notice']['attachments'][] = array('thumb_url'=>$thumb_url,
-                                                                                              'attachment_id'=>$q_attach->id);
+                                            'attachment_id'=>$q_attach->id);
                                     } catch (Exception $e) {
                                         common_debug('Qvitter: could not get thumbnail for attachment id='.$q_attach->id.' in quoted notice id='.$quoted_notice->id);
                                     }
@@ -726,18 +726,18 @@ class QvitterPlugin extends Plugin {
         try {
             $twitter_status['external_url'] = $notice->getUrl(true);
         } catch (InvalidUrlException $e) {
-		    common_debug('Qvitter: No URL available for external notice: id='.$notice->id);
+            common_debug('Qvitter: No URL available for external notice: id='.$notice->id);
         }
 
 
-		// reply-to profile url
+        // reply-to profile url
         try {
             $reply = $notice->getParent();
             $reply_profile = $reply->getProfile();
-			$twitter_status['in_reply_to_profileurl'] = $reply_profile->getUrl();
+            $twitter_status['in_reply_to_profileurl'] = $reply_profile->getUrl();
             $twitter_status['in_reply_to_ostatus_uri'] = $reply_profile->getUri();
         } catch (ServerException $e) {
-		    $twitter_status['in_reply_to_profileurl'] = null;
+            $twitter_status['in_reply_to_profileurl'] = null;
             $twitter_status['in_reply_to_ostatus_uri'] = null;
         }
 
@@ -756,53 +756,53 @@ class QvitterPlugin extends Plugin {
                     );
                 }
             }
-        $twitter_status['attentions'] = $attentions_array;
+            $twitter_status['attentions'] = $attentions_array;
         } catch (Exception $e) {
             //
         }
 
-		// fave number
-		$faves = Fave::byNotice($notice);
-		$favenum = count($faves);
-		$twitter_status['fave_num'] = $favenum;
+        // fave number
+        $faves = Fave::byNotice($notice);
+        $favenum = count($faves);
+        $twitter_status['fave_num'] = $favenum;
 
-		// repeat number
-		$repeats = $notice->repeatStream();
+        // repeat number
+        $repeats = $notice->repeatStream();
         $repeatnum=0;
         while ($repeats->fetch()) {
             if($repeats->verb == ActivityVerb::SHARE) { // i.e. not deleted repeats
                 $repeatnum++;
-                }
-        	}
-		$twitter_status['repeat_num'] = $repeatnum;
+            }
+        }
+        $twitter_status['repeat_num'] = $repeatnum;
 
         // is this a post? (previously is_activity)
         if(method_exists('ActivityUtils','compareVerbs')) {
             $twitter_status['is_post_verb'] = ActivityUtils::compareVerbs($notice->verb, array(ActivityVerb::POST));
-            }
+        }
         else {
             $twitter_status['is_post_verb'] = ($notice->verb == ActivityVerb::POST ? true : false);
-            }
+        }
 
         // some more metadata about notice
-		if($notice->is_local == '1') {
-			$twitter_status['is_local'] = true;
-			}
-		else {
-			$twitter_status['is_local'] = false;
-			if ($twitter_status['is_post_verb'] === true) {
+        if($notice->is_local == '1') {
+            $twitter_status['is_local'] = true;
+        }
+        else {
+            $twitter_status['is_local'] = false;
+            if ($twitter_status['is_post_verb'] === true) {
                 try {
                     $twitter_status['external_url'] = $notice->getUrl(true);
                 } catch (InvalidUrlException $e) {
-        		    common_debug('Qvitter: No URL available for external notice: id='.$notice->id);
+                    common_debug('Qvitter: No URL available for external notice: id='.$notice->id);
                 }
-				}
-			}
+            }
+        }
 
 
-		if(ActivityUtils::compareTypes($notice->verb, array('qvitter-delete-notice', 'delete'))) {
-			$twitter_status['qvitter_delete_notice'] = true;
-			}
+        if(ActivityUtils::compareTypes($notice->verb, array('qvitter-delete-notice', 'delete'))) {
+            $twitter_status['qvitter_delete_notice'] = true;
+        }
 
         return true;
     }
@@ -826,7 +826,7 @@ class QvitterPlugin extends Plugin {
         $twitter_user['profile_banner_url'] = Profile_prefs::getConfigData($profile, 'qvitter', 'cover_photo');
 
 
-		if ($scoped) {
+        if ($scoped) {
             // follows me?
             $twitter_user['follows_you'] = $profile->isSubscribed($scoped);
 
@@ -834,12 +834,12 @@ class QvitterPlugin extends Plugin {
             $twitter_user['blocks_you']  = $profile->hasBlocked($scoped);
         }
 
-		// local user?
-		$twitter_user['is_local'] = $profile->isLocal();
+        // local user?
+        $twitter_user['is_local'] = $profile->isLocal();
 
 
-		// silenced?
-		$twitter_user['is_silenced'] = $profile->isSilenced();
+        // silenced?
+        $twitter_user['is_silenced'] = $profile->isSilenced();
 
         // rights
         $twitter_user['rights'] = array();
@@ -848,8 +848,8 @@ class QvitterPlugin extends Plugin {
         $twitter_user['rights']['silence'] = $profile->hasRight(Right::SILENCEUSER);
         $twitter_user['rights']['sandbox'] = $profile->hasRight(Right::SANDBOXUSER);
 
-		// sandboxed?
-		$twitter_user['is_sandboxed'] = $profile->isSandboxed();
+        // sandboxed?
+        $twitter_user['is_sandboxed'] = $profile->isSandboxed();
 
         // ostatus uri
         if($twitter_user['is_local']) {
@@ -869,41 +869,41 @@ class QvitterPlugin extends Plugin {
 
 
 
-   /**
+    /**
      * Insert into notification table
      */
     function insertNotification($to_profile_id, $from_profile_id, $ntype, $notice_id=false)
     {
 
-		$to_user = User::getKV('id', $to_profile_id);
-		$from_profile = Profile::getKV($from_profile_id);
+        $to_user = User::getKV('id', $to_profile_id);
+        $from_profile = Profile::getKV($from_profile_id);
 
-		// don't notify remote profiles
-		if (!$to_user instanceof User) {
-			return false;
-			}
+        // don't notify remote profiles
+        if (!$to_user instanceof User) {
+            return false;
+        }
 
-		// no notifications from blocked profiles
-		if ($to_user->hasBlocked($from_profile)) {
-			return false;
-			}
+        // no notifications from blocked profiles
+        if ($to_user->hasBlocked($from_profile)) {
+            return false;
+        }
 
-		// never notify myself
-		if($to_profile_id == $from_profile_id) {
-			return false;
-			}
+        // never notify myself
+        if($to_profile_id == $from_profile_id) {
+            return false;
+        }
 
-		// insert
-		$notif = new QvitterNotification();
-		$notif->to_profile_id = $to_profile_id;
-		$notif->from_profile_id = $from_profile_id;
-		$notif->ntype = $ntype;
-		$notif->notice_id = $notice_id;
-		$notif->created = common_sql_now();
-		if (!$notif->insert()) {
-			common_log_db_error($notif, 'INSERT', __FILE__);
-			return false;
-			}
+        // insert
+        $notif = new QvitterNotification();
+        $notif->to_profile_id = $to_profile_id;
+        $notif->from_profile_id = $from_profile_id;
+        $notif->ntype = $ntype;
+        $notif->notice_id = $notice_id;
+        $notif->created = common_sql_now();
+        if (!$notif->insert()) {
+            common_log_db_error($notif, 'INSERT', __FILE__);
+            return false;
+        }
 
         return true;
     }
@@ -915,10 +915,10 @@ class QvitterPlugin extends Plugin {
     public function onEndFavorNotice($profile, $notice)
     {
 
-		// don't notify people favoriting their own notices
- 		if($notice->profile_id != $profile->id) {
+        // don't notify people favoriting their own notices
+        if($notice->profile_id != $profile->id) {
             $this->insertNotification($notice->profile_id, $profile->id, 'like', $notice->id);
- 			}
+        }
 
         // mark reply and mention notifications as seen if i'm liking a notice i'm notified about
         self::markNotificationAsSeen($notice->id,$profile->id,'mention');
@@ -931,17 +931,17 @@ class QvitterPlugin extends Plugin {
      */
     public function markNotificationAsSeen($notice_id, $to_profile_id, $ntype)
     {
-    $notification_to_mark_as_seen = QvitterNotification::pkeyGet(array(
-        'is_seen' => 0,
-        'notice_id' => $notice_id,
-        'to_profile_id' => $to_profile_id,
-        'ntype' => $ntype
-    ));
-    if($notification_to_mark_as_seen instanceof QvitterNotification) {
-        $orig = clone($notification_to_mark_as_seen);
-        $notification_to_mark_as_seen->is_seen = 1;
-        $notification_to_mark_as_seen->update($orig);
-    	}
+        $notification_to_mark_as_seen = QvitterNotification::pkeyGet(array(
+            'is_seen' => 0,
+            'notice_id' => $notice_id,
+            'to_profile_id' => $to_profile_id,
+            'ntype' => $ntype
+        ));
+        if($notification_to_mark_as_seen instanceof QvitterNotification) {
+            $orig = clone($notification_to_mark_as_seen);
+            $notification_to_mark_as_seen->is_seen = 1;
+            $notification_to_mark_as_seen->update($orig);
+        }
     }
 
 
@@ -951,11 +951,11 @@ class QvitterPlugin extends Plugin {
      */
     public function onEndDisfavorNotice($profile, $notice)
     {
-		$notif = new QvitterNotification();
-		$notif->from_profile_id = $profile->id;
-		$notif->notice_id = $notice->id;
-		$notif->ntype = 'like';
-		$notif->delete();
+        $notif = new QvitterNotification();
+        $notif->from_profile_id = $profile->id;
+        $notif->notice_id = $notice->id;
+        $notif->ntype = 'like';
+        $notif->delete();
         return true;
     }
 
@@ -970,11 +970,11 @@ class QvitterPlugin extends Plugin {
 
         assert($notice->id > 0);    // since we removed tests below
 
-		// repeats
+        // repeats
         if ($notice->isRepeat()) {
-			$repeated_notice = Notice::getKV('id', $notice->repeat_of);
-			if ($repeated_notice instanceof Notice) {
-	            $this->insertNotification($repeated_notice->profile_id, $notice->profile_id, 'repeat', $repeated_notice->id);
+            $repeated_notice = Notice::getKV('id', $notice->repeat_of);
+            if ($repeated_notice instanceof Notice) {
+                $this->insertNotification($repeated_notice->profile_id, $notice->profile_id, 'repeat', $repeated_notice->id);
 
                 // mark reply/mention-notifications as read if we're repeating to a notice we're notified about
                 self::markNotificationAsSeen($repeated_notice->id,$notice->profile_id,'mention');
@@ -982,66 +982,66 @@ class QvitterPlugin extends Plugin {
 
                 // (no other notifications repeats)
                 return true;
-                }
- 			}
+            }
+        }
 
-		// don't add notifications for activity/non-post-verb notices
+        // don't add notifications for activity/non-post-verb notices
         if(method_exists('ActivityUtils','compareVerbs')) {
             $is_post_verb = ActivityUtils::compareVerbs($notice->verb, array(ActivityVerb::POST));
-            }
+        }
         else {
             $is_post_verb = ($notice->verb == ActivityVerb::POST ? true : false);
-            }
+        }
         if($notice->source == 'activity' || !$is_post_verb) {
-			return true;
-			}
+            return true;
+        }
 
-		// mark reply/mention-notifications as read if we're replying to a notice we're notified about
-		if($notice->reply_to) {
+        // mark reply/mention-notifications as read if we're replying to a notice we're notified about
+        if($notice->reply_to) {
             self::markNotificationAsSeen($notice->reply_to,$notice->profile_id,'mention');
             self::markNotificationAsSeen($notice->reply_to,$notice->profile_id,'reply');
-			}
+        }
 
 
-		// replies and mentions
- 		$reply_notification_to = false;
-		// check for reply to insert in notifications
-		if($notice->reply_to) {
-			try {
-				$replyauthor = $notice->getParent()->getProfile();
-				$reply_notification_to = $replyauthor->id;
-				$this->insertNotification($replyauthor->id, $notice->profile_id, 'reply', $notice->id);
-			//} catch (NoParentNoticeException $e) {	// TODO: catch this when everyone runs latest GNU social!
-				// This is not a reply to something (has no parent)
-			} catch (NoResultException $e) {
-				// Parent author's profile not found! Complain louder?
-				common_log(LOG_ERR, "Parent notice's author not found: ".$e->getMessage());
-			}
-		}
+        // replies and mentions
+        $reply_notification_to = false;
+        // check for reply to insert in notifications
+        if($notice->reply_to) {
+            try {
+                $replyauthor = $notice->getParent()->getProfile();
+                $reply_notification_to = $replyauthor->id;
+                $this->insertNotification($replyauthor->id, $notice->profile_id, 'reply', $notice->id);
+                //} catch (NoParentNoticeException $e) {    // TODO: catch this when everyone runs latest GNU social!
+                // This is not a reply to something (has no parent)
+            } catch (NoResultException $e) {
+                // Parent author's profile not found! Complain louder?
+                common_log(LOG_ERR, "Parent notice's author not found: ".$e->getMessage());
+            }
+        }
 
-		// check for mentions to insert in notifications
-		$mentions = $notice->getReplies();
-		$sender = Profile::getKV($notice->profile_id);
-		$all_mentioned_user_ids = array();
-		foreach ($mentions as $mentioned) {
+        // check for mentions to insert in notifications
+        $mentions = $notice->getReplies();
+        $sender = Profile::getKV($notice->profile_id);
+        $all_mentioned_user_ids = array();
+        foreach ($mentions as $mentioned) {
 
-			// no duplicate mentions
-			if(in_array($mentioned, $all_mentioned_user_ids)) {
-				continue;
-				}
-			$all_mentioned_user_ids[] = $mentioned;
+            // no duplicate mentions
+            if(in_array($mentioned, $all_mentioned_user_ids)) {
+                continue;
+            }
+            $all_mentioned_user_ids[] = $mentioned;
 
-			// only notify if mentioned user is not already notified for reply
-			if($reply_notification_to != $mentioned) {
-				$this->insertNotification($mentioned, $notice->profile_id, 'mention', $notice->id);
-				}
-			}
+            // only notify if mentioned user is not already notified for reply
+            if($reply_notification_to != $mentioned) {
+                $this->insertNotification($mentioned, $notice->profile_id, 'mention', $notice->id);
+            }
+        }
 
         return true;
-    	}
+    }
 
 
-   /**
+    /**
      * Delete any notifications tied to deleted notices and un-repeats
      *
      * @return boolean hook flag
@@ -1049,20 +1049,20 @@ class QvitterPlugin extends Plugin {
     public function onNoticeDeleteRelated($notice)
     {
 
-		$notif = new QvitterNotification();
+        $notif = new QvitterNotification();
 
-		// unrepeats
+        // unrepeats
         if ($notice->isRepeat()) {
-			$repeated_notice = Notice::getKV('id', $notice->repeat_of);
-			$notif->notice_id = $repeated_notice->id;
-			$notif->from_profile_id = $notice->profile_id;
- 			}
-		// notices
-		else {
-			$notif->notice_id = $notice->id;
-			}
+            $repeated_notice = Notice::getKV('id', $notice->repeat_of);
+            $notif->notice_id = $repeated_notice->id;
+            $notif->from_profile_id = $notice->profile_id;
+        }
+        // notices
+        else {
+            $notif->notice_id = $notice->id;
+        }
 
-		$notif->delete();
+        $notif->delete();
 
         // don't delete if this is a user is being deleted
         // because that creates an infinite loop of deleting and creating notices...
@@ -1080,25 +1080,25 @@ class QvitterPlugin extends Plugin {
 
         if(!$user_is_deleted && class_exists('StatusNet') && !array_key_exists('ActivityModeration', StatusNet::getActivePlugins())) {
             $rendered = sprintf(_m('<a href="%1$s">%2$s</a> deleted notice <a href="%3$s">{{%4$s}}</a>.'),
-                                htmlspecialchars($profile->getUrl()),
-                                htmlspecialchars($profile->getBestName()),
-                                htmlspecialchars($notice->getUrl()),
-                                htmlspecialchars($notice->uri));
+                htmlspecialchars($profile->getUrl()),
+                htmlspecialchars($profile->getBestName()),
+                htmlspecialchars($notice->getUrl()),
+                htmlspecialchars($notice->uri));
             $text = sprintf(_m('%1$s deleted notice {{%2$s}}.'),
-                                $profile->getBestName(),
-                                $notice->uri);
+                $profile->getBestName(),
+                $notice->uri);
             $uri = TagURI::mint('delete-notice:%d:%d:%s',
-                                $notice->profile_id,
-                                $notice->id,
-                                common_date_iso8601(common_sql_now()));
+                $notice->profile_id,
+                $notice->id,
+                common_date_iso8601(common_sql_now()));
             $notice = Notice::saveNew($notice->profile_id,
-                                      $text,
-                                      ActivityPlugin::SOURCE,
-                                      array('rendered' => $rendered,
-                                            'urls' => array(),
-                                            'uri' => $uri,
-                                            'verb' => 'qvitter-delete-notice',
-                                            'object_type' => ActivityObject::ACTIVITY));
+                $text,
+                ActivityPlugin::SOURCE,
+                array('rendered' => $rendered,
+                'urls' => array(),
+                'uri' => $uri,
+                'verb' => 'qvitter-delete-notice',
+                'object_type' => ActivityObject::ACTIVITY));
         }
 
 
@@ -1107,7 +1107,7 @@ class QvitterPlugin extends Plugin {
 
 
 
-   /**
+    /**
      * Checks for deleted remote notices and deleted the locally
      * A local qvitter-delete-notice is outputted in the onNoticeDeleteRelated event above
      *
@@ -1116,32 +1116,32 @@ class QvitterPlugin extends Plugin {
 
     public function onEndHandleFeedEntry($activity) {
 
-		if($activity->verb == 'qvitter-delete-notice' && class_exists('StatusNet') && !array_key_exists('ActivityModeration', StatusNet::getActivePlugins())) {
+        if($activity->verb == 'qvitter-delete-notice' && class_exists('StatusNet') && !array_key_exists('ActivityModeration', StatusNet::getActivePlugins())) {
 
-			$deleter_profile_uri = $activity->actor->id;
-			$deleted_notice_uri = $activity->objects[0]->objects[0]->content;
-			$deleted_notice_uri = substr($deleted_notice_uri,strpos($deleted_notice_uri,'{{')+2);
-			$deleted_notice_uri = substr($deleted_notice_uri,0,strpos($deleted_notice_uri,'}}'));
+            $deleter_profile_uri = $activity->actor->id;
+            $deleted_notice_uri = $activity->objects[0]->objects[0]->content;
+            $deleted_notice_uri = substr($deleted_notice_uri,strpos($deleted_notice_uri,'{{')+2);
+            $deleted_notice_uri = substr($deleted_notice_uri,0,strpos($deleted_notice_uri,'}}'));
 
-			$deleter_ostatus_profile = Ostatus_profile::getKV('uri', $deleter_profile_uri);
+            $deleter_ostatus_profile = Ostatus_profile::getKV('uri', $deleter_profile_uri);
 
-			if(!$deleter_ostatus_profile instanceof Ostatus_profile) {
-				return true;
-				}
+            if(!$deleter_ostatus_profile instanceof Ostatus_profile) {
+                return true;
+            }
 
-			$deleter_profile = Profile::getKV('id', $deleter_ostatus_profile->profile_id);
-			$deleted_notice = Notice::getKV('uri', $deleted_notice_uri);
+            $deleter_profile = Profile::getKV('id', $deleter_ostatus_profile->profile_id);
+            $deleted_notice = Notice::getKV('uri', $deleted_notice_uri);
 
-			if(!($deleter_profile instanceof Profile) || !($deleted_notice instanceof Notice)) {
-				return true;
-				}
+            if(!($deleter_profile instanceof Profile) || !($deleted_notice instanceof Notice)) {
+                return true;
+            }
 
-			if($deleter_profile->id != $deleted_notice->profile_id) {
-				return true;
-				}
+            if($deleter_profile->id != $deleted_notice->profile_id) {
+                return true;
+            }
 
-			$deleted_notice->delete();
-			}
+            $deleted_notice->delete();
+        }
 
         return true;
     }
@@ -1150,33 +1150,33 @@ class QvitterPlugin extends Plugin {
 
 
 
-   /**
+    /**
      * Add notification on subscription, remove on unsubscribe
      *
      * @return boolean hook flag
      */
     public function onEndSubscribe($subscriber, $other)
     {
-		if(Subscription::exists($subscriber, $other)) {
-			$this->insertNotification($other->id, $subscriber->id, 'follow', 1);
-			}
+        if(Subscription::exists($subscriber, $other)) {
+            $this->insertNotification($other->id, $subscriber->id, 'follow', 1);
+        }
 
         return true;
     }
     public function onEndUnsubscribe($subscriber, $other)
     {
-		if(!Subscription::exists($subscriber, $other)) {
-			$notif = new QvitterNotification();
-			$notif->to_profile_id = $other->id;
-			$notif->from_profile_id = $subscriber->id;
-			$notif->ntype = 'follow';
-			$notif->delete();
-			}
+        if(!Subscription::exists($subscriber, $other)) {
+            $notif = new QvitterNotification();
+            $notif->to_profile_id = $other->id;
+            $notif->from_profile_id = $subscriber->id;
+            $notif->ntype = 'follow';
+            $notif->delete();
+        }
 
         return true;
     }
 
-   /**
+    /**
      * Replace GNU Social's default FAQ with Qvitter's
      *
      * @return boolean hook flag
@@ -1184,24 +1184,24 @@ class QvitterPlugin extends Plugin {
     public function onEndLoadDoc($title, &$output)
     {
 
-    	if($title == 'faq') {
+        if($title == 'faq') {
 
-	    	$faq = file_get_contents(QVITTERDIR.'/doc/en/faq.html');
-	    	$faq = str_replace('{instance-name}',common_config('site','name'),$faq);
-	    	$faq = str_replace('{instance-url}',common_config('site','server'),$faq);
-	    	$faq = str_replace('{instance-url-with-protocol}',common_path('', true),$faq);
+            $faq = file_get_contents(QVITTERDIR.'/doc/en/faq.html');
+            $faq = str_replace('{instance-name}',common_config('site','name'),$faq);
+            $faq = str_replace('{instance-url}',common_config('site','server'),$faq);
+            $faq = str_replace('{instance-url-with-protocol}',common_path('', true),$faq);
 
-	        if (common_logged_in()) {
-				$user = common_current_user();
-		    	$faq = str_replace('{nickname}',$user->nickname,$faq);
-		    	}
-	    	$output = $faq;
-    		}
+            if (common_logged_in()) {
+                $user = common_current_user();
+                $faq = str_replace('{nickname}',$user->nickname,$faq);
+            }
+            $output = $faq;
+        }
 
         return true;
     }
 
-   /**
+    /**
      * Add menu items to top header in Classic
      *
      * @return boolean hook flag
@@ -1209,19 +1209,19 @@ class QvitterPlugin extends Plugin {
     public function onStartPrimaryNav($action)
     {
 
-                $action->menuItem(common_local_url('doc', array('title' => 'faq')),
-                                // TRANS: Menu item in primary navigation panel.
-                                _m('MENU','FAQ'),
-                                // TRANS: Menu item title in primary navigation panel.
-                                _('Frequently asked questions'),
-                                false,
-                                'top_nav_doc_faq');
+        $action->menuItem(common_local_url('doc', array('title' => 'faq')),
+            // TRANS: Menu item in primary navigation panel.
+            _m('MENU','FAQ'),
+            // TRANS: Menu item title in primary navigation panel.
+            _('Frequently asked questions'),
+            false,
+            'top_nav_doc_faq');
 
         return true;
     }
 
 
-   /**
+    /**
      * No registration for blocked ips
      *
      * @return boolean hook flag
@@ -1229,16 +1229,16 @@ class QvitterPlugin extends Plugin {
     public function onStartUserRegister($profile)
     {
 
-		if(is_array(self::settings("blocked_ips"))) {
-			if(in_array($_SERVER['REMOTE_ADDR'], self::settings("blocked_ips"))) {
-				return false;
-				}
-			}
+        if(is_array(self::settings("blocked_ips"))) {
+            if(in_array($_SERVER['REMOTE_ADDR'], self::settings("blocked_ips"))) {
+                return false;
+            }
+        }
 
         return true;
     }
 
-   /**
+    /**
      * Correct group mentions
      *
      * We get the correct group ids in a $_POST var called "post_to_groups", formatted as a string with ids separated by colon, e.g. 4:5
@@ -1252,15 +1252,15 @@ class QvitterPlugin extends Plugin {
             $correct_group_mentions = explode(':',$_POST['post_to_groups']);
             foreach($correct_group_mentions as $group_id) {
                 $correct_groups[] = User_group::getKV('id',$group_id);
-                }
+            }
 
             // loop through the groups guessed by gnu social's common_find_mentions() and correct them
             foreach($mentions as $mention_array_id=>$mention) {
                 foreach($correct_groups as $correct_groups_array_id=>$correct_group) {
                     if(isset($mention['mentioned'][0]->nickname)
-                    && isset($correct_group->nickname)
-                    && $mention['mentioned'][0]->nickname == $correct_group->nickname
-                    && !isset($mentions[$mention_array_id]['corrected'])) {
+                        && isset($correct_group->nickname)
+                        && $mention['mentioned'][0]->nickname == $correct_group->nickname
+                        && !isset($mentions[$mention_array_id]['corrected'])) {
                         $user_group_profile = Profile::getKV('id',$correct_group->profile_id);
                         $mentions[$mention_array_id]['mentioned'][0] = $user_group_profile;
                         $mentions[$mention_array_id]['url'] = $correct_group->permalink();
@@ -1268,17 +1268,17 @@ class QvitterPlugin extends Plugin {
                         $mentions[$mention_array_id]['corrected'] = true;
                         // now we've used this
                         unset($correct_groups[$correct_groups_array_id]);
-                        }
                     }
                 }
             }
-
-        return true;
         }
 
+        return true;
+    }
 
 
-   /**
+
+    /**
      * Add unread notification count to all API responses, when logged in
      *
      * @return boolean hook flag
@@ -1293,20 +1293,20 @@ class QvitterPlugin extends Plugin {
             return true;
         }
 
-		$user_id = $user->id;
+        $user_id = $user->id;
         $profile = $user->getProfile();
-		$notification = new QvitterNotification();
+        $notification = new QvitterNotification();
 
-		$notification->selectAdd();
-		$notification->selectAdd('ntype');
-		$notification->selectAdd('count(id) as count');
-		$notification->whereAdd("(to_profile_id = '".$user_id."')");
+        $notification->selectAdd();
+        $notification->selectAdd('ntype');
+        $notification->selectAdd('count(id) as count');
+        $notification->whereAdd("(to_profile_id = '".$user_id."')");
 
         // if the user only want notifications from users they follow
         $only_show_notifications_from_users_i_follow = Profile_prefs::getConfigData($profile, 'qvitter', 'only_show_notifications_from_users_i_follow');
         if($only_show_notifications_from_users_i_follow == '1') {
             $notification->whereAdd(sprintf('qvitternotification.from_profile_id IN (SELECT subscribed FROM subscription WHERE subscriber = %u)', $user_id));
-            }
+        }
 
         // the user might have opted out from notifications from profiles they have muted
         $hide_notifications_from_muted_users = Profile_prefs::getConfigData($profile, 'qvitter', 'hide_notifications_from_muted_users');
@@ -1315,8 +1315,8 @@ class QvitterPlugin extends Plugin {
             if($muted_ids !== false && count($muted_ids) > 0) {
                 $ids_imploded = implode(',',$muted_ids);
                 $notification->whereAdd('qvitternotification.from_profile_id NOT IN ('.$ids_imploded.')');
-                }
             }
+        }
 
         // the user might have opted out from certain notification types
         $current_profile = $user->getProfile();
@@ -1327,40 +1327,40 @@ class QvitterPlugin extends Plugin {
         if($disable_notify_replies_and_mentions == '1') {
             $notification->whereAdd('qvitternotification.ntype != "mention"');
             $notification->whereAdd('qvitternotification.ntype != "reply"');
-            }
+        }
         if($disable_notify_favs == '1') {
             $notification->whereAdd('qvitternotification.ntype != "like"');
-            }
+        }
         if($disable_notify_repeats == '1') {
             $notification->whereAdd('qvitternotification.ntype != "repeat"');
-            }
+        }
         if($disable_notify_follows == '1') {
             $notification->whereAdd('qvitternotification.ntype != "follow"');
-            }
+        }
 
-		$notification->groupBy('ntype');
-		$notification->whereAdd("(is_seen = '0')");
-		$notification->whereAdd("(notice_id IS NOT NULL)");	// sometimes notice_id is NULL, those notifications are corrupt and should be discarded
-		$notification->find();
+        $notification->groupBy('ntype');
+        $notification->whereAdd("(is_seen = '0')");
+        $notification->whereAdd("(notice_id IS NOT NULL)"); // sometimes notice_id is NULL, those notifications are corrupt and should be discarded
+        $notification->find();
 
-		$new_notifications = array();
-		while ($notification->fetch()) {
-			$new_notifications[$notification->ntype] = $notification->count;
-			}
+        $new_notifications = array();
+        while ($notification->fetch()) {
+            $new_notifications[$notification->ntype] = $notification->count;
+        }
 
-		header('Qvitter-Notifications: '.json_encode($new_notifications));
+        header('Qvitter-Notifications: '.json_encode($new_notifications));
 
-    	return true;
-    	}
+        return true;
+    }
 
 
     function onPluginVersion(array &$versions)
     {
         $versions[] = array('name' => 'Qvitter',
-                            'version' => '5-alpha',
-                            'author' => 'Hannes Mannerheim',
-                            'homepage' => 'https://git.gnu.io/h2p/Qvitter',
-                            'rawdescription' => _m('User interface'));
+            'version' => '5-alpha',
+            'author' => 'Hannes Mannerheim',
+            'homepage' => 'https://git.gnu.io/h2p/Qvitter',
+            'rawdescription' => _m('User interface'));
         return true;
     }
 
@@ -1443,7 +1443,7 @@ class QvitterPlugin extends Plugin {
         $twitter_user['following'] = false;
         $twitter_user['statusnet_blocking'] = false;
 
-		$logged_in_profile = null;
+        $logged_in_profile = null;
 
         if(common_logged_in()) {
 
@@ -1480,10 +1480,10 @@ class URLMapperOverwrite extends URLMapper
 
         $m->connect($path, array('action' => $newaction), $paramPatterns);
 
-		$regex = self::makeRegex($path, $paramPatterns);
+        $regex = self::makeRegex($path, $paramPatterns);
 
-		foreach($m->variables as $n=>$v)
-			if($v[1] == $regex)
-				$m->variables[$n][0]['action'] = $newaction;
+        foreach($m->variables as $n=>$v)
+            if($v[1] == $regex)
+                $m->variables[$n][0]['action'] = $newaction;
     }
 }
