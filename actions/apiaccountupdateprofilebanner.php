@@ -37,7 +37,6 @@
   ·                                                                             ·
   · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · */
 
-
 if (!defined('GNUSOCIAL')) {
     exit(1);
 }
@@ -47,13 +46,13 @@ class ApiAccountUpdateProfileBannerAction extends ApiAuthAction
     protected $needPost = true;
 
     /**
-     * Take arguments for running
+     * Take arguments for running.
      *
      * @param array $args $_REQUEST args
      *
-     * @return boolean success flag
+     * @return bool success flag
      */
-    protected function prepare(array $args=array())
+    protected function prepare(array $args = array())
     {
         parent::prepare($args);
 
@@ -65,15 +64,13 @@ class ApiAccountUpdateProfileBannerAction extends ApiAuthAction
         $this->cropH = $this->trimmed('height');
         $this->cropX = $this->trimmed('offset_left');
         $this->cropY = $this->trimmed('offset_top');
-        $this->img   = $this->trimmed('banner');
+        $this->img = $this->trimmed('banner');
 
         return true;
     }
 
     /**
-     * Handle the request
-     *
-     * @return void
+     * Handle the request.
      */
     protected function handle()
     {
@@ -81,9 +78,7 @@ class ApiAccountUpdateProfileBannerAction extends ApiAuthAction
 
         // see if we have regular uploaded image data
         try {
-
             $mediafile = MediaFile::fromUpload('banner', $this->scoped);
-
         } catch (NoUploadedMediaException $e) {
 
             // if not we may have base64 data
@@ -105,13 +100,13 @@ class ApiAccountUpdateProfileBannerAction extends ApiAuthAction
         $width = $this->cropW;
         $height = $this->cropH;
         $scale = 1;
-        if($width > 1200) {
-            $scale = 1200/$width;
-        } elseif($height > 600) {
-            $scale = 600/$height;
+        if ($width > 1200) {
+            $scale = 1200 / $width;
+        } elseif ($height > 600) {
+            $scale = 600 / $height;
         }
-        $width = round($width*$scale);
-        $height = round($height*$scale);
+        $width = round($width * $scale);
+        $height = round($height * $scale);
 
         // crop
         try {
@@ -127,7 +122,7 @@ class ApiAccountUpdateProfileBannerAction extends ApiAuthAction
                 'banner-'.common_timestamp()
             );
 
-            $imagefile->resizeTo(Avatar::path($filename), array('width'=>$width, 'height'=>$height, 'x'=>$this->cropX, 'y'=>$this->cropY, 'w'=>$this->cropW, 'h'=>$this->cropH));
+            $imagefile->resizeTo(Avatar::path($filename), array('width' => $width, 'height' => $height, 'x' => $this->cropX, 'y' => $this->cropY, 'w' => $this->cropW, 'h' => $this->cropH));
             $result['url'] = Avatar::url($filename);
         } catch (Exception $e) {
             $this->clientError(_('The image could not be resized and cropped. '.$e), 422);
@@ -135,7 +130,7 @@ class ApiAccountUpdateProfileBannerAction extends ApiAuthAction
 
         // save in profile_prefs
         try {
-		    Profile_prefs::setData($this->scoped, 'qvitter', 'cover_photo', $result['url']);
+            Profile_prefs::setData($this->scoped, 'qvitter', 'cover_photo', $result['url']);
         } catch (ServerException $e) {
             $this->clientError(_('The image could not be resized and cropped. '.$e), 422);
         }

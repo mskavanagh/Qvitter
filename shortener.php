@@ -11,12 +11,10 @@
  * 3) Test it
  * Contact Knut Erik if you have any questions related to this .php file.
  * Quitter.no => knuthollund@quitter.no
- * GitHub: => https://github.com/fxdwg
+ * GitHub: => https://github.com/fxdwg.
  */
-
-
 $query = $_SERVER['QUERY_STRING'];
 if (strlen($query) > 0) {
-    $shortenerUrl = 'http://qttr.at/yourls-api.php?' . $query;
-    print file_get_contents($shortenerUrl);
+    $shortenerUrl = 'http://qttr.at/yourls-api.php?'.$query;
+    echo file_get_contents($shortenerUrl);
 }

@@ -34,20 +34,20 @@
   ·                                                                             ·
   · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · */
 
-
-if (!defined('GNUSOCIAL')) { exit(1); }
+if (!defined('GNUSOCIAL')) {
+    exit(1);
+}
 
 class ApiToggleQvitterAction extends ApiAuthAction
 {
-
     /**
-     * Take arguments for running
+     * Take arguments for running.
      *
      * @param array $args $_REQUEST args
      *
-     * @return boolean success flag
+     * @return bool success flag
      */
-    protected function prepare(array $args=array())
+    protected function prepare(array $args = array())
     {
         parent::prepare($args);
 
@@ -55,30 +55,28 @@ class ApiToggleQvitterAction extends ApiAuthAction
     }
 
     /**
-     * Handle the request
+     * Handle the request.
      *
      * @param array $args $_REQUEST data (unused)
-     *
-     * @return void
      */
     protected function handle()
     {
         parent::handle();
 
         $user = common_current_user();
-		$profile = $user->getProfile();
+        $profile = $user->getProfile();
 
         // what to toggle
-		if(QvitterPlugin::settings('enabledbydefault')) {
+        if (QvitterPlugin::settings('enabledbydefault')) {
             $toggle = 'disable_qvitter';
         } else {
             $toggle = 'enable_qvitter';
         }
 
-	    // new value
+        // new value
         $state = Profile_prefs::getConfigData($profile, 'qvitter', $toggle);
-		if($state == 1) {
-			$new_state = 0;
+        if ($state == 1) {
+            $new_state = 0;
         } else {
             $new_state = 1;
         }
@@ -91,7 +89,7 @@ class ApiToggleQvitterAction extends ApiAuthAction
             $result['error'] = $e;
         }
 
-        if(!$pref_saved) {
+        if (!$pref_saved) {
             $result['success'] = false;
             $result['error'] = 'Probably couldn\'t get topic from pref table';
         }

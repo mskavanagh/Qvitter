@@ -34,27 +34,28 @@
   ·                                                                             ·
   · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · */
 
-
-if (!defined('GNUSOCIAL')) { exit(1); }
+if (!defined('GNUSOCIAL')) {
+    exit(1);
+}
 
 class ApiQvitterUpdateLinkColorAction extends ApiAuthAction
 {
-    var $linkcolor = null;
+    public $linkcolor = null;
 
     protected $needPost = true;
 
     /**
-     * Take arguments for running
+     * Take arguments for running.
      *
      * @param array $args $_REQUEST args
      *
-     * @return boolean success flag
+     * @return bool success flag
      */
-    protected function prepare(array $args=array())
+    protected function prepare(array $args = array())
     {
         parent::prepare($args);
 
-        $this->format = 'json';        
+        $this->format = 'json';
 
         $this->linkcolor = $this->trimmed('linkcolor');
 
@@ -62,26 +63,24 @@ class ApiQvitterUpdateLinkColorAction extends ApiAuthAction
     }
 
     /**
-     * Handle the request
+     * Handle the request.
      *
      * Try to save the user's colors in her design. Create a new design
      * if the user doesn't already have one.
      *
      * @param array $args $_REQUEST data (unused)
-     *
-     * @return void
      */
     protected function handle()
     {
         parent::handle();
 
-        $validhex = preg_match('/^[a-f0-9]{6}$/i',$this->linkcolor);
+        $validhex = preg_match('/^[a-f0-9]{6}$/i', $this->linkcolor);
         if ($validhex === false || $validhex == 0) {
             $this->clientError(_('Not a valid hex color.'), 400);
         }
 
         // save the new color
-		Profile_prefs::setData($this->scoped, 'theme', 'linkcolor', $this->linkcolor);
+        Profile_prefs::setData($this->scoped, 'theme', 'linkcolor', $this->linkcolor);
 
         $twitter_user = $this->twitterUserArray($this->scoped, true);
 

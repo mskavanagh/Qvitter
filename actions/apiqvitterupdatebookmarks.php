@@ -38,23 +38,24 @@
   ·                                                                             ·
   · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · */
 
-
-if (!defined('GNUSOCIAL')) { exit(1); }
+if (!defined('GNUSOCIAL')) {
+    exit(1);
+}
 
 class ApiQvitterUpdateBookmarksAction extends ApiAuthAction
 {
-    var $bookmarks = null;
+    public $bookmarks = null;
 
     protected $needPost = true;
 
     /**
-     * Take arguments for running
+     * Take arguments for running.
      *
      * @param array $args $_REQUEST args
      *
-     * @return boolean success flag
+     * @return bool success flag
      */
-    protected function prepare(array $args=array())
+    protected function prepare(array $args = array())
     {
         parent::prepare($args);
 
@@ -66,18 +67,16 @@ class ApiQvitterUpdateBookmarksAction extends ApiAuthAction
     }
 
     /**
-     * Handle the request
+     * Handle the request.
      *
      * @param array $args $_REQUEST data (unused)
-     *
-     * @return void
      */
     protected function handle()
     {
         parent::handle();
 
         // save the new bookmarks
-		$saved = Profile_prefs::setData($this->scoped, 'qvitter', 'bookmarks', $this->bookmarks);
+        $saved = Profile_prefs::setData($this->scoped, 'qvitter', 'bookmarks', $this->bookmarks);
 
         $this->initDocument('json');
         $this->showJsonObjects($saved);

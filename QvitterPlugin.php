@@ -36,12 +36,12 @@
 
 const QVITTERDIR = __DIR__;
 
-class QvitterPlugin extends Plugin {
-
+class QvitterPlugin extends Plugin
+{
     protected $hijack_ui = false;
     protected $qvitter_hide_replies = false;
 
-    static function settings($setting)
+    public static function settings($setting)
     {
 
     /* · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · ·
@@ -97,7 +97,6 @@ class QvitterPlugin extends Plugin {
         // LINKIFY DOMAINS WITHOUT PROTOCOL AS DEFAULT
         $settings['linkify_bare_domains'] = true;
 
-
          /* · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · ·
           ·                                                                   ·
           ·                (o>                                  >o)           ·
@@ -107,18 +106,17 @@ class QvitterPlugin extends Plugin {
          · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · */
 
         // config.php settings override the settings in this file
-        $configphpsettings = common_config('site','qvitter') ?: array();
-        foreach($configphpsettings as $configphpsetting=>$value) {
+        $configphpsettings = common_config('site', 'qvitter') ?: array();
+        foreach ($configphpsettings as $configphpsetting => $value) {
             $settings[$configphpsetting] = $value;
         }
 
         // set linkify setting
         common_config_set('linkify', 'bare_domains', $settings['linkify_bare_domains']);
 
-        if(isset($settings[$setting])) {
+        if (isset($settings[$setting])) {
             return $settings[$setting];
-        }
-        else {
+        } else {
             return false;
         }
     }
@@ -129,8 +127,7 @@ class QvitterPlugin extends Plugin {
         common_config_append('admin', 'panels', 'qvitteradm');
     }
 
-
-    function onCheckSchema()
+    public function onCheckSchema()
     {
         $schema = Schema::get();
 
@@ -139,11 +136,11 @@ class QvitterPlugin extends Plugin {
 
         // index the url column in the notice table
         $notice_schemadef = $schema->getTableDef('notice');
-        if(!isset($notice_schemadef['indexes']['notice_url_idx'])) {
+        if (!isset($notice_schemadef['indexes']['notice_url_idx'])) {
             try {
                 $schema->createIndex('notice', 'url');
             } catch (Exception $e) {
-                common_log(LOG_ERR, __METHOD__ . ': ' . $e->getMessage());
+                common_log(LOG_ERR, __METHOD__.': '.$e->getMessage());
             }
         }
 
@@ -153,6 +150,7 @@ class QvitterPlugin extends Plugin {
     public function onBeforePluginCheckSchema()
     {
         QvitterNotification::beforeSchemaUpdate();
+
         return true;
     }
 
@@ -161,15 +159,15 @@ class QvitterPlugin extends Plugin {
     {
         $m->connect(':nickname/mutes',
             array('action' => 'qvitter',
-            'nickname' => Nickname::INPUT_FMT));
+            'nickname' => Nickname::INPUT_FMT, ));
         $m->connect('api/qvitter/mutes.json',
             array('action' => 'ApiQvitterMutes'));
         $m->connect('api/qvitter/sandboxed.:format',
             array('action' => 'ApiQvitterSandboxed',
-            'format' => '(xml|json)'));
+            'format' => '(xml|json)', ));
         $m->connect('api/qvitter/silenced.:format',
             array('action' => 'ApiQvitterSilenced',
-            'format' => '(xml|json)'));
+            'format' => '(xml|json)', ));
         $m->connect('api/qvitter/sandbox/create.json',
             array('action' => 'ApiQvitterSandboxCreate'));
         $m->connect('api/qvitter/sandbox/destroy.json',
@@ -180,21 +178,21 @@ class QvitterPlugin extends Plugin {
             array('action' => 'ApiQvitterSilenceDestroy'));
         $m->connect('services/oembed.:format',
             array('action' => 'apiqvitteroembednotice',
-            'format' => '(xml|json)'));
+            'format' => '(xml|json)', ));
         $m->connect('api/qvitter/check_email.json',
             array('action' => 'ApiQvitterCheckEmail'));
         $m->connect('api/qvitter/:nickname/lists/:id/subscribers.json',
             array('action' => 'ApiQvitterListSubscribers',
             'nickname' => '[a-zA-Z0-9]+',
-            'id' => '[a-zA-Z0-9]+'));
+            'id' => '[a-zA-Z0-9]+', ));
         $m->connect('api/qvitter/:nickname/lists/:id/members.json',
             array('action' => 'ApiQvitterListMembers',
             'nickname' => '[a-zA-Z0-9]+',
-            'id' => '[a-zA-Z0-9]+'));
+            'id' => '[a-zA-Z0-9]+', ));
         $m->connect('api/qvitter/:nickname/lists/:id/statuses.json',
             array('action' => 'ApiQvitterTimelineList',
             'nickname' => '[a-zA-Z0-9]+',
-            'id' => '[a-zA-Z0-9]+'));
+            'id' => '[a-zA-Z0-9]+', ));
         $m->connect('api/qvitter/blocks.json',
             array('action' => 'ApiQvitterBlocks'));
         $m->connect('api/qvitter/hello.json',
@@ -206,7 +204,7 @@ class QvitterPlugin extends Plugin {
             array('notice_id' => '[0-9]+'));
         $m->connect('api/statuses/public_and_external_timeline.:format',
             array('action' => 'ApiTimelinePublicAndExternal',
-            'format' => '(xml|json|rss|atom|as)'));
+            'format' => '(xml|json|rss|atom|as)', ));
         $m->connect('api/qvitter/update_bookmarks.json',
             array('action' => 'ApiQvitterUpdateBookmarks'));
         $m->connect('api/qvitter/set_profile_pref.json',
@@ -219,7 +217,7 @@ class QvitterPlugin extends Plugin {
             array('action' => 'apiqvitterchecklogin'));
         $m->connect('api/qvitter/allfollowing/:id.json',
             array('action' => 'apiqvitterallfollowing',
-            'id' => Nickname::INPUT_FMT));
+            'id' => Nickname::INPUT_FMT, ));
         $m->connect('api/account/update_profile_banner.json',
             array('action' => 'ApiAccountUpdateProfileBanner'));
         $m->connect('api/saved_searches/list.json',
@@ -242,10 +240,10 @@ class QvitterPlugin extends Plugin {
             array('action' => 'apiqvitternotifications'));
         $m->connect(':nickname/notifications',
             array('action' => 'qvitter',
-            'nickname' => Nickname::INPUT_FMT));
+            'nickname' => Nickname::INPUT_FMT, ));
         $m->connect(':nickname/blocks',
             array('action' => 'qvitter',
-            'nickname' => Nickname::INPUT_FMT));
+            'nickname' => Nickname::INPUT_FMT, ));
         $m->connect('settings/qvitter',
             array('action' => 'qvittersettings'));
         $m->connect('panel/qvitter',
@@ -261,24 +259,23 @@ class QvitterPlugin extends Plugin {
         $qvitter_enabled_by_user = 0;
         $qvitter_disabled_by_user = 0;
         if ($scoped instanceof Profile) {
-            $qvitter_enabled_by_user = (int)$scoped->getPref('qvitter', 'enable_qvitter', false);
-            $qvitter_disabled_by_user = (int)$scoped->getPref('qvitter', 'disable_qvitter', false);
+            $qvitter_enabled_by_user = (int) $scoped->getPref('qvitter', 'enable_qvitter', false);
+            $qvitter_disabled_by_user = (int) $scoped->getPref('qvitter', 'disable_qvitter', false);
             $this->qvitter_hide_replies = $scoped->getPref('qvitter', 'hide_replies', false);
         }
 
         // reroute to qvitter if we're logged out and qvitter is enabled by default
-        if(static::settings('enabledbydefault') === true && is_null($scoped)) {
+        if (static::settings('enabledbydefault') === true && is_null($scoped)) {
             $this->hijack_ui = true;
         }
         // if we're logged in and qvitter is enabled by default, reroute if the user has not disabled qvitter
-        elseif(static::settings('enabledbydefault') === true && $qvitter_disabled_by_user == 0){
+        elseif (static::settings('enabledbydefault') === true && $qvitter_disabled_by_user == 0) {
             $this->hijack_ui = true;
         }
         // if we're logged in, and qvitter is _not_ enabled by default, reroute if the user enabled qvitter
-        elseif(static::settings('enabledbydefault') === false && $qvitter_enabled_by_user == 1) {
+        elseif (static::settings('enabledbydefault') === false && $qvitter_enabled_by_user == 1) {
             $this->hijack_ui = true;
         }
-
 
         if ($this->hijack_ui === true) {
 
@@ -343,20 +340,18 @@ class QvitterPlugin extends Plugin {
             URLMapperOverwrite::overwrite_variable($m, ':nickname/all/:tag',
                 array('action' => 'showprofiletag'),
                 array('nickname' => Nickname::DISPLAY_FMT,
-                'tag' => Router::REGEX_TAG),
+                'tag' => Router::REGEX_TAG, ),
                 'qvitter');
             URLMapperOverwrite::overwrite_variable($m, ':tagger/all/:tag/tagged',
                 array('action' => 'peopletagged'),
                 array('tagger' => Nickname::DISPLAY_FMT,
-                'tag' => Router::REGEX_TAG),
+                'tag' => Router::REGEX_TAG, ),
                 'qvitter');
             URLMapperOverwrite::overwrite_variable($m, ':tagger/all/:tag/subscribers',
                 array('action' => 'peopletagsubscribers'),
                 array('tagger' => Nickname::DISPLAY_FMT,
-                'tag' => Router::REGEX_TAG),
+                'tag' => Router::REGEX_TAG, ),
                 'qvitter');
-
-
 
             $m->connect('group/:nickname/admins',
                 array('action' => 'qvitter'),
@@ -380,15 +375,15 @@ class QvitterPlugin extends Plugin {
         $valid_code = isset($_POST['code'])
             ? Invitation::getKV('code', $_POST['code'])
             : null;
-        if(self::settings('enabledbydefault') && empty($valid_code)) {
+        if (self::settings('enabledbydefault') && empty($valid_code)) {
             $m->connect('main/register',
                 array('action' => 'qvitter'));
         }
 
-
         // add user arrays for some urls, to use to build profile cards
         // this way we don't have to request this in a separate http request
-        if(isset($_GET['withuserarray'])) switch (getPath($_REQUEST)) {
+        if (isset($_GET['withuserarray'])) {
+            switch (getPath($_REQUEST)) {
 case 'api/statuses/followers.json':
 case 'api/statuses/friends.json':
 case 'api/statusnet/groups/list.json':
@@ -404,74 +399,66 @@ case 'api/statuses/user_timeline.json':
     }
 
     // add screen_name's user array
-    elseif(isset($_GET['screen_name']) || isset($_GET['id'])){
-
-        if(isset($_GET['screen_name'])) {
+    elseif (isset($_GET['screen_name']) || isset($_GET['id'])) {
+        if (isset($_GET['screen_name'])) {
             $user = User::getKV('nickname', $_GET['screen_name']);
-        }
-        elseif(isset($_GET['id'])) {
+        } elseif (isset($_GET['id'])) {
             $user = User::getKV('id', $_GET['id']);
         }
 
-        if($user instanceof User) {
+        if ($user instanceof User) {
             header('Qvitter-User-Array: '.json_encode($this->qvitterTwitterUserArray($user->getProfile())));
         }
     }
     break;
         }
-
+        }
     }
 
-
     /**
-     * Add script to default ui, to be able to toggle Qvitter with one click
+     * Add script to default ui, to be able to toggle Qvitter with one click.
      *
-     * @return boolean hook return
+     * @return bool hook return
      */
-
-    function onEndShowScripts($action){
-
+    public function onEndShowScripts($action)
+    {
         if (common_logged_in()) {
-
             $user = common_current_user();
             $profile = $user->getProfile();
-            $qvitter_enabled='false';
+            $qvitter_enabled = 'false';
 
             // if qvitter is enabled by default but _not_ disabled by the user,
-            if(QvitterPlugin::settings('enabledbydefault')) {
+            if (self::settings('enabledbydefault')) {
                 $disabled = Profile_prefs::getConfigData($profile, 'qvitter', 'disable_qvitter');
-                if($disabled == 0) {
-                    $qvitter_enabled='true';
+                if ($disabled == 0) {
+                    $qvitter_enabled = 'true';
                 }
             }
             // if qvitter is disabled by default and _enabled_ by the user,
             else {
                 $enabled = Profile_prefs::getConfigData($profile, 'qvitter', 'enable_qvitter');
-                if($enabled == 1) {
-                    $qvitter_enabled='true';
+                if ($enabled == 1) {
+                    $qvitter_enabled = 'true';
                 }
             }
 
             $action->inlineScript(' var toggleQvitterAPIURL = \''.common_path('', true).'api/qvitter/toggle_qvitter.json\';
-            var toggleText = \''._('New').' '.str_replace("'","\'",common_config('site','name')).'\';
+            var toggleText = \''._('New').' '.str_replace("'", "\'", common_config('site', 'name')).'\';
             var qvitterEnabled = '.$qvitter_enabled.';
             var qvitterAllLink = \''.common_local_url('all', array('nickname' => $user->nickname)).'\';
             ');
-            $action->script($this->path('js/toggleqvitter.js').'?changed='.date('YmdHis',filemtime(QVITTERDIR.'/js/toggleqvitter.js')));
+            $action->script($this->path('js/toggleqvitter.js').'?changed='.date('YmdHis', filemtime(QVITTERDIR.'/js/toggleqvitter.js')));
         }
     }
 
-
-
     /**
-     * Menu item for Qvitter
+     * Menu item for Qvitter.
      *
      * @param Action $action action being executed
      *
-     * @return boolean hook return
+     * @return bool hook return
      */
-
-    function onEndAccountSettingsNav($action)
+    public function onEndAccountSettingsNav($action)
     {
         $action_name = $action->trimmed('action');
 
@@ -486,16 +473,14 @@ case 'api/statuses/user_timeline.json':
     }
 
     /**
-     * Menu item for admin panel
+     * Menu item for admin panel.
      *
      * @param Action $action action being executed
      *
-     * @return boolean hook return
+     * @return bool hook return
      */
-
-    function onEndAdminPanelNav($action)
+    public function onEndAdminPanelNav($action)
     {
-
         $action_name = $action->trimmed('action');
 
         $action->out->menuItem(common_local_url('qvitteradminsettings'),
@@ -508,18 +493,14 @@ case 'api/statuses/user_timeline.json':
         return true;
     }
 
-
-
-
     /**
-     * Add stuff to notices in API responses
+     * Add stuff to notices in API responses.
      *
      * @param Action $action action being executed
      *
-     * @return boolean hook return
+     * @return bool hook return
      */
-
-    function onNoticeSimpleStatusArray($notice, &$twitter_status, $scoped)
+    public function onNoticeSimpleStatusArray($notice, &$twitter_status, $scoped)
     {
 
         // strip tags from source, we can't trust html here, because of gs bug
@@ -528,18 +509,17 @@ case 'api/statuses/user_timeline.json':
         // groups
         $notice_groups = $notice->getGroups();
         $group_addressees = false;
-        foreach($notice_groups as $g) {
-            $group_addressees[] = array('nickname'=>$g->nickname,'url'=>$g->mainpage);
+        foreach ($notice_groups as $g) {
+            $group_addressees[] = array('nickname' => $g->nickname, 'url' => $g->mainpage);
         }
         $twitter_status['statusnet_in_groups'] = $group_addressees;
 
         // for older verions of gnu social: include the repeat-id, which we need when unrepeating later
-        if(array_key_exists('repeated', $twitter_status) && $twitter_status['repeated'] === true) {
+        if (array_key_exists('repeated', $twitter_status) && $twitter_status['repeated'] === true) {
             $repeated = Notice::pkeyGet(array('profile_id' => $scoped->id,
                 'repeat_of' => $notice->id,
-                'verb' => 'http://activitystrea.ms/schema/1.0/share'));
+                'verb' => 'http://activitystrea.ms/schema/1.0/share', ));
             $twitter_status['repeated_id'] = $repeated->id;
-
         }
 
         // more metadata about attachments
@@ -549,35 +529,35 @@ case 'api/statuses/user_timeline.json':
         $attachment_url_to_id = array();
         if (!empty($attachments)) {
             foreach ($attachments as $attachment) {
-                if(is_object($attachment)) {
+                if (is_object($attachment)) {
                     try {
                         $enclosure_o = $attachment->getEnclosure();
 
                         // Oembed
-                        if(array_key_exists('Oembed', StatusNet::getActivePlugins())) {
-                            $oembed = File_oembed::getKV('file_id',$attachment->id);
-                            if($oembed instanceof File_oembed) {
-                                $oembed_html = str_replace('&lt;!--//--&gt;','',$oembed->html); // trash left of wordpress' javascript after htmLawed removed the tags
-                                if($oembed->provider == 'Twitter' && strstr($oembed_html, '>— '.$oembed->author_name)) {
-                                    $oembed_html = substr($oembed_html,0,strpos($oembed_html, '>— '.$oembed->author_name)+1); // remove user data from twitter oembed html (we have it in )
-                                    $twitter_username = substr($oembed->html,strpos($oembed->html, '>— '.$oembed->author_name)+strlen('>— '.$oembed->author_name));
-                                    $twitter_username = substr($twitter_username, strpos($twitter_username,'(@')+1);
-                                    $twitter_username = substr($twitter_username, 0,strpos($twitter_username,')'));
+                        if (array_key_exists('Oembed', StatusNet::getActivePlugins())) {
+                            $oembed = File_oembed::getKV('file_id', $attachment->id);
+                            if ($oembed instanceof File_oembed) {
+                                $oembed_html = str_replace('&lt;!--//--&gt;', '', $oembed->html); // trash left of wordpress' javascript after htmLawed removed the tags
+                                if ($oembed->provider == 'Twitter' && strstr($oembed_html, '>— '.$oembed->author_name)) {
+                                    $oembed_html = substr($oembed_html, 0, strpos($oembed_html, '>— '.$oembed->author_name) + 1); // remove user data from twitter oembed html (we have it in )
+                                    $twitter_username = substr($oembed->html, strpos($oembed->html, '>— '.$oembed->author_name) + strlen('>— '.$oembed->author_name));
+                                    $twitter_username = substr($twitter_username, strpos($twitter_username, '(@') + 1);
+                                    $twitter_username = substr($twitter_username, 0, strpos($twitter_username, ')'));
                                     $oembed->title = $twitter_username;
                                 }
-                                $oembed_html = str_replace('&#8230;','...',$oembed_html); // ellipsis is sometimes stored as html in db, for some reason
-                                $oembed_html = mb_substr(trim(strip_tags($oembed_html)),0,250);
-                                $oembed_title = trim(strip_tags(html_entity_decode($oembed->title,ENT_QUOTES))); // sometimes we have html charachters that we want to decode and then strip
-                                $oembed_provider = trim(strip_tags(html_entity_decode($oembed->provider,ENT_QUOTES)));
-                                $oembed_author_name = trim(strip_tags(html_entity_decode($oembed->author_name,ENT_QUOTES)));
+                                $oembed_html = str_replace('&#8230;', '...', $oembed_html); // ellipsis is sometimes stored as html in db, for some reason
+                                $oembed_html = mb_substr(trim(strip_tags($oembed_html)), 0, 250);
+                                $oembed_title = trim(strip_tags(html_entity_decode($oembed->title, ENT_QUOTES))); // sometimes we have html charachters that we want to decode and then strip
+                                $oembed_provider = trim(strip_tags(html_entity_decode($oembed->provider, ENT_QUOTES)));
+                                $oembed_author_name = trim(strip_tags(html_entity_decode($oembed->author_name, ENT_QUOTES)));
                                 $attachment_url_to_id[$enclosure_o->url]['oembed'] = array(
-                                    'type'=> $oembed->type,
-                                    'provider'=> $oembed_provider,
-                                    'provider_url'=> $oembed->provider_url,
-                                    'oembedHTML'=> $oembed_html,
-                                    'title'=> $oembed_title,
-                                    'author_name'=> $oembed_author_name,
-                                    'author_url'=> $oembed->author_url
+                                    'type' => $oembed->type,
+                                    'provider' => $oembed_provider,
+                                    'provider_url' => $oembed->provider_url,
+                                    'oembedHTML' => $oembed_html,
+                                    'title' => $oembed_title,
+                                    'author_name' => $oembed_author_name,
+                                    'author_url' => $oembed->author_url,
                                 );
                             } else {
                                 $attachment_url_to_id[$enclosure_o->url]['oembed'] = false;
@@ -593,8 +573,8 @@ case 'api/statuses/user_timeline.json':
 
                         // add data about thumbnails
                         $thumb = $attachment->getThumbnail();
-                        $large_thumb = $attachment->getThumbnail(1000,3000,false);
-                        if(method_exists('File_thumbnail','url')) {
+                        $large_thumb = $attachment->getThumbnail(1000, 3000, false);
+                        if (method_exists('File_thumbnail', 'url')) {
                             $thumb_url = File_thumbnail::url($thumb->filename);
                             $large_thumb_url = File_thumbnail::url($large_thumb->filename);
                         } else {
@@ -607,9 +587,9 @@ case 'api/statuses/user_timeline.json':
                         $attachment_url_to_id[$enclosure_o->url]['height'] = $attachment->height;
 
                         // animated gif?
-                        if($attachment->mimetype == 'image/gif') {
+                        if ($attachment->mimetype == 'image/gif') {
                             $image = ImageFile::fromFileObject($attachment);
-                            if($image->animated == 1) {
+                            if ($image->animated == 1) {
                                 $attachment_url_to_id[$enclosure_o->url]['animated'] = true;
                             } else {
                                 $attachment_url_to_id[$enclosure_o->url]['animated'] = false;
@@ -628,12 +608,11 @@ case 'api/statuses/user_timeline.json':
                             $attachment_url_to_id[$enclosure_o->url]['height'] = $attachment->height;
 
                             // animated gif?
-                            if($attachment->mimetype == 'image/gif') {
+                            if ($attachment->mimetype == 'image/gif') {
                                 $image = ImageFile::fromFileObject($attachment);
-                                if($image->animated == 1) {
+                                if ($image->animated == 1) {
                                     $attachment_url_to_id[$enclosure_o->url]['animated'] = true;
-                                }
-                                else {
+                                } else {
                                     $attachment_url_to_id[$enclosure_o->url]['animated'] = false;
                                 }
                             }
@@ -647,7 +626,7 @@ case 'api/statuses/user_timeline.json':
         if (!empty($twitter_status['attachments'])) {
             foreach ($twitter_status['attachments'] as &$attachment) {
                 if (!empty($attachment_url_to_id[$attachment['url']])) {
-                    $attachment = array_merge($attachment,$attachment_url_to_id[$attachment['url']]);
+                    $attachment = array_merge($attachment, $attachment_url_to_id[$attachment['url']]);
                 }
             }
         }
@@ -655,7 +634,6 @@ case 'api/statuses/user_timeline.json':
         // quoted notices
         if (!empty($twitter_status['attachments'])) {
             foreach ($twitter_status['attachments'] as &$attachment) {
-
                 $quoted_notice = false;
 
                 // if this attachment has an url this might be a notice url
@@ -669,48 +647,48 @@ case 'api/statuses/user_timeline.json':
                     $attachment_url_wo_protocol = preg_replace('(^https?://)', '', $attachment['url']);
 
                     // local notice urls
-                    if(strpos($attachment_url_wo_protocol, $noticeurl_wo_protocol) === 0) {
-                        $possible_notice_id = str_replace($noticeurl_wo_protocol,'',$attachment_url_wo_protocol);
-                        if(ctype_digit($possible_notice_id)) {
-                            $quoted_notice = Notice::getKV('id',$possible_notice_id);;
+                    if (strpos($attachment_url_wo_protocol, $noticeurl_wo_protocol) === 0) {
+                        $possible_notice_id = str_replace($noticeurl_wo_protocol, '', $attachment_url_wo_protocol);
+                        if (ctype_digit($possible_notice_id)) {
+                            $quoted_notice = Notice::getKV('id', $possible_notice_id);
                         }
                     }
                     // remote. but we don't want to lookup every url in the db,
                     // so only do this if we have reason to believe this might
                     // be a remote notice url
-                    elseif(strpos($attachment_url_wo_protocol, $instanceurl_wo_protocol) !== 0 && stristr($attachment_url_wo_protocol,'/notice/')) {
-                        $quoted_notice = Notice::getKV('url',$attachment['url']);
+                    elseif (strpos($attachment_url_wo_protocol, $instanceurl_wo_protocol) !== 0 && stristr($attachment_url_wo_protocol, '/notice/')) {
+                        $quoted_notice = Notice::getKV('url', $attachment['url']);
                         // try with http<->https if no match. applies to quitter.se notices mostly
-                        if(!$quoted_notice instanceof Notice) {
-                            if(strpos($attachment['url'],'https://') === 0) {
-                                $quoted_notice = Notice::getKV('url',str_replace('https://','http://', $attachment['url']));
+                        if (!$quoted_notice instanceof Notice) {
+                            if (strpos($attachment['url'], 'https://') === 0) {
+                                $quoted_notice = Notice::getKV('url', str_replace('https://', 'http://', $attachment['url']));
                             } else {
-                                $quoted_notice = Notice::getKV('url',str_replace('http://','https://', $attachment['url']));
+                                $quoted_notice = Notice::getKV('url', str_replace('http://', 'https://', $attachment['url']));
                             }
                         }
                     }
 
                     // include the quoted notice in the attachment
-                    if($quoted_notice instanceof Notice) {
-                        $quoted_notice_author = Profile::getKV('id',$quoted_notice->profile_id);
-                        if($quoted_notice_author instanceof Profile) {
+                    if ($quoted_notice instanceof Notice) {
+                        $quoted_notice_author = Profile::getKV('id', $quoted_notice->profile_id);
+                        if ($quoted_notice_author instanceof Profile) {
                             $attachment['quoted_notice']['id'] = $quoted_notice->id;
                             $attachment['quoted_notice']['content'] = $quoted_notice->content;
                             $attachment['quoted_notice']['nickname'] = $quoted_notice_author->nickname;
                             $attachment['quoted_notice']['fullname'] = $quoted_notice_author->fullname;
                             $attachment['quoted_notice']['is_local'] = $quoted_notice_author->isLocal();
                             $quoted_notice_attachments = $quoted_notice->attachments();
-                            foreach($quoted_notice_attachments as $q_attach) {
-                                if(is_object($q_attach)) {
+                            foreach ($quoted_notice_attachments as $q_attach) {
+                                if (is_object($q_attach)) {
                                     try {
                                         $qthumb = $q_attach->getThumbnail();
-                                        if(method_exists('File_thumbnail','url')) {
+                                        if (method_exists('File_thumbnail', 'url')) {
                                             $thumb_url = File_thumbnail::url($qthumb->filename);
                                         } else {
                                             $thumb_url = $qthumb->getUrl();
                                         }
-                                        $attachment['quoted_notice']['attachments'][] = array('thumb_url'=>$thumb_url,
-                                            'attachment_id'=>$q_attach->id);
+                                        $attachment['quoted_notice']['attachments'][] = array('thumb_url' => $thumb_url,
+                                            'attachment_id' => $q_attach->id, );
                                     } catch (Exception $e) {
                                         common_debug('Qvitter: could not get thumbnail for attachment id='.$q_attach->id.' in quoted notice id='.$quoted_notice->id);
                                     }
@@ -722,13 +700,11 @@ case 'api/statuses/user_timeline.json':
             }
         }
 
-
         try {
             $twitter_status['external_url'] = $notice->getUrl(true);
         } catch (InvalidUrlException $e) {
             common_debug('Qvitter: No URL available for external notice: id='.$notice->id);
         }
-
 
         // reply-to profile url
         try {
@@ -746,7 +722,7 @@ case 'api/statuses/user_timeline.json':
             $attentions = $notice->getAttentionProfiles();
             $attentions_array = array();
             foreach ($attentions as $attn) {
-                if(!$attn->isGroup()) {
+                if (!$attn->isGroup()) {
                     $attentions_array[] = array(
                         'id' => $attn->getID(),
                         'screen_name' => $attn->getNickname(),
@@ -758,7 +734,6 @@ case 'api/statuses/user_timeline.json':
             }
             $twitter_status['attentions'] = $attentions_array;
         } catch (Exception $e) {
-            //
         }
 
         // fave number
@@ -768,27 +743,25 @@ case 'api/statuses/user_timeline.json':
 
         // repeat number
         $repeats = $notice->repeatStream();
-        $repeatnum=0;
+        $repeatnum = 0;
         while ($repeats->fetch()) {
-            if($repeats->verb == ActivityVerb::SHARE) { // i.e. not deleted repeats
-                $repeatnum++;
+            if ($repeats->verb == ActivityVerb::SHARE) { // i.e. not deleted repeats
+                ++$repeatnum;
             }
         }
         $twitter_status['repeat_num'] = $repeatnum;
 
         // is this a post? (previously is_activity)
-        if(method_exists('ActivityUtils','compareVerbs')) {
+        if (method_exists('ActivityUtils', 'compareVerbs')) {
             $twitter_status['is_post_verb'] = ActivityUtils::compareVerbs($notice->verb, array(ActivityVerb::POST));
-        }
-        else {
+        } else {
             $twitter_status['is_post_verb'] = ($notice->verb == ActivityVerb::POST ? true : false);
         }
 
         // some more metadata about notice
-        if($notice->is_local == '1') {
+        if ($notice->is_local == '1') {
             $twitter_status['is_local'] = true;
-        }
-        else {
+        } else {
             $twitter_status['is_local'] = false;
             if ($twitter_status['is_post_verb'] === true) {
                 try {
@@ -799,24 +772,20 @@ case 'api/statuses/user_timeline.json':
             }
         }
 
-
-        if(ActivityUtils::compareTypes($notice->verb, array('qvitter-delete-notice', 'delete'))) {
+        if (ActivityUtils::compareTypes($notice->verb, array('qvitter-delete-notice', 'delete'))) {
             $twitter_status['qvitter_delete_notice'] = true;
         }
 
         return true;
     }
 
-
     /**
-     * Cover photo in API response, also follows_you, etc
+     * Cover photo in API response, also follows_you, etc.
      *
-     * @return boolean hook return
+     * @return bool hook return
      */
-
-    function onTwitterUserArray($profile, &$twitter_user, $scoped)
+    public function onTwitterUserArray($profile, &$twitter_user, $scoped)
     {
-
         $twitter_user['cover_photo'] = Profile_prefs::getConfigData($profile, 'qvitter', 'cover_photo');
         $twitter_user['background_image'] = Profile_prefs::getConfigData($profile, 'qvitter', 'background_image');
 
@@ -825,18 +794,16 @@ case 'api/statuses/user_timeline.json':
         $twitter_user['profile_background_color'] = Profile_prefs::getConfigData($profile, 'theme', 'backgroundcolor');
         $twitter_user['profile_banner_url'] = Profile_prefs::getConfigData($profile, 'qvitter', 'cover_photo');
 
-
         if ($scoped) {
             // follows me?
             $twitter_user['follows_you'] = $profile->isSubscribed($scoped);
 
             // blocks me?
-            $twitter_user['blocks_you']  = $profile->hasBlocked($scoped);
+            $twitter_user['blocks_you'] = $profile->hasBlocked($scoped);
         }
 
         // local user?
         $twitter_user['is_local'] = $profile->isLocal();
-
 
         // silenced?
         $twitter_user['is_silenced'] = $profile->isSilenced();
@@ -852,14 +819,14 @@ case 'api/statuses/user_timeline.json':
         $twitter_user['is_sandboxed'] = $profile->isSandboxed();
 
         // ostatus uri
-        if($twitter_user['is_local']) {
+        if ($twitter_user['is_local']) {
             $user = $profile->getUser();
-            if($user instanceof User) {
+            if ($user instanceof User) {
                 $twitter_user['ostatus_uri'] = $user->uri;
             }
         } else {
-            $ostatus_profile = Ostatus_profile::getKV('profile_id',$profile->id);
-            if($ostatus_profile instanceof Ostatus_profile) {
+            $ostatus_profile = Ostatus_profile::getKV('profile_id', $profile->id);
+            if ($ostatus_profile instanceof Ostatus_profile) {
                 $twitter_user['ostatus_uri'] = $ostatus_profile->uri;
             }
         }
@@ -867,14 +834,11 @@ case 'api/statuses/user_timeline.json':
         return true;
     }
 
-
-
     /**
-     * Insert into notification table
+     * Insert into notification table.
      */
-    function insertNotification($to_profile_id, $from_profile_id, $ntype, $notice_id=false)
+    public function insertNotification($to_profile_id, $from_profile_id, $ntype, $notice_id = false)
     {
-
         $to_user = User::getKV('id', $to_profile_id);
         $from_profile = Profile::getKV($from_profile_id);
 
@@ -889,7 +853,7 @@ case 'api/statuses/user_timeline.json':
         }
 
         // never notify myself
-        if($to_profile_id == $from_profile_id) {
+        if ($to_profile_id == $from_profile_id) {
             return false;
         }
 
@@ -902,32 +866,31 @@ case 'api/statuses/user_timeline.json':
         $notif->created = common_sql_now();
         if (!$notif->insert()) {
             common_log_db_error($notif, 'INSERT', __FILE__);
+
             return false;
         }
 
         return true;
     }
 
-
     /**
-     * Insert likes in notification table
+     * Insert likes in notification table.
      */
     public function onEndFavorNotice($profile, $notice)
     {
 
         // don't notify people favoriting their own notices
-        if($notice->profile_id != $profile->id) {
+        if ($notice->profile_id != $profile->id) {
             $this->insertNotification($notice->profile_id, $profile->id, 'like', $notice->id);
         }
 
         // mark reply and mention notifications as seen if i'm liking a notice i'm notified about
-        self::markNotificationAsSeen($notice->id,$profile->id,'mention');
-        self::markNotificationAsSeen($notice->id,$profile->id,'reply');
+        self::markNotificationAsSeen($notice->id, $profile->id, 'mention');
+        self::markNotificationAsSeen($notice->id, $profile->id, 'reply');
     }
 
-
     /**
-     * Mark single notification as seen
+     * Mark single notification as seen.
      */
     public function markNotificationAsSeen($notice_id, $to_profile_id, $ntype)
     {
@@ -935,19 +898,17 @@ case 'api/statuses/user_timeline.json':
             'is_seen' => 0,
             'notice_id' => $notice_id,
             'to_profile_id' => $to_profile_id,
-            'ntype' => $ntype
+            'ntype' => $ntype,
         ));
-        if($notification_to_mark_as_seen instanceof QvitterNotification) {
-            $orig = clone($notification_to_mark_as_seen);
+        if ($notification_to_mark_as_seen instanceof QvitterNotification) {
+            $orig = clone $notification_to_mark_as_seen;
             $notification_to_mark_as_seen->is_seen = 1;
             $notification_to_mark_as_seen->update($orig);
         }
     }
 
-
-
     /**
-     * Remove likes in notification table on dislike
+     * Remove likes in notification table on dislike.
      */
     public function onEndDisfavorNotice($profile, $notice)
     {
@@ -956,18 +917,17 @@ case 'api/statuses/user_timeline.json':
         $notif->notice_id = $notice->id;
         $notif->ntype = 'like';
         $notif->delete();
+
         return true;
     }
 
-
-
     /**
-     * Insert notifications for replies, mentions and repeats
+     * Insert notifications for replies, mentions and repeats.
      *
-     * @return boolean hook flag
+     * @return bool hook flag
      */
-    function onStartNoticeDistribute($notice) {
-
+    public function onStartNoticeDistribute($notice)
+    {
         assert($notice->id > 0);    // since we removed tests below
 
         // repeats
@@ -977,8 +937,8 @@ case 'api/statuses/user_timeline.json':
                 $this->insertNotification($repeated_notice->profile_id, $notice->profile_id, 'repeat', $repeated_notice->id);
 
                 // mark reply/mention-notifications as read if we're repeating to a notice we're notified about
-                self::markNotificationAsSeen($repeated_notice->id,$notice->profile_id,'mention');
-                self::markNotificationAsSeen($repeated_notice->id,$notice->profile_id,'reply');
+                self::markNotificationAsSeen($repeated_notice->id, $notice->profile_id, 'mention');
+                self::markNotificationAsSeen($repeated_notice->id, $notice->profile_id, 'reply');
 
                 // (no other notifications repeats)
                 return true;
@@ -986,27 +946,25 @@ case 'api/statuses/user_timeline.json':
         }
 
         // don't add notifications for activity/non-post-verb notices
-        if(method_exists('ActivityUtils','compareVerbs')) {
+        if (method_exists('ActivityUtils', 'compareVerbs')) {
             $is_post_verb = ActivityUtils::compareVerbs($notice->verb, array(ActivityVerb::POST));
-        }
-        else {
+        } else {
             $is_post_verb = ($notice->verb == ActivityVerb::POST ? true : false);
         }
-        if($notice->source == 'activity' || !$is_post_verb) {
+        if ($notice->source == 'activity' || !$is_post_verb) {
             return true;
         }
 
         // mark reply/mention-notifications as read if we're replying to a notice we're notified about
-        if($notice->reply_to) {
-            self::markNotificationAsSeen($notice->reply_to,$notice->profile_id,'mention');
-            self::markNotificationAsSeen($notice->reply_to,$notice->profile_id,'reply');
+        if ($notice->reply_to) {
+            self::markNotificationAsSeen($notice->reply_to, $notice->profile_id, 'mention');
+            self::markNotificationAsSeen($notice->reply_to, $notice->profile_id, 'reply');
         }
-
 
         // replies and mentions
         $reply_notification_to = false;
         // check for reply to insert in notifications
-        if($notice->reply_to) {
+        if ($notice->reply_to) {
             try {
                 $replyauthor = $notice->getParent()->getProfile();
                 $reply_notification_to = $replyauthor->id;
@@ -1026,13 +984,13 @@ case 'api/statuses/user_timeline.json':
         foreach ($mentions as $mentioned) {
 
             // no duplicate mentions
-            if(in_array($mentioned, $all_mentioned_user_ids)) {
+            if (in_array($mentioned, $all_mentioned_user_ids)) {
                 continue;
             }
             $all_mentioned_user_ids[] = $mentioned;
 
             // only notify if mentioned user is not already notified for reply
-            if($reply_notification_to != $mentioned) {
+            if ($reply_notification_to != $mentioned) {
                 $this->insertNotification($mentioned, $notice->profile_id, 'mention', $notice->id);
             }
         }
@@ -1040,15 +998,13 @@ case 'api/statuses/user_timeline.json':
         return true;
     }
 
-
     /**
-     * Delete any notifications tied to deleted notices and un-repeats
+     * Delete any notifications tied to deleted notices and un-repeats.
      *
-     * @return boolean hook flag
+     * @return bool hook flag
      */
     public function onNoticeDeleteRelated($notice)
     {
-
         $notif = new QvitterNotification();
 
         // unrepeats
@@ -1070,15 +1026,15 @@ case 'api/statuses/user_timeline.json':
         try {
             // outputs an activity notice that this notice was deleted
             $profile = $notice->getProfile();
-            $user = User::getKV('id',$profile->id);
-            if($user instanceof User && $user->hasRole(Profile_role::DELETED)) {
+            $user = User::getKV('id', $profile->id);
+            if ($user instanceof User && $user->hasRole(Profile_role::DELETED)) {
                 $user_is_deleted = true;
             }
         } catch (NoProfileException $e) {
             $user_is_deleted = true;
         }
 
-        if(!$user_is_deleted && class_exists('StatusNet') && !array_key_exists('ActivityModeration', StatusNet::getActivePlugins())) {
+        if (!$user_is_deleted && class_exists('StatusNet') && !array_key_exists('ActivityModeration', StatusNet::getActivePlugins())) {
             $rendered = sprintf(_m('<a href="%1$s">%2$s</a> deleted notice <a href="%3$s">{{%4$s}}</a>.'),
                 htmlspecialchars($profile->getUrl()),
                 htmlspecialchars($profile->getBestName()),
@@ -1098,45 +1054,40 @@ case 'api/statuses/user_timeline.json':
                 'urls' => array(),
                 'uri' => $uri,
                 'verb' => 'qvitter-delete-notice',
-                'object_type' => ActivityObject::ACTIVITY));
+                'object_type' => ActivityObject::ACTIVITY, ));
         }
-
 
         return true;
     }
 
-
-
     /**
      * Checks for deleted remote notices and deleted the locally
-     * A local qvitter-delete-notice is outputted in the onNoticeDeleteRelated event above
+     * A local qvitter-delete-notice is outputted in the onNoticeDeleteRelated event above.
      *
-     * @return boolean hook flag
+     * @return bool hook flag
      */
-
-    public function onEndHandleFeedEntry($activity) {
-
-        if($activity->verb == 'qvitter-delete-notice' && class_exists('StatusNet') && !array_key_exists('ActivityModeration', StatusNet::getActivePlugins())) {
-
+    public function onEndHandleFeedEntry($activity)
+    {
+        if ($activity->verb == 'qvitter-delete-notice' && class_exists('StatusNet') && !array_key_exists('ActivityModeration', StatusNet::getActivePlugins())) {
             $deleter_profile_uri = $activity->actor->id;
             $deleted_notice_uri = $activity->objects[0]->objects[0]->content;
-            $deleted_notice_uri = substr($deleted_notice_uri,strpos($deleted_notice_uri,'{{')+2);
-            $deleted_notice_uri = substr($deleted_notice_uri,0,strpos($deleted_notice_uri,'}}'));
+            $deleted_notice_uri = substr($deleted_notice_uri, strpos($deleted_notice_uri, '{{') + 2);
+            $deleted_notice_uri = substr($deleted_notice_uri, 0, strpos($deleted_notice_uri, '}}'));
 
             $deleter_ostatus_profile = Ostatus_profile::getKV('uri', $deleter_profile_uri);
 
-            if(!$deleter_ostatus_profile instanceof Ostatus_profile) {
+            if (!$deleter_ostatus_profile instanceof Ostatus_profile) {
                 return true;
             }
 
             $deleter_profile = Profile::getKV('id', $deleter_ostatus_profile->profile_id);
             $deleted_notice = Notice::getKV('uri', $deleted_notice_uri);
 
-            if(!($deleter_profile instanceof Profile) || !($deleted_notice instanceof Notice)) {
+            if (!($deleter_profile instanceof Profile) || !($deleted_notice instanceof Notice)) {
                 return true;
             }
 
-            if($deleter_profile->id != $deleted_notice->profile_id) {
+            if ($deleter_profile->id != $deleted_notice->profile_id) {
                 return true;
             }
 
@@ -1146,18 +1097,14 @@ case 'api/statuses/user_timeline.json':
         return true;
     }
 
-
-
-
-
     /**
-     * Add notification on subscription, remove on unsubscribe
+     * Add notification on subscription, remove on unsubscribe.
      *
-     * @return boolean hook flag
+     * @return bool hook flag
      */
     public function onEndSubscribe($subscriber, $other)
     {
-        if(Subscription::exists($subscriber, $other)) {
+        if (Subscription::exists($subscriber, $other)) {
             $this->insertNotification($other->id, $subscriber->id, 'follow', 1);
         }
 
@@ -1165,7 +1112,7 @@ case 'api/statuses/user_timeline.json':
     }
     public function onEndUnsubscribe($subscriber, $other)
     {
-        if(!Subscription::exists($subscriber, $other)) {
+        if (!Subscription::exists($subscriber, $other)) {
             $notif = new QvitterNotification();
             $notif->to_profile_id = $other->id;
             $notif->from_profile_id = $subscriber->id;
@@ -1177,23 +1124,21 @@ case 'api/statuses/user_timeline.json':
     }
 
     /**
-     * Replace GNU Social's default FAQ with Qvitter's
+     * Replace GNU Social's default FAQ with Qvitter's.
      *
-     * @return boolean hook flag
+     * @return bool hook flag
      */
     public function onEndLoadDoc($title, &$output)
     {
-
-        if($title == 'faq') {
-
+        if ($title == 'faq') {
             $faq = file_get_contents(QVITTERDIR.'/doc/en/faq.html');
-            $faq = str_replace('{instance-name}',common_config('site','name'),$faq);
-            $faq = str_replace('{instance-url}',common_config('site','server'),$faq);
-            $faq = str_replace('{instance-url-with-protocol}',common_path('', true),$faq);
+            $faq = str_replace('{instance-name}', common_config('site', 'name'), $faq);
+            $faq = str_replace('{instance-url}', common_config('site', 'server'), $faq);
+            $faq = str_replace('{instance-url-with-protocol}', common_path('', true), $faq);
 
             if (common_logged_in()) {
                 $user = common_current_user();
-                $faq = str_replace('{nickname}',$user->nickname,$faq);
+                $faq = str_replace('{nickname}', $user->nickname, $faq);
             }
             $output = $faq;
         }
@@ -1202,16 +1147,15 @@ case 'api/statuses/user_timeline.json':
     }
 
     /**
-     * Add menu items to top header in Classic
+     * Add menu items to top header in Classic.
      *
-     * @return boolean hook flag
+     * @return bool hook flag
      */
     public function onStartPrimaryNav($action)
     {
-
         $action->menuItem(common_local_url('doc', array('title' => 'faq')),
             // TRANS: Menu item in primary navigation panel.
-            _m('MENU','FAQ'),
+            _m('MENU', 'FAQ'),
             // TRANS: Menu item title in primary navigation panel.
             _('Frequently asked questions'),
             false,
@@ -1220,17 +1164,15 @@ case 'api/statuses/user_timeline.json':
         return true;
     }
 
-
     /**
-     * No registration for blocked ips
+     * No registration for blocked ips.
      *
-     * @return boolean hook flag
+     * @return bool hook flag
      */
     public function onStartUserRegister($profile)
     {
-
-        if(is_array(self::settings("blocked_ips"))) {
-            if(in_array($_SERVER['REMOTE_ADDR'], self::settings("blocked_ips"))) {
+        if (is_array(self::settings('blocked_ips'))) {
+            if (in_array($_SERVER['REMOTE_ADDR'], self::settings('blocked_ips'))) {
                 return false;
             }
         }
@@ -1239,29 +1181,30 @@ case 'api/statuses/user_timeline.json':
     }
 
     /**
-     * Correct group mentions
+     * Correct group mentions.
      *
      * We get the correct group ids in a $_POST var called "post_to_groups", formatted as a string with ids separated by colon, e.g. 4:5
      *
-     * @return boolean hook flag
+     * @return bool hook flag
      */
-    public function onEndFindMentions($sender, $text, &$mentions) {
+    public function onEndFindMentions($sender, $text, &$mentions)
+    {
 
         // get the correct group profiles
-        if(isset($_POST['post_to_groups'])) {
-            $correct_group_mentions = explode(':',$_POST['post_to_groups']);
-            foreach($correct_group_mentions as $group_id) {
-                $correct_groups[] = User_group::getKV('id',$group_id);
+        if (isset($_POST['post_to_groups'])) {
+            $correct_group_mentions = explode(':', $_POST['post_to_groups']);
+            foreach ($correct_group_mentions as $group_id) {
+                $correct_groups[] = User_group::getKV('id', $group_id);
             }
 
             // loop through the groups guessed by gnu social's common_find_mentions() and correct them
-            foreach($mentions as $mention_array_id=>$mention) {
-                foreach($correct_groups as $correct_groups_array_id=>$correct_group) {
-                    if(isset($mention['mentioned'][0]->nickname)
+            foreach ($mentions as $mention_array_id => $mention) {
+                foreach ($correct_groups as $correct_groups_array_id => $correct_group) {
+                    if (isset($mention['mentioned'][0]->nickname)
                         && isset($correct_group->nickname)
                         && $mention['mentioned'][0]->nickname == $correct_group->nickname
                         && !isset($mentions[$mention_array_id]['corrected'])) {
-                        $user_group_profile = Profile::getKV('id',$correct_group->profile_id);
+                        $user_group_profile = Profile::getKV('id', $correct_group->profile_id);
                         $mentions[$mention_array_id]['mentioned'][0] = $user_group_profile;
                         $mentions[$mention_array_id]['url'] = $correct_group->permalink();
                         $mentions[$mention_array_id]['title'] = $correct_group->getFancyName();
@@ -1276,14 +1219,13 @@ case 'api/statuses/user_timeline.json':
         return true;
     }
 
-
-
     /**
-     * Add unread notification count to all API responses, when logged in
+     * Add unread notification count to all API responses, when logged in.
      *
-     * @return boolean hook flag
+     * @return bool hook flag
      */
-    public function onEndSetApiUser($user) {
+    public function onEndSetApiUser($user)
+    {
 
         // cleanup sessions, to allow for simultaneous http-requests,
         // e.g. if posting a notice takes a very long time
@@ -1304,16 +1246,16 @@ case 'api/statuses/user_timeline.json':
 
         // if the user only want notifications from users they follow
         $only_show_notifications_from_users_i_follow = Profile_prefs::getConfigData($profile, 'qvitter', 'only_show_notifications_from_users_i_follow');
-        if($only_show_notifications_from_users_i_follow == '1') {
+        if ($only_show_notifications_from_users_i_follow == '1') {
             $notification->whereAdd(sprintf('qvitternotification.from_profile_id IN (SELECT subscribed FROM subscription WHERE subscriber = %u)', $user_id));
         }
 
         // the user might have opted out from notifications from profiles they have muted
         $hide_notifications_from_muted_users = Profile_prefs::getConfigData($profile, 'qvitter', 'hide_notifications_from_muted_users');
-        if($hide_notifications_from_muted_users == '1') {
-            $muted_ids = QvitterMuted::getMutedIDs($profile->id,0,10000); // get all (hopefully not more than 10 000...)
-            if($muted_ids !== false && count($muted_ids) > 0) {
-                $ids_imploded = implode(',',$muted_ids);
+        if ($hide_notifications_from_muted_users == '1') {
+            $muted_ids = QvitterMuted::getMutedIDs($profile->id, 0, 10000); // get all (hopefully not more than 10 000...)
+            if ($muted_ids !== false && count($muted_ids) > 0) {
+                $ids_imploded = implode(',', $muted_ids);
                 $notification->whereAdd('qvitternotification.from_profile_id NOT IN ('.$ids_imploded.')');
             }
         }
@@ -1324,23 +1266,23 @@ case 'api/statuses/user_timeline.json':
         $disable_notify_favs = Profile_prefs::getConfigData($current_profile, 'qvitter', 'disable_notify_favs');
         $disable_notify_repeats = Profile_prefs::getConfigData($current_profile, 'qvitter', 'disable_notify_repeats');
         $disable_notify_follows = Profile_prefs::getConfigData($current_profile, 'qvitter', 'disable_notify_follows');
-        if($disable_notify_replies_and_mentions == '1') {
+        if ($disable_notify_replies_and_mentions == '1') {
             $notification->whereAdd('qvitternotification.ntype != "mention"');
             $notification->whereAdd('qvitternotification.ntype != "reply"');
         }
-        if($disable_notify_favs == '1') {
+        if ($disable_notify_favs == '1') {
             $notification->whereAdd('qvitternotification.ntype != "like"');
         }
-        if($disable_notify_repeats == '1') {
+        if ($disable_notify_repeats == '1') {
             $notification->whereAdd('qvitternotification.ntype != "repeat"');
         }
-        if($disable_notify_follows == '1') {
+        if ($disable_notify_follows == '1') {
             $notification->whereAdd('qvitternotification.ntype != "follow"');
         }
 
         $notification->groupBy('ntype');
         $notification->whereAdd("(is_seen = '0')");
-        $notification->whereAdd("(notice_id IS NOT NULL)"); // sometimes notice_id is NULL, those notifications are corrupt and should be discarded
+        $notification->whereAdd('(notice_id IS NOT NULL)'); // sometimes notice_id is NULL, those notifications are corrupt and should be discarded
         $notification->find();
 
         $new_notifications = array();
@@ -1353,19 +1295,18 @@ case 'api/statuses/user_timeline.json':
         return true;
     }
 
-
-    function onPluginVersion(array &$versions)
+    public function onPluginVersion(array &$versions)
     {
         $versions[] = array('name' => 'Qvitter',
             'version' => '5-alpha',
             'author' => 'Hannes Mannerheim',
             'homepage' => 'https://git.gnu.io/h2p/Qvitter',
-            'rawdescription' => _m('User interface'));
+            'rawdescription' => _m('User interface'), );
+
         return true;
     }
 
-
-    function qvitterTwitterUserArray($profile)
+    public function qvitterTwitterUserArray($profile)
     {
         $twitter_user = array();
 
@@ -1388,25 +1329,24 @@ case 'api/statuses/user_timeline.json':
         // START introduced by qvitter API, not necessary for StatusNet API
         $twitter_user['profile_image_url_profile_size'] = Avatar::urlByProfile($profile, AVATAR_PROFILE_SIZE);
         try {
-            $avatar  = Avatar::getUploaded($profile);
+            $avatar = Avatar::getUploaded($profile);
             $origurl = $avatar->displayUrl();
         } catch (Exception $e) {
 
             // ugly fix if avatar is missing in the db but exists on the server
-            $largest_avatar = array('name'=>false,'size'=>0);
+            $largest_avatar = array('name' => false, 'size' => 0);
             foreach (glob('avatar/'.$profile->id.'-*') as $filename) {
                 $size = filesize($filename);
-                if($size > $largest_avatar['size']) {
+                if ($size > $largest_avatar['size']) {
                     $largest_avatar['size'] = $size;
                     $largest_avatar['name'] = $filename;
                 }
             }
-            if($largest_avatar['size']>0) {
+            if ($largest_avatar['size'] > 0) {
                 $origurl = common_path('', StatusNet::isHTTPS()).$largest_avatar['name'];
             } else {
                 $origurl = $twitter_user['profile_image_url_profile_size'];
             }
-
         }
         $twitter_user['profile_image_url_original'] = $origurl;
 
@@ -1432,7 +1372,7 @@ case 'api/statuses/user_timeline.json':
             $timezone = $user->timezone;
         }
 
-        $t = new DateTime;
+        $t = new DateTime();
         $t->setTimezone(new DateTimeZone($timezone));
 
         $twitter_user['utc_offset'] = $t->format('Z');
@@ -1445,13 +1385,11 @@ case 'api/statuses/user_timeline.json':
 
         $logged_in_profile = null;
 
-        if(common_logged_in()) {
-
+        if (common_logged_in()) {
             $logged_in_profile = Profile::current();
 
             $twitter_user['following'] = $logged_in_profile->isSubscribed($profile);
-            $twitter_user['statusnet_blocking']  = $logged_in_profile->hasBlocked($profile);
-
+            $twitter_user['statusnet_blocking'] = $logged_in_profile->hasBlocked($profile);
         }
 
         // StatusNet-specific
@@ -1462,28 +1400,23 @@ case 'api/statuses/user_timeline.json':
 
         return $twitter_user;
     }
-
-
 }
 
-
-
-
 /**
- * Overwrites variables in URL-mapping
- *
+ * Overwrites variables in URL-mapping.
  */
 class URLMapperOverwrite extends URLMapper
 {
-    static function overwrite_variable($m, $path, $args, $paramPatterns, $newaction)
+    public static function overwrite_variable($m, $path, $args, $paramPatterns, $newaction)
     {
-
         $m->connect($path, array('action' => $newaction), $paramPatterns);
 
         $regex = self::makeRegex($path, $paramPatterns);
 
-        foreach($m->variables as $n=>$v)
-            if($v[1] == $regex)
+        foreach ($m->variables as $n => $v) {
+            if ($v[1] == $regex) {
                 $m->variables[$n][0]['action'] = $newaction;
+            }
+        }
     }
 }

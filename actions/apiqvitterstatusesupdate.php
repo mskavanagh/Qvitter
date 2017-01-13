@@ -1,6 +1,6 @@
 <?php
 /**
- * StatusNet, the distributed open-source microblogging tool
+ * StatusNet, the distributed open-source microblogging tool.
  *
  * Post a notice (update your status) through the API
  *
@@ -20,7 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category  API
- * @package   StatusNet
+ *
  * @author    Craig Andrews <candrews@integralblue.com>
  * @author    Evan Prodromou <evan@status.net>
  * @author    Jeffery To <jeffery.to@gmail.com>
@@ -28,9 +28,10 @@
  * @author    Mike Cochrane <mikec@mikenz.geek.nz>
  * @author    Robin Millette <robin@millette.info>
  * @author    Zach Copley <zach@status.net>
- * @copyright 2009-2010 StatusNet, Inc.
+ * @copyright 2009-2010 StatusNet, Inc
  * @copyright 2009 Free Software Foundation, Inc http://www.fsf.org
  * @license   http://www.fsf.org/licensing/licenses/agpl-3.0.html GNU Affero General Public License version 3.0
+ *
  * @link      http://status.net/
  */
 
@@ -133,7 +134,7 @@ if (!defined('STATUSNET')) {
  * Updates the authenticating user's status (posts a notice).
  *
  * @category API
- * @package  StatusNet
+ *
  * @author   Craig Andrews <candrews@integralblue.com>
  * @author   Evan Prodromou <evan@status.net>
  * @author   Jeffery To <jeffery.to@gmail.com>
@@ -142,32 +143,33 @@ if (!defined('STATUSNET')) {
  * @author   Robin Millette <robin@millette.info>
  * @author   Zach Copley <zach@status.net>
  * @license  http://www.fsf.org/licensing/licenses/agpl-3.0.html GNU Affero General Public License version 3.0
+ *
  * @link     http://status.net/
  */
 class ApiQvitterStatusesUpdateAction extends ApiAuthAction
 {
     protected $needPost = true;
 
-    var $status                = null;
-    var $in_reply_to_status_id = null;
-    var $lat                   = null;
-    var $lon                   = null;
+    public $status = null;
+    public $in_reply_to_status_id = null;
+    public $lat = null;
+    public $lon = null;
 
     /**
-     * Take arguments for running
+     * Take arguments for running.
      *
      * @param array $args $_REQUEST args
      *
-     * @return boolean success flag
+     * @return bool success flag
      */
-    protected function prepare(array $args=array())
+    protected function prepare(array $args = array())
     {
         parent::prepare($args);
 
         $this->status = $this->trimmed('status');
         $this->post_to_groups = $this->trimmed('post_to_groups');
-        $this->lat    = $this->trimmed('lat');
-        $this->lon    = $this->trimmed('long');
+        $this->lat = $this->trimmed('lat');
+        $this->lon = $this->trimmed('long');
 
         $this->in_reply_to_status_id
             = intval($this->trimmed('in_reply_to_status_id'));
@@ -176,11 +178,9 @@ class ApiQvitterStatusesUpdateAction extends ApiAuthAction
     }
 
     /**
-     * Handle the request
+     * Handle the request.
      *
      * Make a new notice for the update, save it, and show it
-     *
-     * @return void
      */
     protected function handle()
     {
@@ -193,7 +193,7 @@ class ApiQvitterStatusesUpdateAction extends ApiAuthAction
             && empty($_POST)
             && ($_SERVER['CONTENT_LENGTH'] > 0)
         ) {
-             // TRANS: Client error displayed when the number of bytes in a POST request exceeds a limit.
+            // TRANS: Client error displayed when the number of bytes in a POST request exceeds a limit.
              // TRANS: %s is the number of bytes of the CONTENT_LENGTH.
              $msg = _m('The server was unable to handle that much POST data (%s byte) due to its current configuration.',
                       'The server was unable to handle that much POST data (%s bytes) due to its current configuration.',
@@ -254,12 +254,12 @@ class ApiQvitterStatusesUpdateAction extends ApiAuthAction
             }
 
             if (isset($upload)) {
-                $this->status .= ' ' . $upload->shortUrl();
+                $this->status .= ' '.$upload->shortUrl();
 
                 /* Do not call shortenlinks until the whole notice has been build */
             }
 
-           	// in Qvitter we shorten _before_ posting, so disble shortening here
+               // in Qvitter we shorten _before_ posting, so disble shortening here
             $status_shortened = $this->status;
 
             if (Notice::contentTooLong($status_shortened)) {
@@ -277,35 +277,33 @@ class ApiQvitterStatusesUpdateAction extends ApiAuthAction
                 $this->clientError(sprintf($msg, Notice::maxContent()), 413);
             }
 
-
             $content = html_entity_decode($status_shortened, ENT_NOQUOTES, 'UTF-8');
 
             $options = array('reply_to' => $reply_to);
-
 
             // -------------------------------------------------------------
             // -------- Qvitter's post-to-the-right-group stuff! -----------
             // -------------------------------------------------------------
 
-			// guess the groups by the content first, if we don't have group id:s as meta data
+            // guess the groups by the content first, if we don't have group id:s as meta data
             $profile = Profile::getKV('id', $this->scoped->id);
             $guessed_groups = User_group::groupsFromText($content, $profile);
 
             // if the user has specified any group id:s, correct the guesswork
-			if(strlen($this->post_to_groups)>0) {
+            if (strlen($this->post_to_groups) > 0) {
                 // get the groups that the user wants to post to
-                $group_ids = explode(':',$this->post_to_groups);
-                $correct_groups = Array();
-                foreach($group_ids as $group_id) {
-                    $correct_groups[] = User_group::getKV('id',$group_id);
+                $group_ids = explode(':', $this->post_to_groups);
+                $correct_groups = array();
+                foreach ($group_ids as $group_id) {
+                    $correct_groups[] = User_group::getKV('id', $group_id);
                 }
 
                 // correct the guesses
-                $corrected_group_ids = Array();
-                foreach($guessed_groups as $guessed_group) {
+                $corrected_group_ids = array();
+                foreach ($guessed_groups as $guessed_group) {
                     $id_to_keep = $guessed_group->id;
-                    foreach($correct_groups as $k=>$correct_group) {
-                        if($correct_group->nickname == $guessed_group->nickname) {
+                    foreach ($correct_groups as $k => $correct_group) {
+                        if ($correct_group->nickname == $guessed_group->nickname) {
                             $id_to_keep = $correct_group->id;
                             unset($correct_groups[$k]);
                             break;
@@ -316,12 +314,12 @@ class ApiQvitterStatusesUpdateAction extends ApiAuthAction
 
                 // but we still want to post to all of the groups that the user specified by id
                 // even if we couldn't use it to correct a bad guess
-                foreach($correct_groups as $correct_group) {
+                foreach ($correct_groups as $correct_group) {
                     $corrected_group_ids[$correct_group->id] = true;
                 }
 
                 $options['groups'] = array_keys($corrected_group_ids);
-			}
+            }
 
             // if the user didn't send any group id:s, go with the guesses
             else {
@@ -336,10 +334,7 @@ class ApiQvitterStatusesUpdateAction extends ApiAuthAction
             // ------ End of Qvitter's post-to-the-right-group stuff! ------
             // -------------------------------------------------------------
 
-
-
             if ($this->scoped->shareLocation()) {
-
                 $locOptions = Notice::locationOptions($this->lat,
                                                       $this->lon,
                                                       null,
@@ -369,11 +364,9 @@ class ApiQvitterStatusesUpdateAction extends ApiAuthAction
     }
 
     /**
-     * Show the resulting notice
-     *
-     * @return void
+     * Show the resulting notice.
      */
-    function showNotice()
+    public function showNotice()
     {
         if (!empty($this->notice)) {
             if ($this->format == 'xml') {
@@ -389,12 +382,12 @@ class ApiQvitterStatusesUpdateAction extends ApiAuthAction
      *
      * @param string $cmd the command to check for
      *
-     * @return boolean true or false
+     * @return bool true or false
      */
-    function supported($cmd)
+    public function supported($cmd)
     {
         static $cmdlist = array('SubCommand', 'UnsubCommand',
-            'OnCommand', 'OffCommand', 'JoinCommand', 'LeaveCommand');
+            'OnCommand', 'OffCommand', 'JoinCommand', 'LeaveCommand', );
 
         $supported = null;
 

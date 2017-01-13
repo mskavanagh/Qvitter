@@ -1,6 +1,6 @@
 <?php
 /**
- * StatusNet, the distributed open-source microblogging tool
+ * StatusNet, the distributed open-source microblogging tool.
  *
  * Returns both favs and repeats for a notice
  *
@@ -20,13 +20,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category  API
- * @package   GNUsocial
+ *
  * @author    Hannes Mannerheim <h@nnesmannerhe.im>
  * @license   http://www.fsf.org/licensing/licenses/agpl-3.0.html GNU Affero General Public License version 3.0
+ *
  * @link      http://www.gnu.org/software/social/
  */
-
-if (!defined('GNUSOCIAL')) { exit(1); }
+if (!defined('GNUSOCIAL')) {
+    exit(1);
+}
 
 /**
  * Ouputs information for a user, specified by ID or screen name.
@@ -35,14 +37,13 @@ if (!defined('GNUSOCIAL')) { exit(1); }
 class ApiFavsAndRepeatsAction extends ApiPrivateAuthAction
 {
     /**
-     * Take arguments for running
+     * Take arguments for running.
      *
      * @param array $args $_REQUEST args
      *
-     * @return boolean success flag
-     *
+     * @return bool success flag
      */
-    protected function prepare(array $args=array())
+    protected function prepare(array $args = array())
     {
         parent::prepare($args);
 
@@ -55,6 +56,7 @@ class ApiFavsAndRepeatsAction extends ApiPrivateAuthAction
         if (empty($this->original)) {
             // TRANS: Client error displayed trying to display redents of a non-exiting notice.
             $this->clientError(_('No such notice.'), 400);
+
             return false;
         }
 
@@ -63,35 +65,31 @@ class ApiFavsAndRepeatsAction extends ApiPrivateAuthAction
         if (empty($cnt) || !is_integer($cnt)) {
             $this->cnt = 100;
         } else {
-            $this->cnt = min((int)$cnt, self::MAXCOUNT);
+            $this->cnt = min((int) $cnt, self::MAXCOUNT);
         }
 
         return true;
     }
 
     /**
-     * Handle the request
+     * Handle the request.
      *
      * Check the format and show the user info
      *
      * @param array $args $_REQUEST data (unused)
-     *
-     * @return void
      */
     protected function handle()
     {
         parent::handle();
 
-
         // since this api method is in practice only used when expanding a
         // notice, we can assume the user has seen the notice in question,
         // an no longer need a notification about it. mark reply/mention-
         // notifications tied to this notice and the current profile as read
-        if($this->auth_user) {
-            QvitterPlugin::markNotificationAsSeen($this->notice_id,$this->auth_user->id,'mention');
-            QvitterPlugin::markNotificationAsSeen($this->notice_id,$this->auth_user->id,'reply');
+        if ($this->auth_user) {
+            QvitterPlugin::markNotificationAsSeen($this->notice_id, $this->auth_user->id, 'mention');
+            QvitterPlugin::markNotificationAsSeen($this->notice_id, $this->auth_user->id, 'reply');
         }
-
 
         // favs
         $fave = new Fave();
@@ -103,25 +101,24 @@ class ApiFavsAndRepeatsAction extends ApiPrivateAuthAction
         if (!is_null($this->cnt)) {
             $fave->limit(0, $this->cnt);
         }
-		$fav_ids = $fave->fetchAll('user_id', 'modified');
+        $fav_ids = $fave->fetchAll('user_id', 'modified');
 
-		// get nickname and profile image
-		$fav_ids_with_profile_data = array();
-		$i=0;
-		foreach($fav_ids as $id=>$time) {
-			$profile = Profile::getKV('id', $id);
-			$fav_ids_with_profile_data[$i]['user_id'] = $id;
-			$fav_ids_with_profile_data[$i]['nickname'] = $profile->nickname;
-			$fav_ids_with_profile_data[$i]['fullname'] = $profile->fullname;
-			$fav_ids_with_profile_data[$i]['profileurl'] = $profile->profileurl;
-			$fav_ids_with_profile_data[$i]['time'] = strtotime($time);
-			$profile = new Profile();
-			$profile->id = $id;
-			$avatarurl = $profile->avatarUrl(48);
-			$fav_ids_with_profile_data[$i]['avatarurl'] = $avatarurl;
-			$i++;
-		}
-
+        // get nickname and profile image
+        $fav_ids_with_profile_data = array();
+        $i = 0;
+        foreach ($fav_ids as $id => $time) {
+            $profile = Profile::getKV('id', $id);
+            $fav_ids_with_profile_data[$i]['user_id'] = $id;
+            $fav_ids_with_profile_data[$i]['nickname'] = $profile->nickname;
+            $fav_ids_with_profile_data[$i]['fullname'] = $profile->fullname;
+            $fav_ids_with_profile_data[$i]['profileurl'] = $profile->profileurl;
+            $fav_ids_with_profile_data[$i]['time'] = strtotime($time);
+            $profile = new Profile();
+            $profile->id = $id;
+            $avatarurl = $profile->avatarUrl(48);
+            $fav_ids_with_profile_data[$i]['avatarurl'] = $avatarurl;
+            ++$i;
+        }
 
         // repeats
         $notice = new Notice();
@@ -129,34 +126,34 @@ class ApiFavsAndRepeatsAction extends ApiPrivateAuthAction
         $notice->selectAdd('profile_id');
         $notice->selectAdd('created');
         $notice->repeat_of = $this->original->id;
-        $notice->verb =  ActivityVerb::SHARE;
+        $notice->verb = ActivityVerb::SHARE;
         $notice->orderBy('created, id'); // NB: asc!
         if (!is_null($this->cnt)) {
             $notice->limit(0, $this->cnt);
         }
-        $repeat_ids = $notice->fetchAll('profile_id','created');
+        $repeat_ids = $notice->fetchAll('profile_id', 'created');
 
-		// get nickname and profile image
-		$repeat_ids_with_profile_data = array();
-		$i=0;
-		foreach($repeat_ids as $id=>$time) {
-			$profile = Profile::getKV('id', $id);
-			$repeat_ids_with_profile_data[$i]['user_id'] = $id;
-			$repeat_ids_with_profile_data[$i]['nickname'] = $profile->nickname;
-			$repeat_ids_with_profile_data[$i]['fullname'] = $profile->fullname;
-			$repeat_ids_with_profile_data[$i]['profileurl'] = $profile->profileurl;
-			$repeat_ids_with_profile_data[$i]['time'] = strtotime($time);
-			$profile = new Profile();
-			$profile->id = $id;
-			$avatarurl = $profile->avatarUrl(48);
-			$repeat_ids_with_profile_data[$i]['avatarurl'] = $avatarurl;
-			$i++;
-		}
+        // get nickname and profile image
+        $repeat_ids_with_profile_data = array();
+        $i = 0;
+        foreach ($repeat_ids as $id => $time) {
+            $profile = Profile::getKV('id', $id);
+            $repeat_ids_with_profile_data[$i]['user_id'] = $id;
+            $repeat_ids_with_profile_data[$i]['nickname'] = $profile->nickname;
+            $repeat_ids_with_profile_data[$i]['fullname'] = $profile->fullname;
+            $repeat_ids_with_profile_data[$i]['profileurl'] = $profile->profileurl;
+            $repeat_ids_with_profile_data[$i]['time'] = strtotime($time);
+            $profile = new Profile();
+            $profile->id = $id;
+            $avatarurl = $profile->avatarUrl(48);
+            $repeat_ids_with_profile_data[$i]['avatarurl'] = $avatarurl;
+            ++$i;
+        }
 
-        $favs_and_repeats = array('favs'=>$fav_ids_with_profile_data,'repeats'=>$repeat_ids_with_profile_data);
+        $favs_and_repeats = array('favs' => $fav_ids_with_profile_data, 'repeats' => $repeat_ids_with_profile_data);
 
         $this->initDocument('json');
-		$this->showJsonObjects($favs_and_repeats);
+        $this->showJsonObjects($favs_and_repeats);
         $this->endDocument('json');
     }
 
@@ -167,13 +164,10 @@ class ApiFavsAndRepeatsAction extends ApiPrivateAuthAction
      *
      * @param array $args other arguments
      *
-     * @return boolean is read only action?
+     * @return bool is read only action?
      */
-    function isReadOnly($args)
+    public function isReadOnly($args)
     {
         return true;
     }
-
-
-
 }

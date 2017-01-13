@@ -38,10 +38,10 @@ if (!defined('STATUSNET')) {
 }
 
 /**
- * Returns the most recent notices (default 20) posted by everybody
+ * Returns the most recent notices (default 20) posted by everybody.
  *
  * @category API
- * @package  StatusNet
+ *
  * @author   Craig Andrews <candrews@integralblue.com>
  * @author   Evan Prodromou <evan@status.net>
  * @author   Jeffery To <jeffery.to@gmail.com>
@@ -50,22 +50,21 @@ if (!defined('STATUSNET')) {
  * @author   Robin Millette <robin@millette.info>
  * @author   Zach Copley <zach@status.net>
  * @license  http://www.fsf.org/licensing/licenses/agpl-3.0.html GNU Affero General Public License version 3.0
+ *
  * @link     http://status.net/
  */
-
 class ApiTimelinePublicAndExternalAction extends ApiPrivateAuthAction
 {
-    var $notices = null;
+    public $notices = null;
 
     /**
-     * Take arguments for running
+     * Take arguments for running.
      *
      * @param array $args $_REQUEST args
      *
-     * @return boolean success flag
-     *
+     * @return bool success flag
      */
-    protected function prepare(array $args=array())
+    protected function prepare(array $args = array())
     {
         parent::prepare($args);
 
@@ -75,11 +74,9 @@ class ApiTimelinePublicAndExternalAction extends ApiPrivateAuthAction
     }
 
     /**
-     * Handle the request
+     * Handle the request.
      *
      * Just show the notices
-     *
-     * @return void
      */
     protected function handle()
     {
@@ -88,24 +85,22 @@ class ApiTimelinePublicAndExternalAction extends ApiPrivateAuthAction
     }
 
     /**
-     * Show the timeline of notices
-     *
-     * @return void
+     * Show the timeline of notices.
      */
-    function showTimeline()
+    public function showTimeline()
     {
-        $sitename   = common_config('site', 'name');
-        $sitelogo   = (common_config('site', 'logo')) ? common_config('site', 'logo') : Theme::path('logo.png');
+        $sitename = common_config('site', 'name');
+        $sitelogo = (common_config('site', 'logo')) ? common_config('site', 'logo') : Theme::path('logo.png');
         // TRANS: Title for site timeline. %s is the StatusNet sitename.
-        $title      = sprintf(_("%s public and external timeline"), $sitename);
+        $title = sprintf(_('%s public and external timeline'), $sitename);
         $taguribase = TagURI::base();
-        $id         = "tag:$taguribase:PublicAndExternalTimeline";
-        $link       = common_local_url('public');
-        $self       = $this->getSelfUri();
+        $id = "tag:$taguribase:PublicAndExternalTimeline";
+        $link = common_local_url('public');
+        $self = $this->getSelfUri();
         // TRANS: Subtitle for site timeline. %s is the StatusNet sitename.
-        $subtitle   = sprintf(_("%s updates from the whole known network!"), $sitename);
+        $subtitle = sprintf(_('%s updates from the whole known network!'), $sitename);
 
-        switch($this->format) {
+        switch ($this->format) {
         case 'xml':
             $this->showXmlTimeline($this->notices);
             break;
@@ -142,7 +137,7 @@ class ApiTimelinePublicAndExternalAction extends ApiPrivateAuthAction
             $this->showJsonTimeline($this->notices);
             break;
         case 'as':
-            header('Content-Type: ' . ActivityStreamJSONDocument::CONTENT_TYPE);
+            header('Content-Type: '.ActivityStreamJSONDocument::CONTENT_TYPE);
             $doc = new ActivityStreamJSONDocument($this->auth_user);
             $doc->setTitle($title);
             $doc->addLink($link, 'alternate', 'text/html');
@@ -157,11 +152,11 @@ class ApiTimelinePublicAndExternalAction extends ApiPrivateAuthAction
     }
 
     /**
-     * Get notices
+     * Get notices.
      *
      * @return array notices
      */
-    function getNotices()
+    public function getNotices()
     {
         $notices = array();
 
@@ -186,9 +181,9 @@ class ApiTimelinePublicAndExternalAction extends ApiPrivateAuthAction
      *
      * @param array $args other arguments
      *
-     * @return boolean true
+     * @return bool true
      */
-    function isReadOnly($args)
+    public function isReadOnly($args)
     {
         return true;
     }
@@ -198,7 +193,7 @@ class ApiTimelinePublicAndExternalAction extends ApiPrivateAuthAction
      *
      * @return string datestamp of the latest notice in the stream
      */
-    function lastModified()
+    public function lastModified()
     {
         if (!empty($this->notices) && (count($this->notices) > 0)) {
             return strtotime($this->notices[0]->created);
@@ -208,28 +203,27 @@ class ApiTimelinePublicAndExternalAction extends ApiPrivateAuthAction
     }
 
     /**
-     * An entity tag for this stream
+     * An entity tag for this stream.
      *
      * Returns an Etag based on the action name, language, and
      * timestamps of the first and last notice in the timeline
      *
      * @return string etag
      */
-    function etag()
+    public function etag()
     {
         if (!empty($this->notices) && (count($this->notices) > 0)) {
-
             $last = count($this->notices) - 1;
 
-            return '"' . implode(
+            return '"'.implode(
                 ':',
                 array($this->arg('action'),
                       common_user_cache_hash($this->auth_user),
                       common_language(),
                       strtotime($this->notices[0]->created),
-                      strtotime($this->notices[$last]->created))
+                      strtotime($this->notices[$last]->created), )
             )
-            . '"';
+            .'"';
         }
 
         return null;

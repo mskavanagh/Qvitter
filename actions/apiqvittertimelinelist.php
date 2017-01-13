@@ -38,23 +38,21 @@ if (!defined('STATUSNET')) {
 }
 
 /**
- * Returns the most recent notices (default 20) in the list
+ * Returns the most recent notices (default 20) in the list.
  */
-
 class ApiQvitterTimelineListAction extends ApiBareAuthAction
 {
-    var $notices = null;
-    var $list   = null;
+    public $notices = null;
+    public $list = null;
 
     /**
-     * Take arguments for running
+     * Take arguments for running.
      *
      * @param array $args $_REQUEST args
      *
-     * @return boolean success flag
-     *
+     * @return bool success flag
      */
-    protected function prepare(array $args=array())
+    protected function prepare(array $args = array())
     {
         parent::prepare($args);
 
@@ -71,11 +69,9 @@ class ApiQvitterTimelineListAction extends ApiBareAuthAction
     }
 
     /**
-     * Handle the request
+     * Handle the request.
      *
      * Just show the notices
-     *
-     * @return void
      */
     protected function handle()
     {
@@ -83,13 +79,12 @@ class ApiQvitterTimelineListAction extends ApiBareAuthAction
         $this->showJsonTimeline($this->notices);
     }
 
-
     /**
-     * Get notices
+     * Get notices.
      *
      * @return array notices
      */
-    function getNotices()
+    public function getNotices()
     {
         $notices = array();
 
@@ -112,9 +107,9 @@ class ApiQvitterTimelineListAction extends ApiBareAuthAction
      *
      * @param array $args other arguments
      *
-     * @return boolean true
+     * @return bool true
      */
-    function isReadOnly($args)
+    public function isReadOnly($args)
     {
         return true;
     }
@@ -124,7 +119,7 @@ class ApiQvitterTimelineListAction extends ApiBareAuthAction
      *
      * @return string datestamp of the latest notice in the stream
      */
-    function lastModified()
+    public function lastModified()
     {
         if (!empty($this->notices) && (count($this->notices) > 0)) {
             return strtotime($this->notices[0]->created);
@@ -134,28 +129,27 @@ class ApiQvitterTimelineListAction extends ApiBareAuthAction
     }
 
     /**
-     * An entity tag for this stream
+     * An entity tag for this stream.
      *
      * Returns an Etag based on the action name, language, and
      * timestamps of the first and last notice in the timeline
      *
      * @return string etag
      */
-    function etag()
+    public function etag()
     {
         if (!empty($this->notices) && (count($this->notices) > 0)) {
-
             $last = count($this->notices) - 1;
 
-            return '"' . implode(
+            return '"'.implode(
                 ':',
                 array($this->arg('action'),
                       common_user_cache_hash($this->auth_user),
                       common_language(),
                       strtotime($this->notices[0]->created),
-                      strtotime($this->notices[$last]->created))
+                      strtotime($this->notices[$last]->created), )
             )
-            . '"';
+            .'"';
         }
 
         return null;

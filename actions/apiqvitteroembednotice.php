@@ -38,22 +38,23 @@
   ·                                                                             ·
   · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · */
 
-
-if (!defined('GNUSOCIAL')) { exit(1); }
+if (!defined('GNUSOCIAL')) {
+    exit(1);
+}
 
 class ApiQvitterOembedNoticeAction extends ApiAction
 {
-    var $format = null;
-    var $url = null;
+    public $format = null;
+    public $url = null;
 
     /**
-     * Take arguments for running
+     * Take arguments for running.
      *
      * @param array $args $_REQUEST args
      *
-     * @return boolean success flag
+     * @return bool success flag
      */
-    protected function prepare(array $args=array())
+    protected function prepare(array $args = array())
     {
         parent::prepare($args);
 
@@ -64,11 +65,9 @@ class ApiQvitterOembedNoticeAction extends ApiAction
     }
 
     /**
-     * Handle the request
+     * Handle the request.
      *
      * @param array $args $_REQUEST data (unused)
-     *
-     * @return void
      */
     protected function handle()
     {
@@ -83,76 +82,74 @@ class ApiQvitterOembedNoticeAction extends ApiAction
         $url_wo_protocol = preg_replace('(^https?://)', '', $this->url);
 
         // find local notice
-        if(strpos($url_wo_protocol, $noticeurl_wo_protocol) === 0) {
-            $possible_notice_id = str_replace($noticeurl_wo_protocol,'',$url_wo_protocol);
-            if(ctype_digit($possible_notice_id)) {
-                $notice = Notice::getKV('id',$possible_notice_id);;
+        if (strpos($url_wo_protocol, $noticeurl_wo_protocol) === 0) {
+            $possible_notice_id = str_replace($noticeurl_wo_protocol, '', $url_wo_protocol);
+            if (ctype_digit($possible_notice_id)) {
+                $notice = Notice::getKV('id', $possible_notice_id);
             } else {
-                $this->clientError("Notice not found.", 404);
+                $this->clientError('Notice not found.', 404);
             }
         }
 
-		if(!$notice instanceof Notice){
-			// TRANS: Client error displayed in oEmbed action when notice not found.
-			// TRANS: %s is a notice.
-			$this->clientError(sprintf(_("Notice %s not found."),$this->id), 404);
-		}
-		$profile = $notice->getProfile();
-		if (!$profile instanceof Profile) {
-			// TRANS: Server error displayed in oEmbed action when notice has not profile.
-			$this->serverError(_('Notice has no profile.'), 500);
-		}
-		$authorname = $profile->getFancyName();
+        if (!$notice instanceof Notice) {
+            // TRANS: Client error displayed in oEmbed action when notice not found.
+            // TRANS: %s is a notice.
+            $this->clientError(sprintf(_('Notice %s not found.'), $this->id), 404);
+        }
+        $profile = $notice->getProfile();
+        if (!$profile instanceof Profile) {
+            // TRANS: Server error displayed in oEmbed action when notice has not profile.
+            $this->serverError(_('Notice has no profile.'), 500);
+        }
+        $authorname = $profile->getFancyName();
 
-        $oembed=array();
-        $oembed['version']='1.0';
-        $oembed['provider_name']=common_config('site', 'name');
-        $oembed['provider_url']=common_root_url();
-        $oembed['type']='link';
+        $oembed = array();
+        $oembed['version'] = '1.0';
+        $oembed['provider_name'] = common_config('site', 'name');
+        $oembed['provider_url'] = common_root_url();
+        $oembed['type'] = 'link';
 
-		// TRANS: oEmbed title. %1$s is the author name, %2$s is the creation date.
-		$oembed['title'] = ApiAction::dateTwitter($notice->created).' (Qvitter)';
-		$oembed['author_name']=$authorname;
-		$oembed['author_url']=$profile->profileurl;
-		$oembed['url']=$notice->getUrl();
-		$oembed['html']=$notice->getRendered();
+        // TRANS: oEmbed title. %1$s is the author name, %2$s is the creation date.
+        $oembed['title'] = ApiAction::dateTwitter($notice->created).' (Qvitter)';
+        $oembed['author_name'] = $authorname;
+        $oembed['author_url'] = $profile->profileurl;
+        $oembed['url'] = $notice->getUrl();
+        $oembed['html'] = $notice->getRendered();
 
         // maybe add thumbnail
         $attachments = $notice->attachments();
         if (!empty($attachments)) {
             foreach ($attachments as $attachment) {
-				if(is_object($attachment)) {
+                if (is_object($attachment)) {
                     try {
                         $thumb = $attachment->getThumbnail();
-					} catch (ServerException $e) {
-                        //
+                    } catch (ServerException $e) {
                     }
-                    if(!empty($thumb) && method_exists('File_thumbnail','url')) {
+                    if (!empty($thumb) && method_exists('File_thumbnail', 'url')) {
                         try {
                             $thumb_url = File_thumbnail::url($thumb->filename);
                             $oembed['thumbnail_url'] = $thumb_url;
                             break; // only first one
                         } catch (ClientException $e) {
-                            //
                         }
                     }
                 }
             }
         }
 
-        if($this->format == 'json') {
+        if ($this->format == 'json') {
             $this->initDocument('json');
-            print json_encode($oembed);
+            echo json_encode($oembed);
             $this->endDocument('json');
         } elseif ($this->format == 'xml') {
             $this->initDocument('xml');
             $this->elementStart('oembed');
-            foreach(array(
+            foreach (array(
                         'version', 'type', 'provider_name',
                         'provider_url', 'title', 'author_name',
-                        'author_url', 'url', 'html'
+                        'author_url', 'url', 'html',
                         ) as $key) {
-                if (isset($oembed[$key]) && $oembed[$key]!='') {
+                if (isset($oembed[$key]) && $oembed[$key] != '') {
                     $this->element($key, null, $oembed[$key]);
                 }
             }

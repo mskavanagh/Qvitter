@@ -34,20 +34,23 @@
   ·                                                                             ·
   · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · */
 
-if (!defined('GNUSOCIAL')) { exit(1); }
+if (!defined('GNUSOCIAL')) {
+    exit(1);
+}
 
 class QvitterLoginAction extends FormAction
 {
     protected $needLogin = false;
 
     /**
-     * Prepare page to run
+     * Prepare page to run.
      *
      *
      * @param $args
+     *
      * @return string title
      */
-    protected function prepare(array $args=array())
+    protected function prepare(array $args = array())
     {
         // @todo this check should really be in index.php for all sensitive actions
         $ssl = common_config('site', 'ssl');
@@ -59,11 +62,9 @@ class QvitterLoginAction extends FormAction
     }
 
     /**
-     * Handle input, produce output
+     * Handle input, produce output.
      *
      * Switches on request method; either shows the form or handles its input.
-     *
-     * @return void
      */
     protected function handle()
     {
@@ -75,13 +76,11 @@ class QvitterLoginAction extends FormAction
     }
 
     /**
-     * Check the login data
+     * Check the login data.
      *
      * Determines if the login data is valid. If so, logs the user
      * in, and redirects to the 'with friends' page, or to the stored
      * return-to URL.
-     *
-     * @return void
      */
     protected function handlePost()
     {
@@ -126,12 +125,8 @@ class QvitterLoginAction extends FormAction
         common_redirect($url, 303);
     }
 
-
-    function showPage()
+    public function showPage()
     {
-
-		QvitterAction::showQvitter();
-
+        QvitterAction::showQvitter();
     }
-
 }

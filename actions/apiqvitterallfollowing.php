@@ -39,35 +39,33 @@
   ·                                                                             ·
   · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · */
 
-
-
-if (!defined('GNUSOCIAL')) { exit(1); }
+if (!defined('GNUSOCIAL')) {
+    exit(1);
+}
 
 class ApiQvitterAllFollowingAction extends ApiBareAuthAction
 {
-
-    var $profiles = null;
-  	var $users_stripped = null;
-    var $groups_stripped = null;
-    var $blocks = null;
+    public $profiles = null;
+    public $users_stripped = null;
+    public $groups_stripped = null;
+    public $blocks = null;
 
     /**
-     * Take arguments for running
+     * Take arguments for running.
      *
      * @param array $args $_REQUEST args
      *
-     * @return boolean success flag
+     * @return bool success flag
      */
-    protected function prepare(array $args=array())
+    protected function prepare(array $args = array())
     {
         parent::prepare($args);
 
-        $this->format = 'json';        
+        $this->format = 'json';
 
         $this->count = 5000; // max 5000, completely arbitrary...
 
         $this->target = $this->getTargetProfile($this->arg('id'));
-
 
         if (!($this->target instanceof Profile)) {
             // TRANS: Client error displayed when requesting a list of followers for a non-existing user.
@@ -76,69 +74,63 @@ class ApiQvitterAllFollowingAction extends ApiBareAuthAction
 
         $this->profiles = $this->getProfiles();
         $this->groups = $this->getGroups();
-        $this->blocks = QvitterBlocked::getBlockedIDs($this->target->id,0,10000);
+        $this->blocks = QvitterBlocked::getBlockedIDs($this->target->id, 0, 10000);
 
+        // profiles: only keep id, name, nickname and avatar URL
+        foreach ($this->profiles as $p) {
+            try {
+                $avatar = Avatar::urlByProfile($p, AVATAR_STREAM_SIZE);
+            } catch (Exception $e) {
+                $avatar = false;
+            }
+            $this_user = array($p->fullname, $p->nickname, $avatar);
+            if (!$p->isLocal()) {
+                $this_user[3] = $p->getUrl();
+            } else {
+                $this_user[3] = false;
+            }
+            $this->users_stripped[$p->id] = $this_user;
+        }
 
-		// profiles: only keep id, name, nickname and avatar URL
-		foreach($this->profiles as $p) {
-			try {
-				$avatar = Avatar::urlByProfile($p, AVATAR_STREAM_SIZE);
-			} catch (Exception $e) {
-				$avatar = false;
-			}
-			$this_user = array($p->fullname,$p->nickname,$avatar);
-			if(!$p->isLocal()) {
-				$this_user[3] = $p->getUrl();
-				}
-			else {
-				$this_user[3] = false;
-				}
-			$this->users_stripped[$p->id] = $this_user;
-			}
-
-		// groups: only keep id, name, nickname, avatar and local aliases
-		foreach($this->groups as $user_group) {
-			$p = $user_group->getProfile();
+        // groups: only keep id, name, nickname, avatar and local aliases
+        foreach ($this->groups as $user_group) {
+            $p = $user_group->getProfile();
             $avatar = $user_group->stream_logo;
-			$this_group = array($p->fullname,$p->nickname,$avatar);
-			if(!$user_group->isLocal()) {
-				$this_group[3] = $p->getUrl();
-				}
-			else {
-				$this_group[3] = false;
-				}
-			$this->groups_stripped[$user_group->id] = $this_group;
-			}
+            $this_group = array($p->fullname, $p->nickname, $avatar);
+            if (!$user_group->isLocal()) {
+                $this_group[3] = $p->getUrl();
+            } else {
+                $this_group[3] = false;
+            }
+            $this->groups_stripped[$user_group->id] = $this_group;
+        }
 
         return true;
     }
 
     /**
-     * Handle the request
+     * Handle the request.
      *
      * @param array $args $_REQUEST data (unused)
-     *
-     * @return void
      */
     protected function handle()
     {
         parent::handle();
 
-
         $this->initDocument('json');
-        $this->showJsonObjects(array('users'=>$this->users_stripped,'groups'=>$this->groups_stripped,'blocks'=>$this->blocks));
+        $this->showJsonObjects(array('users' => $this->users_stripped, 'groups' => $this->groups_stripped, 'blocks' => $this->blocks));
         $this->endDocument('json');
     }
 
     /**
-     * Get profiles
+     * Get profiles.
      *
      * @return array Profiles
      */
     protected function getProfiles()
     {
         $offset = ($this->page - 1) * $this->count;
-        $limit =  $this->count + 1;
+        $limit = $this->count + 1;
 
         $subs = null;
 
@@ -150,18 +142,18 @@ class ApiQvitterAllFollowingAction extends ApiBareAuthAction
         $profiles = array();
 
         while ($subs->fetch()) {
-            $profiles[] = clone($subs);
+            $profiles[] = clone $subs;
         }
 
         return $profiles;
     }
 
     /**
-     * Get groups
+     * Get groups.
      *
      * @return array groups
      */
-    function getGroups()
+    public function getGroups()
     {
         $groups = array();
 
@@ -172,13 +164,12 @@ class ApiQvitterAllFollowingAction extends ApiBareAuthAction
             $this->max_id
         );
 
-        if(!empty($group)) {
+        if (!empty($group)) {
             while ($group->fetch()) {
-                $groups[] = clone($group);
+                $groups[] = clone $group;
             }
         }
+
         return $groups;
     }
-
-
 }

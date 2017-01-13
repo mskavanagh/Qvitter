@@ -39,21 +39,20 @@
   ·                                                                             ·
   · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · */
 
-
-if (!defined('GNUSOCIAL')) { exit(1); }
+if (!defined('GNUSOCIAL')) {
+    exit(1);
+}
 
 class ApiQvitterMarkAllNotificationsAsSeenAction extends ApiAuthAction
 {
-
-
     /**
-     * Take arguments for running
+     * Take arguments for running.
      *
      * @param array $args $_REQUEST args
      *
-     * @return boolean success flag
+     * @return bool success flag
      */
-    protected function prepare(array $args=array())
+    protected function prepare(array $args = array())
     {
         parent::prepare($args);
 
@@ -61,11 +60,9 @@ class ApiQvitterMarkAllNotificationsAsSeenAction extends ApiAuthAction
     }
 
     /**
-     * Handle the request
+     * Handle the request.
      *
      * @param array $args $_REQUEST data (unused)
-     *
-     * @return void
      */
     protected function handle()
     {
@@ -79,13 +76,13 @@ class ApiQvitterMarkAllNotificationsAsSeenAction extends ApiAuthAction
         $notifications = QvitterNotification::pivotGet('id', $ids);
         $notifications = new ArrayWrapper($notifications);
         $notifications = $notifications->fetchAll();
-        foreach($notifications as $notification) {
-            if($notification->is_seen == 0) {
-                $orig = clone($notification);
+        foreach ($notifications as $notification) {
+            if ($notification->is_seen == 0) {
+                $orig = clone $notification;
                 $notification->is_seen = 1;
                 $notification->update($orig);
-                }
             }
+        }
 
         $this->initDocument('json');
         $this->showJsonObjects(true);

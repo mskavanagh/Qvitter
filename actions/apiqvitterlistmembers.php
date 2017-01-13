@@ -1,6 +1,6 @@
 <?php
 /**
- * StatusNet, the distributed open-source microblogging tool
+ * StatusNet, the distributed open-source microblogging tool.
  *
  * List a list's members
  *
@@ -20,18 +20,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @category  API
- * @package   GNUsocial
+ *
  * @author    Craig Andrews <candrews@integralblue.com>
  * @author    Evan Prodromou <evan@status.net>
  * @author    Jeffery To <jeffery.to@gmail.com>
  * @author    Zach Copley <zach@status.net>
  * @author    Hannes Mannerheim <h@nnesmannerhe.im>
- * @copyright 2009 StatusNet, Inc.
+ * @copyright 2009 StatusNet, Inc
  * @copyright 2009 Free Software Foundation, Inc http://www.fsf.org
  * @license   http://www.fsf.org/licensing/licenses/agpl-3.0.html GNU Affero General Public License version 3.0
+ *
  * @link      http://www.gnu.org/software/social/
  */
-
 if (!defined('GNUSOCIAL')) {
     exit(1);
 }
@@ -40,28 +40,29 @@ if (!defined('GNUSOCIAL')) {
  * List 20 newest admins of the group specified by name or ID.
  *
  * @category API
- * @package  GNUsocial
+ *
  * @author   Craig Andrews <candrews@integralblue.com>
  * @author   Evan Prodromou <evan@status.net>
  * @author   Jeffery To <jeffery.to@gmail.com>
  * @author   Zach Copley <zach@status.net>
  * @author   Hannes Mannerheim <h@nnesmannerhe.im>
  * @license  http://www.fsf.org/licensing/licenses/agpl-3.0.html GNU Affero General Public License version 3.0
+ *
  * @link     http://www.gnu.org/software/social/
  */
 class ApiQvitterListMembersAction extends ApiPrivateAuthAction
 {
-    var $list    = null;
-    var $profiles = null;
+    public $list = null;
+    public $profiles = null;
 
     /**
-     * Take arguments for running
+     * Take arguments for running.
      *
      * @param array $args $_REQUEST args
      *
-     * @return boolean success flag
+     * @return bool success flag
      */
-    protected function prepare(array $args=array())
+    protected function prepare(array $args = array())
     {
         parent::prepare($args);
 
@@ -79,26 +80,24 @@ class ApiQvitterListMembersAction extends ApiPrivateAuthAction
     }
 
     /**
-     * Handle the request
+     * Handle the request.
      *
      * Show the admin of the group
      *
      * @param array $args $_REQUEST data (unused)
-     *
-     * @return void
      */
     protected function handle()
     {
         parent::handle();
-		$this->showJsonUsers($this->profiles);
+        $this->showJsonUsers($this->profiles);
     }
 
     /**
-     * Fetch the admins of a group
+     * Fetch the admins of a group.
      *
      * @return array $profiles list of profiles
      */
-    function getProfiles()
+    public function getProfiles()
     {
         $profiles = array();
 
@@ -110,7 +109,7 @@ class ApiQvitterListMembersAction extends ApiPrivateAuthAction
         );
 
         while ($profile->fetch()) {
-            $profiles[] = clone($profile);
+            $profiles[] = clone $profile;
         }
 
         return $profiles;
@@ -121,9 +120,9 @@ class ApiQvitterListMembersAction extends ApiPrivateAuthAction
      *
      * @param array $args other arguments
      *
-     * @return boolean true
+     * @return bool true
      */
-    function isReadOnly($args)
+    public function isReadOnly($args)
     {
         return true;
     }
@@ -133,7 +132,7 @@ class ApiQvitterListMembersAction extends ApiPrivateAuthAction
      *
      * @return string datestamp of the lastest profile in the group
      */
-    function lastModified()
+    public function lastModified()
     {
         if (!empty($this->profiles) && (count($this->profiles) > 0)) {
             return strtotime($this->profiles[0]->created);
@@ -143,7 +142,7 @@ class ApiQvitterListMembersAction extends ApiPrivateAuthAction
     }
 
     /**
-     * An entity tag for this list of groups
+     * An entity tag for this list of groups.
      *
      * Returns an Etag based on the action name, language
      * the group id, and timestamps of the first and last
@@ -151,22 +150,21 @@ class ApiQvitterListMembersAction extends ApiPrivateAuthAction
      *
      * @return string etag
      */
-    function etag()
+    public function etag()
     {
         if (!empty($this->profiles) && (count($this->profiles) > 0)) {
-
             $last = count($this->profiles) - 1;
 
-            return '"' . implode(
+            return '"'.implode(
                 ':',
                 array($this->arg('action'),
                       common_user_cache_hash($this->auth_user),
                       common_language(),
                       $this->group->id,
                       strtotime($this->profiles[0]->created),
-                      strtotime($this->profiles[$last]->created))
+                      strtotime($this->profiles[$last]->created), )
             )
-            . '"';
+            .'"';
         }
 
         return null;

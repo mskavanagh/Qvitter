@@ -38,15 +38,14 @@ if (!defined('STATUSNET') && !defined('LACONICA')) {
     exit(1);
 }
 
-
 class QvitterAdminSettingsAction extends AdminPanelAction
 {
     /**
-     * Returns the page title
+     * Returns the page title.
      *
      * @return string page title
      */
-    function title()
+    public function title()
     {
         // TRANS: Page title for site-wide notice tab in admin panel.
         return _('Qvitter Sidebar Notice');
@@ -57,30 +56,27 @@ class QvitterAdminSettingsAction extends AdminPanelAction
      *
      * @return string instructions
      */
-    function getInstructions()
+    public function getInstructions()
     {
         // TRANS: Instructions for site-wide notice tab in admin panel.
         return _('Edit notice in Qvitter\'s sidebar');
     }
 
     /**
-     * Show the site notice admin panel form
-     *
-     * @return void
+     * Show the site notice admin panel form.
      */
-    function showForm()
+    public function showForm()
     {
         $form = new QvitterNoticeAdminPanelForm($this);
         $form->show();
+
         return;
     }
 
     /**
-     * Save settings from the form
-     *
-     * @return void
+     * Save settings from the form.
      */
-    function saveSettings()
+    public function saveSettings()
     {
         $qvitterNotice = $this->trimmed('qvitter-notice');
         $qvitterNoticeLoggedOut = $this->trimmed('qvitter-notice-logged-out');
@@ -96,19 +92,18 @@ class QvitterAdminSettingsAction extends AdminPanelAction
         $result = Config::save('site', 'qvitternotice', $qvitterNotice);
         $result = Config::save('site', 'qvitternoticeloggedout', $qvitterNoticeLoggedOut);
 
-
         if (!$result) {
             // TRANS: Server error displayed when saving a sidebar notice was impossible.
             $this->ServerError(_('Unable to save qvitter sidebar notice.'));
         }
     }
 
-    function validate(&$qvitterNotice)
+    public function validate(&$qvitterNotice)
     {
         // Validate notice text
 
-	//The column 'value' in table 'config' is TEXT
-        if (mb_strlen($qvitterNotice) > 21844)  {
+    //The column 'value' in table 'config' is TEXT
+        if (mb_strlen($qvitterNotice) > 21844) {
             $this->clientError(
                 // TRANS: Client error displayed when a sidebar notice was longer than allowed.
                 _('Maximum length for the sidebar notice is 21844 characters.')
@@ -120,45 +115,39 @@ class QvitterAdminSettingsAction extends AdminPanelAction
 class QvitterNoticeAdminPanelForm extends AdminForm
 {
     /**
-     * ID of the form
+     * ID of the form.
      *
      * @return int ID of the form
      */
-
-    function id()
+    public function id()
     {
         return 'form_qvitter_notice_admin_panel';
     }
 
     /**
-     * class of the form
+     * class of the form.
      *
      * @return string class of the form
      */
-
-    function formClass()
+    public function formClass()
     {
         return 'form_settings';
     }
 
     /**
-     * Action of the form
+     * Action of the form.
      *
      * @return string URL of the action
      */
-
-    function action()
+    public function action()
     {
         return common_local_url('qvitteradminsettings');
     }
 
     /**
-     * Data elements of the form
-     *
-     * @return void
+     * Data elements of the form.
      */
-
-    function formData()
+    public function formData()
     {
         $this->out->elementStart('ul', 'form_data');
 
@@ -192,17 +181,14 @@ class QvitterNoticeAdminPanelForm extends AdminForm
     }
 
     /**
-     * Action elements
-     *
-     * @return void
+     * Action elements.
      */
-
-    function formActions()
+    public function formActions()
     {
         $this->out->submit(
             'submit',
             // TRANS: Button text for saving sidebar notice in admin panel.
-            _m('BUTTON','Save'),
+            _m('BUTTON', 'Save'),
             'submit',
             null,
             // TRANS: Button title to save sidebar notice in admin panel.
