@@ -600,12 +600,18 @@ class QvitterAction extends ApiAction
     							<div id="user-avatar-container"><img id="user-avatar" src="<?php echo htmlspecialchars($logged_in_user_obj['profile_image_url_profile_size']) ?>" /></div>
     							<div id="user-name"><?php echo htmlspecialchars($logged_in_user_obj['name']) ?></div>
     							<div id="user-screen-name"><?php echo htmlspecialchars($logged_in_user_obj['screen_name']) ?></div>
+    							
     						</div>
-    						<ul id="user-body">
-    							<li><a href="<?php echo $instanceurl.$logged_in_user->nickname ?>" id="user-queets"><span class="label"></span><strong><?php echo $logged_in_user_obj['statuses_count'] ?></strong></a></li>
-    							<li><a href="<?php echo $instanceurl.$logged_in_user->nickname ?>/subscriptions" id="user-following"><span class="label"></span><strong><?php echo $logged_in_user_obj['friends_count'] ?></strong></a></li>
-    							<li><a href="<?php echo $instanceurl.$logged_in_user->nickname ?>/subscribers" id="user-followers"><span class="label"></span><strong><?php echo $logged_in_user_obj['followers_count'] ?></strong></a></li>
-    						</ul>
+    						<div id="user-body">
+    							<ul id="user-body">
+	    							<li><a href="<?php echo $instanceurl.$logged_in_user->nickname ?>" id="user-queets"><span class="label"></span><strong><?php echo $logged_in_user_obj['statuses_count'] ?></strong></a></li>
+	    							<li><a href="<?php echo $instanceurl.$logged_in_user->nickname ?>/subscriptions" id="user-following"><span class="label"></span><strong><?php echo $logged_in_user_obj['friends_count'] ?></strong></a></li>
+	    							<li><a href="<?php echo $instanceurl.$logged_in_user->nickname ?>/subscribers" id="user-followers"><span class="label"></span><strong><?php echo $logged_in_user_obj['followers_count'] ?></strong></a></li>
+	    						</ul>
+	    						<form action="<?php echo $instanceurl; ?>main/ostatussub" method="GET">
+    								<div id="add-user-name"><input type="text" placeholder="  user@instance.com" id="profile" name="profile"><button class="enabled" type="submit">Follow User</button></div>
+    							</form>
+    						</div>
     						<div id="user-footer">
     							<div id="user-footer-inner">
     								<div id="queet-box" class="queet-box queet-box-syntax" data-start-text=""></div>
