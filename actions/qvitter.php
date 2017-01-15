@@ -614,7 +614,7 @@ class QvitterAction extends ApiAction
 	    							<li><a href="<?php echo $instanceurl.$logged_in_user->nickname ?>/subscribers" id="user-followers"><span class="label"></span><strong><?php echo $logged_in_user_obj['followers_count'] ?></strong></a></li>
 	    						</ul>
 	    						<form action="<?php echo $instanceurl; ?>main/ostatussub" method="GET">
-    								<div id="add-user-name"><input type="text" placeholder="  user@instance.com" id="profile" name="profile"><button class="enabled" type="submit">Follow User</button></div>
+    								<div id="add-user-name"><input type="text" placeholder="  user@instance.com" id="profile" name="profile">&nbsp;&nbsp;<button class="enabled" type="submit">Follow User</button></div>
     							</form>
     						</div>
     						<div id="user-footer">
@@ -636,7 +636,6 @@ class QvitterAction extends ApiAction
     							</div>
     						</div>
                             <div id="main-menu" class="menu-container"><?php
-
                                     if ($logged_in_user) {
                                         ?><a href="<?php echo $instanceurl.$logged_in_user->nickname ?>/all" class="stream-selection friends-timeline"><i class="chev-right"></i></a>
             							<a href="<?php echo $instanceurl.$logged_in_user->nickname ?>/notifications" class="stream-selection notifications"><span id="unseen-notifications"></span><i class="chev-right"></i></a>
