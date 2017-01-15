@@ -468,6 +468,8 @@ class QvitterAction extends ApiAction
 						<li class="fullwidth"><a id="top-menu-profile-link" class="no-hover-card" href="<?php echo $instanceurl.$logged_in_user_obj['screen_name']; ?>"><div id="top-menu-profile-link-fullname"><?php echo htmlspecialchars($logged_in_user_obj['name']); ?></div><div id="top-menu-profile-link-view-profile"></div></a></li>
 						<li class="fullwidth dropdown-divider"></li>
                         <li class="fullwidth"><a id="faq-link"></a></li>
+                        <li class="fullwidth"><a href="https://github.com/mitchellurgero/Qvitter">QvitterMod Home</a></li>
+                        <li class="fullwidth"><a href="https://urgero.org">Author Home Page</a></li>
                         <li class="fullwidth"><a id="tou-link"></a></li>
                         <?php
 
@@ -493,7 +495,10 @@ class QvitterAction extends ApiAction
                             echo '<li class="language"><a class="language-link" data-tooltip="'.$lan['tooltip'].'" data-lang-code="'.$lancode.'">'.$lan['name'].'</a></li>';
                         } ?>
                         <li class="fullwidth language dropdown-divider"></li>
-                        <li class="fullwidth"><a href="https://git.gnu.io/h2p/Qvitter/tree/master/locale" target="_blank" id="add-edit-language-link"></a></li>
+                        <li class="fullwidth"><a href="https://github.com/mitchellurgero/Qvitter/tree/master/locale" target="_blank" id="add-edit-language-link"></a></li>
+						<li class="fullwidth dropdown-divider"></li>
+						<li class="fullwidth">&nbsp;&nbsp;&nbsp;&nbsp;<b>GS Version:</b></li>
+						<li class="fullwidth">&nbsp;&nbsp;&nbsp;&nbsp;<?php echo GNUSOCIAL_ENGINE." ".GNUSOCIAL_VERSION."(".GNUSOCIAL_CODENAME.")"; ?></li>
 					</ul>
 					<div class="global-nav">
 						<div class="global-nav-inner">
