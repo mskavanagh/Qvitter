@@ -469,7 +469,6 @@ class QvitterAction extends ApiAction
 						<li class="fullwidth dropdown-divider"></li>
                         <li class="fullwidth"><a id="faq-link"></a></li>
                         <li class="fullwidth"><a href="https://github.com/mitchellurgero/Qvitter">QvitterMod Home</a></li>
-                        <li class="fullwidth"><a href="https://urgero.org">Author Home Page</a></li>
                         <li class="fullwidth"><a id="tou-link"></a></li>
                         <?php
 

@@ -60,7 +60,7 @@ class QvitterPlugin extends Plugin
         $settings['defaultbackgroundcolor'] = '#f4f4f4';
 
         // DEFAULT BACKGROUND IMAGE
-        $settings['sitebackground'] = 'img/vagnsmossen.jpg';
+        $settings['sitebackground'] = Plugin::staticPath('Qvitter', '').'img/vagnsmossen.jpg';
 
         // FAVICON PATH (we've used realfavicongenerator.net to generate the icons)
         $settings['favicon_path'] = Plugin::staticPath('Qvitter', '').'img/gnusocial-favicons/';
@@ -281,14 +281,13 @@ class QvitterPlugin extends Plugin
 
             // other plugins might want to reroute to qvitter
             Event::handle('QvitterHijackUI', array($m));
-
             $m->connect('', array('action' => 'qvitter'));
             $m->connect('main/all', array('action' => 'qvitter'));
             $m->connect('main/public', array('action' => 'qvitter'));
             $m->connect('main/silenced', array('action' => 'qvitter'));
             $m->connect('main/sandboxed', array('action' => 'qvitter'));
             $m->connect('search/notice', array('action' => 'qvitter'));
-
+			$m->connect('main/status', array('action' => 'qvitter'));
             // if the user wants the twitter style home stream with hidden replies to non-friends
             if ($this->qvitter_hide_replies == 1) {
                 URLMapperOverwrite::overwrite_variable($m, 'api/statuses/friends_timeline.:format',
