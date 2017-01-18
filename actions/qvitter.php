@@ -615,10 +615,6 @@ class QvitterAction extends ApiAction
 	    						<form action="<?php echo $instanceurl; ?>main/ostatussub" method="GET">
     								<div id="add-user-name"><input type="text" placeholder="  user@instance.com" id="profile" name="profile">&nbsp;&nbsp;<button class="enabled" type="submit">Follow User</button></div>
     							</form>
-    							<br>
-    							<form action="<?php echo $instanceurl; ?>main/ostatusgroup" method="GET">
-    								<div id="follow-group"><input type="text" placeholder="  group URL or ID" id="group" name="profile">&nbsp;&nbsp;<button type="submit">Join Group</button></div>
-    							</form>
     						</div>
     						<div id="user-footer">
     							<div id="user-footer-inner">
