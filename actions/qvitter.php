@@ -55,7 +55,34 @@ class QvitterAction extends ApiAction
 
         $this->showQvitter();
     }
-
+	function uptime(){
+		  if(PHP_OS == "Linux") {
+		    $uptime = @file_get_contents( "/proc/uptime");
+		    if ($uptime !== false) {
+		      $uptime = explode(" ",$uptime);
+		      $uptime = $uptime[0];
+		      $days = explode(".",(($uptime % 31556926) / 86400));
+		      $hours = explode(".",((($uptime % 31556926) % 86400) / 3600));
+		      $minutes = explode(".",(((($uptime % 31556926) % 86400) % 3600) / 60));
+		      $time = ".";
+		      if ($minutes > 0)
+		        $time=$minutes[0]." mins".$time;
+		      if ($minutes > 0 && ($hours > 0 || $days > 0))
+		        $time = ", ".$time;
+		      if ($hours > 0)
+		        $time = $hours[0]." hours".$time;
+		      if ($hours > 0 && $days > 0)
+		        $time = ", ".$time;
+		      if ($days > 0)
+		        $time = $days[0]." days".$time;
+		    } else {
+		      $time = false;
+		    }
+		  } else {
+		    $time = false;
+		  }
+		  return $time;
+	}
     public function showQvitter()
     {
         $logged_in_user_nickname = '';
@@ -494,10 +521,9 @@ class QvitterAction extends ApiAction
                             echo '<li class="language"><a class="language-link" data-tooltip="'.$lan['tooltip'].'" data-lang-code="'.$lancode.'">'.$lan['name'].'</a></li>';
                         } ?>
                         <li class="fullwidth language dropdown-divider"></li>
-                        <li class="fullwidth"><a href="https://github.com/mitchellurgero/Qvitter/tree/master/locale" target="_blank" id="add-edit-language-link"></a></li>
-						<li class="fullwidth dropdown-divider"></li>
 						<li class="fullwidth">&nbsp;&nbsp;&nbsp;&nbsp;<b>GS Version:</b></li>
-						<li class="fullwidth">&nbsp;&nbsp;&nbsp;&nbsp;<?php echo GNUSOCIAL_ENGINE." ".GNUSOCIAL_VERSION."(".GNUSOCIAL_CODENAME.")"; ?></li>
+						<li class="fullwidth">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo GNUSOCIAL_ENGINE." ".GNUSOCIAL_VERSION."(".GNUSOCIAL_CODENAME.")"; ?></li>
+						<li class="fullwidth">&nbsp;&nbsp;&nbsp;&nbsp;<?php echo "<b>Server Uptime:</b><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".self::uptime(); ?></li>
 					</ul>
 					<div class="global-nav">
 						<div class="global-nav-inner">
