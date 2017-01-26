@@ -2104,7 +2104,7 @@ $('body').on('click','#new-queets-bar',function(){
 	// get correct unread notifcation count
 	if(window.currentStreamObject.name == 'notifications') {
 		helloAPI();
-		}
+	}
 	});
 
 
