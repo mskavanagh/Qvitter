@@ -640,7 +640,7 @@ class QvitterAction extends ApiAction
 	    						</ul>
 	    						<form action="<?php echo $instanceurl; ?>main/ostatussub" method="GET">
     								<div id="add-user-name">
-    									<input type="text" placeholder="  Follow user or group" id="profile" name="profile" class="queet-box">
+    									<input type="text" placeholder="Follow user or group" id="profile" name="profile" class="queet-box">
     									<div class="queet-button">
     										<button type="submit" class="enabled" hidden>Follow User</button>
     									</div>
