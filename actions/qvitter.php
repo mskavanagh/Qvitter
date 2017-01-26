@@ -639,7 +639,12 @@ class QvitterAction extends ApiAction
 	    							<li><a href="<?php echo $instanceurl.$logged_in_user->nickname ?>/subscribers" id="user-followers"><span class="label"></span><strong><?php echo $logged_in_user_obj['followers_count'] ?></strong></a></li>
 	    						</ul>
 	    						<form action="<?php echo $instanceurl; ?>main/ostatussub" method="GET">
-    								<div id="add-user-name"><input type="text" placeholder="  user@instance.com" id="profile" name="profile">&nbsp;&nbsp;<button class="enabled" type="submit">Follow User</button></div>
+    								<div id="add-user-name">
+    									<input type="text" placeholder="  Follow user or group" id="profile" name="profile" class="queet-box">
+    									<div class="queet-button">
+    										<button type="submit" class="enabled" hidden>Follow User</button>
+    									</div>
+    								</div>
     							</form>
     						</div>
     						<div id="user-footer">
