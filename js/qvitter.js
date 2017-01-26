@@ -49,6 +49,16 @@ checkLocalStorage();
 // don't let users inject html/scripts into their own user data... not that it matters, it is only displayed to themselves, but just to be 200% safe
 window.loggedIn = iterateRecursiveReplaceHtmlSpecialChars(window.loggedIn);
 
+//temp for now.
+var autopause = false;
+function autopause1(){
+	if(autopause){
+		autopause = false;
+	} else {
+		autopause = true;
+	}
+}
+
 // hack to supress basic auth popup, e.g. if the user has to tabs open and
 // log out in one of them. but microsoft browsers doesn't support this
 if(typeof bowser.msie == 'undefined' && typeof bowser.msedge == 'undefined') {

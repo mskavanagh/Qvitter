@@ -628,6 +628,11 @@ function loggedInUsersMenuArray() {
 			type: 'link',
 			href: window.siteInstanceURL + window.loggedIn.screen_name + '/blocks',
 			label: window.sL.userBlocked
+			},
+		{
+			type: 'function',
+			functionName: 'autopause1',
+			label: 'Toggle Auto Update'
 			}];
 	}
 
@@ -779,22 +784,24 @@ function maybeShowTheNewQueetsBar() {
 
 		$('#new-queets-bar').html(q_txt.replace('{new-notice-count}',newQueetsNum));
 		}
-	//Attempt to auto-load new notices?
-if(window.currentStreamObject.name == 'notifications') {
-		document.title = window.siteTitle;
+		//Attempt to auto-load new notices?
+		if(!autopause){
+			if(window.currentStreamObject.name == 'notifications') {
+				document.title = window.siteTitle;
+			}
+			var hiddenStreamItems = $('.stream-item.hidden');
+			hiddenStreamItems.css('opacity','0')
+			hiddenStreamItems.animate({opacity:'1'}, 200);
+			hiddenStreamItems.addClass('visible');
+			hiddenStreamItems.removeClass('hidden');
+			$('#new-queets-bar').parent().addClass('hidden');
+		
+			// say hello to the api if this is notifications stream, to
+			// get correct unread notifcation count
+			if(window.currentStreamObject.name == 'notifications') {
+				helloAPI();
+			}
 		}
-	var hiddenStreamItems = $('.stream-item.hidden');
-	hiddenStreamItems.css('opacity','0')
-	hiddenStreamItems.animate({opacity:'1'}, 200);
-	hiddenStreamItems.addClass('visible');
-	hiddenStreamItems.removeClass('hidden');
-	$('#new-queets-bar').parent().addClass('hidden');
-
-	// say hello to the api if this is notifications stream, to
-	// get correct unread notifcation count
-	if(window.currentStreamObject.name == 'notifications') {
-		helloAPI();
-	}
 	}
 
 
