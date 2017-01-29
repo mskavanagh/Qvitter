@@ -650,8 +650,8 @@ class QvitterAction extends ApiAction
     						<div id="user-footer">
     							<div id="user-footer-inner">
     								<div id="queet-box" class="queet-box queet-box-syntax" data-start-text=""></div>
-    								<div class="syntax-middle"></div>
-    								<div class="syntax-two" contenteditable="true"></div>
+    								<!--<div class="syntax-middle"></div>
+    								<div class="syntax-two" contenteditable="true"></div>-->
     								<div class="mentions-suggestions"></div>
     								<div class="queet-toolbar">
     									<div class="queet-box-extras">
