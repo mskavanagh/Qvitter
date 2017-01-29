@@ -383,34 +383,34 @@ class QvitterPlugin extends Plugin
         // this way we don't have to request this in a separate http request
         if (isset($_GET['withuserarray'])) {
             switch (getPath($_REQUEST)) {
-case 'api/statuses/followers.json':
-case 'api/statuses/friends.json':
-case 'api/statusnet/groups/list.json':
-case 'api/statuses/mentions.json':
-case 'api/favorites.json':
-case 'api/statuses/friends_timeline.json':
-case 'api/statuses/user_timeline.json':
+            case 'api/statuses/followers.json':
+            case 'api/statuses/friends.json':
+            case 'api/statusnet/groups/list.json':
+            case 'api/statuses/mentions.json':
+            case 'api/favorites.json':
+            case 'api/statuses/friends_timeline.json':
+            case 'api/statuses/user_timeline.json':
 
-    // add logged in user's user array
-    if (common_logged_in() && !isset($_GET['screen_name']) && !isset($_GET['id'])) {
-        $profilecurrent = Profile::current();
-        header('Qvitter-User-Array: '.json_encode($this->qvitterTwitterUserArray($profilecurrent)));
-    }
+            // add logged in user's user array
+            if (common_logged_in() && !isset($_GET['screen_name']) && !isset($_GET['id'])) {
+                $profilecurrent = Profile::current();
+                header('Qvitter-User-Array: '.json_encode($this->qvitterTwitterUserArray($profilecurrent)));
+            }
 
-    // add screen_name's user array
-    elseif (isset($_GET['screen_name']) || isset($_GET['id'])) {
-        if (isset($_GET['screen_name'])) {
-            $user = User::getKV('nickname', $_GET['screen_name']);
-        } elseif (isset($_GET['id'])) {
-            $user = User::getKV('id', $_GET['id']);
-        }
+        // add screen_name's user array
+            elseif (isset($_GET['screen_name']) || isset($_GET['id'])) {
+                if (isset($_GET['screen_name'])) {
+                    $user = User::getKV('nickname', $_GET['screen_name']);
+                } elseif (isset($_GET['id'])) {
+                    $user = User::getKV('id', $_GET['id']);
+                }
 
-        if ($user instanceof User) {
-            header('Qvitter-User-Array: '.json_encode($this->qvitterTwitterUserArray($user->getProfile())));
-        }
-    }
-    break;
-        }
+                if ($user instanceof User) {
+                    header('Qvitter-User-Array: '.json_encode($this->qvitterTwitterUserArray($user->getProfile())));
+                }
+            }
+            break;
+            }
         }
     }
 
