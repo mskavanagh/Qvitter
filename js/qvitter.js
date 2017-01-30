@@ -58,7 +58,13 @@ function autopause1(){
 		autopause = true;
 	}
 }
-
+function toggleTheme(){
+	if(document.getElementById("dark_theme").disabled){
+		document.getElementById("dark_theme").disabled = false;
+	} else {
+		document.getElementById("dark_theme").disabled = true;
+	}
+}
 // hack to supress basic auth popup, e.g. if the user has to tabs open and
 // log out in one of them. but microsoft browsers doesn't support this
 if(typeof bowser.msie == 'undefined' && typeof bowser.msedge == 'undefined') {

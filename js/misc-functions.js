@@ -633,6 +633,11 @@ function loggedInUsersMenuArray() {
 			type: 'function',
 			functionName: 'autopause1',
 			label: 'Toggle Auto Update'
+			},
+		{
+			type: 'function',
+			functionName: 'toggleTheme',
+			label: 'Toggle Theme'
 			}];
 	}
 

@@ -57,7 +57,7 @@ class QvitterPlugin extends Plugin
         $settings['enabledbydefault'] = true;
 
         // DEFAULT BACKGROUND COLOR
-        $settings['defaultbackgroundcolor'] = '#f4f4f4';
+        $settings['defaultbackgroundcolor'] = '#2c3e50';
 
         // DEFAULT BACKGROUND IMAGE
         $settings['sitebackground'] = Plugin::staticPath('Qvitter', '').'img/vagnsmossen.jpg';
@@ -69,7 +69,7 @@ class QvitterPlugin extends Plugin
         $settings['sprite'] = Plugin::staticPath('Qvitter', '').'img/sprite.png?v=41';
 
         // DEFAULT LINK COLOR
-        $settings['defaultlinkcolor'] = '#0084B4';
+        $settings['defaultlinkcolor'] = '#95a5a6';
 
         // ENABLE DEFAULT WELCOME TEXT
         $settings['enablewelcometext'] = true;

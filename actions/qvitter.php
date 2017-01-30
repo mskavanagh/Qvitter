@@ -160,7 +160,7 @@ class QvitterAction extends ApiAction
                 <meta name="theme-color" content="#ffffff">
                  <?php
                 if(QvitterPlugin::settings("dark_theme")){
-                	echo '<link rel="stylesheet" type="text/css" href="'.$qvitterpath.'css/dark_qvitter.css" />';
+                	echo '<link rel="stylesheet" type="text/css" href="'.$qvitterpath.'css/dark_qvitter.css" id="dark_theme"/>';
                 }
                 ?>
 				<?php
