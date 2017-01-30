@@ -47,6 +47,9 @@ $config['site']['qvitter']['urlshortenersignature'] = 'b6afeec983';
 $config['site']['qvitter']['sitebackground'] = 'img/vagnsmossen.jpg';
 $config['site']['qvitter']['favicon_path'] = Plugin::staticPath('Qvitter', '').'img/gnusocial-favicons/';
 $config['site']['qvitter']['sprite'] = Plugin::staticPath('Qvitter', '').'img/sprite.png?v=40';
+//For Dark theme uncomment the following:
+//$config['site']['qvitter']['sprite'] = Plugin::staticPath('Qvitter', '').'img/sprite_dark.png?v=40';
+//$config['site']['qvitter']['dark_theme'] = true;
 $config['site']['qvitter']['enablewelcometext'] = true;
 // $config['site']['qvitter']['customwelcometext']['sv'] = '<h1>Välkommen till Quitter.se – en federerad<sup>1</sup> mikrobloggsallmänning!</h1><p>Etc etc...</p>';
 // $config['site']['qvitter']['customwelcometext']['en'] = '<h1>Welcome to Quitter.se – a federated microblog common!</h1><p>Etc etc...</p>';
