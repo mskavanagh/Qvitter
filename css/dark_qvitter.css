@@ -256,3 +256,6 @@ a.oembed-item {
     background-color: #34495e !important;
     color: #ecf0f1 !important;
 }
+div.stream-item-header {
+    color: #ecf0f1 !important;
+}
