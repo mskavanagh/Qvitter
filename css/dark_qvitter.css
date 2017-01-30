@@ -259,3 +259,7 @@ a.oembed-item {
 div.stream-item-header {
     color: #ecf0f1 !important;
 }
+#unseen-notifications {
+    background-color: #7f8c8d !important;
+    color: #2c3e50 !important;
+}
