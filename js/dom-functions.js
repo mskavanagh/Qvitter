@@ -792,7 +792,7 @@ function setNewCurrentStream(streamObject,setLocation,fallbackId,actionOnSuccess
 	if(streamObject.menu && window.loggedIn) {
 		$('#feed-header-inner h2').append('<div id="stream-menu-cog" data-tooltip="' + window.sL.timelineOptions + '"></div>');
 		}
-	if(streamObject.name == 'user group list'){
+	/*if(streamObject.name == 'user group list'){
 		if(document.getElementById("feed-header-inner").innerHTML.indexOf("ostatusgroup") == -1){
 			$('#feed-header-inner').append('<form id="tempGroupAdd" action="' + window.siteInstanceURL + 'main/ostatusgroup" method="GET"><div id="follow-group"><input type="text" placeholder="  group URL or ID" id="group" name="profile">&nbsp;&nbsp;<button type="submit">Join Group</button></div></form>');
 		}
@@ -802,7 +802,7 @@ function setNewCurrentStream(streamObject,setLocation,fallbackId,actionOnSuccess
 			element.outerHTML = "";
 			delete element;
 		}
-	}
+	}*/
 	// subtle animation to show somethings happening
 	$('#feed-header-inner h2').css('opacity','0.2');
 	$('#feed-header-inner h2').animate({opacity:'1'},1000);
