@@ -158,6 +158,11 @@ class QvitterAction extends ApiAction
                 <meta name="msapplication-TileColor" content="#da532c">
                 <meta name="msapplication-TileImage" content="<?php echo $favicon_path ?>mstile-144x144.png">
                 <meta name="theme-color" content="#ffffff">
+                 <?php
+                if(QvitterPlugin::settings("dark_theme")){
+                	echo '<link rel="stylesheet" type="text/css" href="'.$qvitterpath.'css/dark_qvitter.css" />';
+                }
+                ?>
 				<?php
 
                 // if qvitter is a webapp and this is a users url we add feeds
@@ -475,7 +480,7 @@ class QvitterAction extends ApiAction
                             echo $instanceurl.$logged_in_user_nickname.'/all';
                         } else {
                             echo $instanceurl.'main/all';
-                        } ?>"><div id="logo"></div></a><?php
+                        } ?>"><div id="logo"><?php //echo $sitetitle; ?></div></a><?php
 
                     // menu for logged in users
                     if ($logged_in_user) {
