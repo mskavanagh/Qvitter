@@ -515,7 +515,7 @@ class QvitterAction extends ApiAction
 							<li class="fullwidth"><a id="invite-link" href="<?php echo $instanceurl; ?>main/invite"></a></li>
 						<?php 
         } ?>
-						<li class="fullwidth"><a id="classic-link"></a></li>
+						<!--<li class="fullwidth"><a id="classic-link"></a></li>-->
 						<li class="fullwidth dropdown-divider"></li>
 						<li class="fullwidth"><a id="logout"></a></li>
 						<li class="fullwidth language dropdown-divider"></li>

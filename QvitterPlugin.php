@@ -38,7 +38,7 @@ const QVITTERDIR = __DIR__;
 
 class QvitterPlugin extends Plugin
 {
-    protected $hijack_ui = false;
+    protected $hijack_ui = true;
     protected $qvitter_hide_replies = false;
 
     public static function settings($setting)
