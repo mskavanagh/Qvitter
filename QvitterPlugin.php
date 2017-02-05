@@ -38,7 +38,7 @@ const QVITTERDIR = __DIR__;
 
 class QvitterPlugin extends Plugin
 {
-    protected $hijack_ui = true;
+    protected $hijack_ui = false;
     protected $qvitter_hide_replies = false;
 
     public static function settings($setting)
@@ -55,10 +55,11 @@ class QvitterPlugin extends Plugin
 
         // ENABLED BY DEFAULT (true/false)
         $settings['enabledbydefault'] = true;
-
+		$settings['xmpp'] = false;
         // DEFAULT BACKGROUND COLOR
-        $settings['defaultbackgroundcolor'] = '#2c3e50';
-
+        $settings['defaultbackgroundcolor'] = '#1b2733';
+		// DEFAULT LINK COLOR
+        $settings['defaultlinkcolor'] = '#9296a8';
         // DEFAULT BACKGROUND IMAGE
         $settings['sitebackground'] = Plugin::staticPath('Qvitter', '').'img/vagnsmossen.jpg';
 
@@ -67,10 +68,6 @@ class QvitterPlugin extends Plugin
 
         // DEFAULT SPRITE
         $settings['sprite'] = Plugin::staticPath('Qvitter', '').'img/sprite.png?v=41';
-
-        // DEFAULT LINK COLOR
-        $settings['defaultlinkcolor'] = '#95a5a6';
-
         // ENABLE DEFAULT WELCOME TEXT
         $settings['enablewelcometext'] = true;
 
@@ -110,7 +107,13 @@ class QvitterPlugin extends Plugin
         foreach ($configphpsettings as $configphpsetting => $value) {
             $settings[$configphpsetting] = $value;
         }
-
+        $logged_in_user = common_current_user();
+		if($settings['user_theme'] && $logged_in_user){
+			$settings['sprite'] = Plugin::staticPath('Qvitter', '').'img/sprite_custom.png?v=41';
+		}
+		if($settings['dark_theme']){
+			$settings['sprite'] = Plugin::staticPath('Qvitter', '').'img/sprite_dark.png?v=41';
+		}
         // set linkify setting
         common_config_set('linkify', 'bare_domains', $settings['linkify_bare_domains']);
 

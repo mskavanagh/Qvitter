@@ -83,6 +83,32 @@ class QvitterAction extends ApiAction
 		  }
 		  return $time;
 	}
+	function adjustBrightness($hex, $steps) {
+	    // Steps should be between -255 and 255. Negative = darker, positive = lighter
+	    $steps = max(-255, min(255, $steps));
+	
+	    // Normalize into a six character long hex string
+	    $hex = str_replace('#', '', $hex);
+	    if (strlen($hex) == 3) {
+	        $hex = str_repeat(substr($hex,0,1), 2).str_repeat(substr($hex,1,1), 2).str_repeat(substr($hex,2,1), 2);
+	    }
+	
+	    // Split into three parts: R, G and B
+	    $color_parts = str_split($hex, 2);
+	    $return = '';
+	
+	    foreach ($color_parts as $color) {
+	        $color   = hexdec($color); // Convert to decimal
+	        if($color >= 126){
+	        	$color   = max(0,min(255,$color - $steps)); // Adjust color
+	        } else {
+	        	$color   = max(0,min(255,$color + $steps)); // Adjust color
+	        }
+	        $return .= str_pad(dechex($color), 2, '0', STR_PAD_LEFT); // Make two char hex code
+	    }
+	
+	    return $return;
+	}
     public function showQvitter()
     {
         $logged_in_user_nickname = '';
@@ -110,7 +136,7 @@ class QvitterAction extends ApiAction
         $attachmentroot = common_path('attachment/', StatusNet::isHTTPS());
         $instanceurl = common_path('', StatusNet::isHTTPS());
         $favicon_path = QvitterPlugin::settings('favicon_path');
-
+		$xmpp = QvitterPlugin::settings('xmpp');
         // user's browser's language setting
         $user_browser_language = 'en'; // use english if we can't find the browser language
         if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
@@ -153,6 +179,15 @@ class QvitterAction extends ApiAction
                 <link rel="icon" type="image/png" href="<?php echo $favicon_path ?>favicon-96x96.png" sizes="96x96">
                 <link rel="manifest" href="<?php echo $favicon_path ?>manifest.json">
                 <link rel="mask-icon" href="<?php echo $favicon_path ?>safari-pinned-tab.svg" color="#a22430">
+                <?php
+                if(is_array($xmpp) && $xmpp !== false){
+               	?>
+               	<link href="<?php echo $qvitterpath; ?>jsxc/css/jquery-ui.min.css" media="all" rel="stylesheet" type="text/css" />
+				<link href="<?php echo $qvitterpath; ?>jsxc/css/jsxc.css" media="all" rel="stylesheet" type="text/css" />
+               	<?php
+                }
+                
+                ?>
                 <meta name="apple-mobile-web-app-title" content="<?php echo $sitetitle; ?>">
                 <meta name="application-name" content="<?php echo $sitetitle; ?>">
                 <meta name="msapplication-TileColor" content="#da532c">
@@ -161,6 +196,284 @@ class QvitterAction extends ApiAction
                  <?php
                 if(QvitterPlugin::settings("dark_theme")){
                 	echo '<link rel="stylesheet" type="text/css" href="'.$qvitterpath.'css/dark_qvitter.css" id="dark_theme"/>';
+                }
+                if(QvitterPlugin::settings("user_theme") && !QvitterPlugin::settings("dark_theme") && $logged_in_user){
+                	echo '';
+                	?>
+<style id="user_theme">
+	#logo,
+	.topbar .global-nav.show-logo:before,
+	.topbar .global-nav.pulse-logo:before {
+		background-color: <?php echo '#'.$logged_in_user_obj['backgroundcolor']; ?> !important;
+    	color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'], 100); ?> !important;
+	}
+	#user-footer-inner {
+    background-color: <?php echo '#'.$logged_in_user_obj['backgroundcolor']; ?> !important;
+    color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'], 40); ?> !important;
+    text-shadow: none !important;
+	}
+	
+	div.queet-box.queet-box-syntax {
+	    background-color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],20); ?> !important;
+	    color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],100); ?> !important;
+	    text-shadow: none !important;
+	}
+	
+	input.queet-box {
+	    background-color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],20); ?> !important;
+	    text-shadow: none !important;
+	}
+	
+	#feed-header-inner {
+	    background-color: <?php echo '#'.$logged_in_user_obj['backgroundcolor']; ?> !important;
+	    text-shadow: none !important;
+	    color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],40); ?> !important;
+	}
+	
+	div.queet-content {
+	    background-color: <?php echo '#'.$logged_in_user_obj['backgroundcolor']; ?> !important;
+	    text-shadow: none !important;
+	}
+	
+	div.queet.last-visible.first-visible {
+	    background-color: <?php echo '#'.$logged_in_user_obj['backgroundcolor']; ?> !important;
+	    text-shadow: none !important;
+	}
+	
+	div.inline-reply-queetbox {
+	    background-color: <?php echo '#'.$logged_in_user_obj['backgroundcolor']; ?> !important;
+	    text-shadow: none !important;
+	}
+	
+	div.queet {
+	    background-color: <?php echo '#'.$logged_in_user_obj['backgroundcolor']; ?> !important;
+	    text-shadow: none !important;
+	    color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],100); ?> !important;
+	}
+	
+	strong.name {
+	    color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],100); ?> !important;
+	    text-shadow: none !important;
+	}
+	
+	span.icon.sm-ellipsis {
+	    border-color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],40); ?> !important;
+	}
+	
+	a.with-icn {
+	    border-color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],40); ?> !important;
+	    color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],100); ?> !important;
+	}
+	
+	span.icon.sm-fav {
+	    color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],100); ?> !important;
+	}
+	
+	div.queet-text {
+	    color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],100); ?> !important;
+	    text-shadow: none !important;
+	}
+	
+	#stream-header {
+	    color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],100); ?> !important;
+	    text-shadow: none !important;
+	}
+	
+	#stream-menu-cog {
+	    color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],100); ?> !important;
+	    text-shadow: none !important;
+	}
+	
+	div.profile-banner-footer {
+	    color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],100); ?>!important;
+	    background-color: <?php echo '#'.$logged_in_user_obj['backgroundcolor']; ?> !important;
+	    text-transform: none !important;
+	    text-decoration: none !important;
+	    text-shadow: none !important;
+	}
+	
+	div.menu-container {
+	    background-color: <?php echo '#'.$logged_in_user_obj['backgroundcolor']; ?> !important;
+	    color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],100); ?> !important;
+	    text-shadow: none !important;
+	}
+	
+	a.stream-selection {
+	    color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],100); ?> !important;
+	    background-color: <?php echo '#'.$logged_in_user_obj['backgroundcolor']; ?> !important;
+	    text-shadow: none !important;
+	}
+	
+	#user-groups {
+	    background-color: <?php echo '#'.$logged_in_user_obj['backgroundcolor']; ?> !important;
+	    color:<?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],100); ?> !important;
+	}
+	
+	div.profile-card.pinned-post-cont h4 {
+	    color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],100); ?> !important;
+	    text-shadow: none !important;
+	}
+	
+	#user-body {
+	    background-color: <?php echo '#'.$logged_in_user_obj['backgroundcolor']; ?> !important;
+	    border-style: none !important;
+	    text-shadow: none !important;
+	    color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],100); ?> !important;
+	}
+	
+	div.global-nav.show-logo {
+	    background-color: <?php echo '#'.$logged_in_user_obj['backgroundcolor']; ?> !important;
+	    color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],100); ?> !important;
+	}
+	
+	input.search-input {
+	    color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],100); ?> !important;
+	    background-color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],40); ?> !important;
+	}
+	
+	div.modal-header.ui-draggable-handle {
+	    background-color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],40); ?> !important;
+	    text-transform: none !important;
+	    border-style: none !important;
+	}
+	
+	h3.modal-title {
+	    background-color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],40); ?> !important;
+	    text-shadow: none !important;
+	}
+	
+	span.queet-counter {
+	    color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],100); ?> !important;
+	    text-shadow: none !important;
+	}
+	
+	div.modal-draggable.ui-draggable {
+	    border-style: none !important;
+	}
+	
+	span.label {
+	    text-shadow: none !important;
+	}
+	
+	#user-following strong {
+	    text-shadow: none !important;
+	}
+	
+	#user-followers strong {
+	    text-shadow: none !important;
+	}
+	
+	#user-queets strong {
+	    text-shadow: none !important;
+	}
+	
+	a.row-type-function {
+	    background-color: <?php echo '#'.$logged_in_user_obj['backgroundcolor']; ?> !important;
+	    color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],100); ?> !important;
+	}
+	
+	a.row-type-link {
+	    color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],100); ?>!important;
+	}
+	
+	#top-menu-profile-link-view-profile {
+	    color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],100); ?> !important;
+	}
+	
+	ul.quitter-settings.dropdown-menu {
+	    color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],100); ?> !important;
+	}
+	
+	ul.dropdown-menu {
+	    background-color: <?php echo '#'.$logged_in_user_obj['backgroundcolor']; ?> !important;
+	    color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],100); ?> !important;
+	}
+	
+	ul.quitter-settings.dropdown-menu.dropped {
+	    color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],100); ?> !important;
+	}
+	
+	li.fullwidth a {
+	    color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],100); ?> !important;
+	}
+	
+	a.language-link {
+	    color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],100); ?> !important;
+	}
+	
+	#top-menu-profile-link-fullname {
+	    color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],100); ?> !important;
+	}
+	
+	div.reload-stream {
+	    color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],100); ?> !important;
+	}
+	
+	div.view-more-container-top.first-visible a {
+	    color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],100); ?> !important;
+	    background-color: <?php echo '#'.$logged_in_user_obj['backgroundcolor']; ?> !important;
+	}
+	
+	ul.queet-actions {
+	    color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],100); ?> !important;
+	}
+	
+	#follow-group button {
+	    text-transform: none !important;
+	}
+	
+	a.dropdown-toggle small {
+	    color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],100); ?> !important;
+	}
+	
+	#login-content {
+	    background-color: <?php echo '#'.$logged_in_user_obj['backgroundcolor']; ?> !important;
+	    color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],100); ?> !important;
+	}
+	
+	#form_settings {
+	    color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],100); ?> !important;
+	    background-color: <?php echo '#'.$logged_in_user_obj['backgroundcolor']; ?> !important;
+	}
+	
+	.login-content {
+	    background-color: <?php echo '#'.$logged_in_user_obj['backgroundcolor']; ?> !important;
+	}
+	
+	span.current-language {
+	    color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],100); ?> !important;
+	}
+	
+	div.modal-content {
+	    background-color: <?php echo '#'.$logged_in_user_obj['backgroundcolor']; ?> !important;
+	}
+	
+	#signup-terms-header {
+	    color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],100); ?> !important;
+	}
+	
+	div.front-signup {
+	    color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],100); ?> !important;
+	}
+	
+	button.signup-btn.disabled {
+	    color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],40); ?> !important;
+	    text-shadow: none !important;
+	}
+	
+	a.oembed-item {
+	    background-color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],40); ?> !important;
+	    color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],100); ?> !important;
+	}
+	div.stream-item-header {
+	    color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],100); ?> !important;
+	}
+	#unseen-notifications {
+	    background-color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],40); ?> !important;
+	    color: <?php echo '#'.self::adjustBrightness($logged_in_user_obj['backgroundcolor'],100); ?> !important;
+	}
+</style>
+                	<?php
                 }
                 ?>
 				<?php
@@ -480,7 +793,7 @@ class QvitterAction extends ApiAction
                             echo $instanceurl.$logged_in_user_nickname.'/all';
                         } else {
                             echo $instanceurl.'main/all';
-                        } ?>"><div id="logo"><?php //echo $sitetitle; ?></div></a><?php
+                        } ?>"><div id="logo"><?php if($logged_in_user && QvitterPlugin::settings("user_theme")){ echo '<text style="font-size:20px; position: relative; top: 5px;">'.$sitetitle.'</text>'; } ?></div></a><?php
 
                     // menu for logged in users
                     if ($logged_in_user) {
@@ -722,8 +1035,23 @@ class QvitterAction extends ApiAction
         Event::handle('QvitterHiddenHtml', array($this)); ?></div>
 					<div id="footer"><div id="footer-spinner-container"></div></div>
 				</div>
+				<?php
+				if($xmpp){
+					?>
+					<script src="<?php echo $qvitterpath; ?>jsxc/lib/jquery.min.js"></script>
+					<script src="<?php echo $qvitterpath; ?>jsxc/lib/jquery.ui.min.js"></script>
+					<script src="<?php echo $qvitterpath; ?>jsxc/lib/jquery.slimscroll.js"></script>
+					<script src="<?php echo $qvitterpath; ?>jsxc/lib/jquery.fullscreen.js"></script>
+					<script src="<?php echo $qvitterpath; ?>jsxc/lib/jsxc.dep.js"></script>
+					<script src="<?php echo $qvitterpath; ?>jsxc/jsxc.js"></script>
+					<?php
+				} else {
+					?>
 				<script type="text/javascript" src="<?php echo $qvitterpath; ?>js/lib/jquery-2.1.4.min.js?changed=<?php echo date('YmdHis', filemtime(QVITTERDIR.'/js/lib/jquery-2.1.4.min.js')); ?>"></script>
 				<script type="text/javascript" src="<?php echo $qvitterpath; ?>js/lib/jquery-ui.min.js?changed=<?php echo date('YmdHis', filemtime(QVITTERDIR.'/js/lib/jquery-ui.min.js')); ?>"></script>
+					<?php
+				}
+				?>
 				<script type="text/javascript" src="<?php echo $qvitterpath; ?>js/lib/jquery.minicolors.min.js?changed=<?php echo date('YmdHis', filemtime(QVITTERDIR.'/js/lib/jquery.minicolors.min.js')); ?>"></script>
 				<script type="text/javascript" src="<?php echo $qvitterpath; ?>js/lib/jquery.jWindowCrop.js?changed=<?php echo date('YmdHis', filemtime(QVITTERDIR.'/js/lib/jquery.jWindowCrop.js')); ?>"></script>
 				<script type="text/javascript" src="<?php echo $qvitterpath; ?>js/lib/load-image.min.js?changed=<?php echo date('YmdHis', filemtime(QVITTERDIR.'/js/lib/load-image.min.js')); ?>"></script>
@@ -780,19 +1108,19 @@ class QvitterAction extends ApiAction
 					#unseen-notifications,
 					.stream-item.notification.not-seen > .queet::before,
 					#top-compose,
-					#logo,
 					.queet-toolbar button,
 					#user-header,
 					.profile-header-inner,
 					.topbar,
+					#logo,
+	.topbar .global-nav.show-logo:before,
+	.topbar .global-nav.pulse-logo:before,
 					.menu-container,
 					.member-button.member,
 					.external-follow-button.following,
 					.qvitter-follow-button.following,
 					.save-profile-button,
 					.crop-and-save-button,
-					.topbar .global-nav.show-logo:before,
-					.topbar .global-nav.pulse-logo:before,
                     .dropdown-menu li:not(.dropdown-caret) a:hover {
 						background-color:/*BACKGROUNDCOLORSTART*/<?php echo QvitterPlugin::settings('defaultlinkcolor'); ?>/*BACKGROUNDCOLOREND*/;
 						}
@@ -860,6 +1188,29 @@ class QvitterAction extends ApiAction
 
 				</style>
 			</div>
+<!-- xmpp client loader -->
+<?php
+if(QvitterPlugin::settings('xmpp') && !$logged_in_user){
+?>
+<script>
+$(function() {
+   jsxc.init({
+      rosterAppend: 'body',
+      root: '<?php echo $qvitterpath; ?>jsxc',
+      xmpp: {
+         url: '<?php echo $xmpp['BOSH']; ?>',
+         domain: '<?php echo $xmpp['DOMAIN']; ?>',
+         resource: 'qvitterxmpp',
+         overwrite: true,
+      	 onlogin: true
+      }
+   });
+});
+$('#directmessage').click(jsxc.gui.showLoginBox);
+</script>
+<?php
+}
+?>
 			</body>
 		</html>
 
