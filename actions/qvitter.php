@@ -992,8 +992,10 @@ class QvitterAction extends ApiAction
             							<a href="<?php echo $instanceurl ?>main/public" class="stream-selection public-timeline"><i class="chev-right"></i></a>
             							<a href="<?php echo $instanceurl ?>main/all" class="stream-selection public-and-external-timeline"><i class="chev-right"></i></a>
                                         <a href="<?php echo $instanceurl.$logged_in_user->nickname ?>/groups" id="user-groups">My Groups <i class="chev-right"></i></a>
+                                        <a href="<?php echo $instanceurl ?>/directory/users" id="user-dir">User Directory <i class="chev-right"></i></a>
+                                        
                                         <?php
-
+										//https://gnusocial.me/directory/users
                                     } ?>
         						</div>
         						<div class="menu-container" id="bookmark-container"></div>
