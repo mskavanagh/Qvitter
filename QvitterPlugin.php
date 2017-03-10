@@ -93,7 +93,8 @@ class QvitterPlugin extends Plugin
 
         // LINKIFY DOMAINS WITHOUT PROTOCOL AS DEFAULT
         $settings['linkify_bare_domains'] = true;
-
+		$settings['dark_theme'] = false;
+		$settings['user_theme'] = false;
          /* · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · ·
           ·                                                                   ·
           ·                (o>                                  >o)           ·
@@ -111,7 +112,7 @@ class QvitterPlugin extends Plugin
 		if($settings['user_theme'] && $logged_in_user){
 			$settings['sprite'] = Plugin::staticPath('Qvitter', '').'img/sprite_custom.png?v=41';
 		}
-		if($settings['dark_theme']){
+		if($settings['dark_theme'] && $logged_in_user){
 			$settings['sprite'] = Plugin::staticPath('Qvitter', '').'img/sprite_dark.png?v=41';
 		}
         // set linkify setting
