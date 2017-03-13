@@ -2796,7 +2796,6 @@ function CSSclassNameByHostFromURL(url) {
 	}
 
 
-
 /* ·
    ·
    ·   String similarity

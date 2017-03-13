@@ -55,6 +55,7 @@ class QvitterPlugin extends Plugin
 
         // ENABLED BY DEFAULT (true/false)
         $settings['enabledbydefault'] = true;
+        $settings['donation'] = "https://urgero.org/index.php?page=donations.md";
 		$settings['xmpp'] = false;
         // DEFAULT BACKGROUND COLOR
         $settings['defaultbackgroundcolor'] = '#1b2733';

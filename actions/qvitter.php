@@ -193,13 +193,23 @@ class QvitterAction extends ApiAction
                 <meta name="msapplication-TileColor" content="#da532c">
                 <meta name="msapplication-TileImage" content="<?php echo $favicon_path ?>mstile-144x144.png">
                 <meta name="theme-color" content="#ffffff">
+                <?php 
+                if(QvitterPlugin::settings("emojishortname")){
+                	echo '';
+                	?>
+                	<link rel="stylesheet" href="<?php echo $qvitterpath."emoji/dist/"; ?>emojionearea.min.css">
+                	<?php
+                }
+                ?>
                  <?php
                 if(QvitterPlugin::settings("dark_theme")){
                 	echo '<link rel="stylesheet" type="text/css" href="'.$qvitterpath.'css/dark_qvitter.css" id="dark_theme"/>';
                 }
                 if(QvitterPlugin::settings("user_theme") && !QvitterPlugin::settings("dark_theme") && $logged_in_user){
                 	echo '';
-                	?>
+                ?>
+                
+                
 <style id="user_theme">
 	#logo,
 	.topbar .global-nav.show-logo:before,
@@ -813,7 +823,8 @@ class QvitterAction extends ApiAction
 						<li class="fullwidth"><a id="top-menu-profile-link" class="no-hover-card" href="<?php echo $instanceurl.$logged_in_user_obj['screen_name']; ?>"><div id="top-menu-profile-link-fullname"><?php echo htmlspecialchars($logged_in_user_obj['name']); ?></div><div id="top-menu-profile-link-view-profile"></div></a></li>
 						<li class="fullwidth dropdown-divider"></li>
                         <li class="fullwidth"><a id="faq-link"></a></li>
-                        <li class="fullwidth"><a href="https://github.com/mitchellurgero/Qvitter">QvitterMod Home</a></li>
+                        <li class="fullwidth"><a href="https://github.com/mitchellurgero/Qvitter">QvitterMod Project Site</a></li>
+                        <li class="fullwidth"><a href="<?php echo QvitterPlugin::settings("donation");?>">Site Donations</a></li>
                         <li class="fullwidth"><a id="tou-link"></a></li>
                         <?php
 
@@ -1065,6 +1076,14 @@ class QvitterAction extends ApiAction
 				<script charset="utf-8" type="text/javascript" src="<?php echo $qvitterpath; ?>js/ajax-functions.js?changed=<?php echo date('YmdHis', filemtime(QVITTERDIR.'/js/ajax-functions.js')); ?>"></script>
                 <script charset="utf-8" type="text/javascript" src="<?php echo $qvitterpath; ?>js/stream-router.js?changed=<?php echo date('YmdHis', filemtime(QVITTERDIR.'/js/stream-router.js')); ?>"></script>
 				<script charset="utf-8" type="text/javascript" src="<?php echo $qvitterpath; ?>js/qvitter.js?changed=<?php echo date('YmdHis', filemtime(QVITTERDIR.'/js/qvitter.js')); ?>"></script>
+				<?php 
+                if(QvitterPlugin::settings("emojishortname")){
+                	echo '';
+                	?>
+					<script type="text/javascript" src="<?php echo $qvitterpath."emoji/dist/emojionearea.min.js"; ?>"></script>
+                	<?php
+                }
+                ?>
 				<?php
 
                     // event for other plugins to add scripts to qvitter
@@ -1194,21 +1213,10 @@ class QvitterAction extends ApiAction
 <?php
 if(QvitterPlugin::settings('xmpp') && !$logged_in_user){
 ?>
-<script>
-$(function() {
-   jsxc.init({
-      rosterAppend: 'body',
-      root: '<?php echo $qvitterpath; ?>jsxc',
-      xmpp: {
-         url: '<?php echo $xmpp['BOSH']; ?>',
-         domain: '<?php echo $xmpp['DOMAIN']; ?>',
-         resource: 'qvitterxmpp',
-         overwrite: true,
-      	 onlogin: true
-      }
-   });
-});
-$('#directmessage').click(jsxc.gui.showLoginBox);
+<script type="text/javascript">
+  $(document).ready(function() {
+	$("#queet-box").emojioneArea();
+  });
 </script>
 <?php
 }
