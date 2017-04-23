@@ -794,7 +794,7 @@ function setNewCurrentStream(streamObject,setLocation,fallbackId,actionOnSuccess
 		}
 	if(streamObject.name == 'user group list'){
 		if(document.getElementById("feed-header-inner").innerHTML.indexOf("group/new") == -1){
-			$('#feed-header-inner').append('<a id="tempGroupAdd" target="_blank" href="' + window.siteInstanceURL + 'group/new/" onclick="window.location.reload()">Create New Group</a>');
+			$('#feed-header-inner').append('<a id="tempGroupAdd" target="_blank" href="' + window.siteInstanceURL + 'group/new?" onclick="window.location.reload()">Create New Group</a>');
 		}
 	} else if(streamObject.name != 'user group list') {
 		if(document.getElementById("feed-header-inner").innerHTML.indexOf("group/new") != -1){
